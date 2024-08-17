@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+
 public class PlayerController : MonoBehaviour, IObserver<Coin>
 {
-    private static PlayerController instance;
-    
+    public static PlayerController _instance;
+
     [Header("Wall Jump And Movement")]
     public float moveSpeed = 5f;
     public float jumpForce = 10f;
@@ -19,17 +20,25 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
     public Vector2 wallCheckSize;
     public LayerMask wallLayer;
     
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    public float groundCheckRadius = 0.2f;
+    public LayerMask groundLayer;
+
     [Header("Observer Manager")]
     private CoinManager coinManager;
     [SerializeField] private int coinCount = 0;
+
+    [Header("Variaveis")]
+    public int health;
 
     public Text Coin;
 
     void Awake()
     {
-        if (instance == null)
+        if (_instance == null)
         {
-            instance = this;
+            _instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -37,6 +46,7 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
             Destroy(gameObject);
         }
     }
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -46,11 +56,22 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
 
     void Update()
     {
+        CheckGround();
         Move();
         Jump();
         WallJump();
         Coin.text = coinCount.ToString();
+        if (health <= 0)
+        {
+            Die();
+        }
     }
+
+    void CheckGround()
+    {
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    }
+
 
     void Move()
     {
@@ -89,22 +110,25 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
             rb.velocity = force;
         }
 
-        if (rb.velocity.y < 0)
+        if (isTouchingWall && !isGrounded)
         {
-            isWallJumping = false;
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -1f));
         }
-    }
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
+
+        if (rb.velocity.y < 0 && !isTouchingWall)
         {
-            isGrounded = true;
             isWallJumping = false;
         }
     }
     private void OnDestroy()
     {
         coinManager.Detach(this);
+    }
+    private void Die()
+    {
+        // Chama a função de respawn do GameManager
+        GameManager.Instance.RespawnPlayer(gameObject);
+        health = 3; // Restaura a saúde do jogador (opcional)
     }
 
     public void OnNext(Coin value)
@@ -122,9 +146,17 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
     {
         Debug.Log("Todas as moedas foram coletadas.");
     }
+    
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(wallCheckPoint.position, wallCheckSize);
+
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
     }
 }

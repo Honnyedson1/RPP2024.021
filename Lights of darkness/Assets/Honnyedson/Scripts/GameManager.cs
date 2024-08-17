@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
     public int playerLives;
     public int coins; // Adicionado para as moedas
     public bool isGamePaused;
+    
+    [Header("CheckPoints")]
+    private Vector3 lastCheckpointPosition;
 
     public string uiSceneName = "UI";
 
@@ -31,8 +34,17 @@ public class GameManager : MonoBehaviour
     {
         if (score >= 3)
         {
-            SceneManager.LoadScene(2);
+            //SceneManager.LoadScene(2);
         }
+    }
+    public void SetCheckpoint(Vector3 position)
+    {
+        lastCheckpointPosition = position;
+    }
+
+    public void RespawnPlayer(GameObject player)
+    {
+        player.transform.position = lastCheckpointPosition;
     }
 
     public void PauseGame()
