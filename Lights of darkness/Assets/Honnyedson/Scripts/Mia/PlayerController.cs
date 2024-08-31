@@ -126,9 +126,8 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
     }
     private void Die()
     {
-        // Chama a função de respawn do GameManager
         GameManager.Instance.RespawnPlayer(gameObject);
-        health = 3; // Restaura a saúde do jogador (opcional)
+        health = 3; 
     }
 
     public void OnNext(Coin value)
