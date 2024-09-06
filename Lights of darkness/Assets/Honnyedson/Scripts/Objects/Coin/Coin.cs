@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    private CoinManager coinManager;
-
+    public int coins;
     private void Start()
     {
-        coinManager = FindObjectOfType<CoinManager>();
+        coins = 0;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            coinManager.CollectCoin(this);
+            CoinObs.OnCoin(1);
+            Destroy(gameObject);
         }
     }
 }

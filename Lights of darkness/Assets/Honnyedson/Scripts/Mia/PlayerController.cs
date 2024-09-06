@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour, IObserver<Coin>
+public class PlayerController : MonoBehaviour
 {
     public static PlayerController _instance;
 
@@ -25,14 +23,17 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
     public float groundCheckRadius = 0.2f;
     public LayerMask groundLayer;
 
-    [Header("Observer Manager")]
-    private CoinManager coinManager;
-    [SerializeField] private int coinCount = 0;
+    [Header("Attack Settings")]
+    public float meleeAttackRange = 1f;
+    public float rangedAttackRange = 5f;
+    public Transform attackPoint;
+    public LayerMask enemyLayer;
+    public GameObject arrowPrefab; 
+    public float arrowSpeed = 10f;
+    private bool isMeleeAttack = true;
+    public float attackInterval = 1f; 
+    private float lastAttackTime = 0f; 
 
-    [Header("Variaveis")]
-    public int health;
-
-    public Text Coin;
 
     void Awake()
     {
@@ -50,8 +51,6 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        coinManager = FindObjectOfType<CoinManager>();
-        coinManager.Attach(this);
     }
 
     void Update()
@@ -60,10 +59,16 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
         Move();
         Jump();
         WallJump();
-        Coin.text = coinCount.ToString();
-        if (health <= 0)
+
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            Die();
+            ToggleAttackMode();
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastAttackTime + attackInterval)
+        {
+            StartCoroutine(PerformAttack());
+            lastAttackTime = Time.time;
         }
     }
 
@@ -71,7 +76,6 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     }
-
 
     void Move()
     {
@@ -120,32 +124,55 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
             isWallJumping = false;
         }
     }
-    private void OnDestroy()
+
+    void ToggleAttackMode()
     {
-        coinManager.Detach(this);
+        isMeleeAttack = !isMeleeAttack;
     }
-    private void Die()
+
+    IEnumerator PerformAttack()
+    {
+        if (isMeleeAttack)
+        {
+            MeleeAttack();
+        }
+        else
+        {
+            yield return StartCoroutine(RangedAttack());
+        }
+    }
+
+
+    void MeleeAttack()
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, meleeAttackRange, enemyLayer);
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            BooEnemy booEnemy = enemy.GetComponent<BooEnemy>();
+            if (booEnemy != null)
+            {
+                booEnemy.TakeDamage(1); 
+                Debug.Log("Hit enemy with melee attack: " + enemy.name);
+            }
+        }
+    }
+
+    IEnumerator RangedAttack()
+    {
+        GameObject arrow = Instantiate(arrowPrefab, attackPoint.position, Quaternion.identity);
+        Rigidbody2D arrowRb = arrow.GetComponent<Rigidbody2D>();
+        float direction = Mathf.Sign(transform.localScale.x); 
+        arrowRb.velocity = new Vector2(direction * arrowSpeed, 0);
+        Destroy(arrow, 2f);
+
+        yield return null;
+    }
+
+    public void Die()
     {
         GameManager.Instance.RespawnPlayer(gameObject);
-        health = 3; 
+        GameManager.Instance.Life = 3;
     }
-
-    public void OnNext(Coin value)
-    {
-        coinCount++;
-        GameManager.Instance.AddScore(1);
-    }
-
-    public void OnError(System.Exception error)
-    {
-        Debug.LogError($"Erro ao coletar moeda: {error.Message}");
-    }
-
-    public void OnCompleted()
-    {
-        Debug.Log("Todas as moedas foram coletadas.");
-    }
-    
 
     void OnDrawGizmosSelected()
     {
@@ -157,5 +184,8 @@ public class PlayerController : MonoBehaviour, IObserver<Coin>
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(attackPoint.position, meleeAttackRange);
     }
 }

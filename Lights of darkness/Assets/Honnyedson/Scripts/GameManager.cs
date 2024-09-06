@@ -5,12 +5,10 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
-    // Variáveis globais do jogo
-    public int score;
-    public int playerLives;
-    public int coins; // Adicionado para as moedas
     public bool isGamePaused;
+    [Header("Player Variaveis")] 
+    public int Life = 3;
+    public int score;
     
     [Header("CheckPoints")]
     private Vector3 lastCheckpointPosition;
@@ -32,10 +30,11 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (score >= 3)
+        if (Life <=0)
         {
-            //SceneManager.LoadScene(2);
+            PlayerController._instance.Die();
         }
+
     }
     public void SetCheckpoint(Vector3 position)
     {
@@ -63,23 +62,5 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Game Over!");
     }
-
-    public void AddScore(int points)
-    {
-        score += points;
-    }
-
-    public void AddCoins(int amount)
-    {
-        coins += amount;
-    }
-
-    public void LoseLife()
-    {
-        playerLives--;
-        if (playerLives <= 0)
-        {
-            EndGame();
-        }
-    }
+    
 }

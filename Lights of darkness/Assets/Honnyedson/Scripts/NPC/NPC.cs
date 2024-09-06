@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-<<<<<<< HEAD
 using UnityEngine.UI;
 
 public class NPC : MonoBehaviour
@@ -16,7 +15,7 @@ public class NPC : MonoBehaviour
     public LayerMask playerlayer;
     public Dialogue Dialo;
     public bool OnRadius;
-    private bool dialogueStarted = false; // Para garantir que o diálogo só comece uma vez
+    private bool dialogueStarted = false;
 
     private void Start()
     {
@@ -34,16 +33,14 @@ public class NPC : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && dialogueStarted)
         {
             Dialo.nextsentence();
-            if (!Dialo.isActive()) // Verifica se o diálogo foi fechado
+            if (!Dialo.isActive())
             {
                 dialogueStarted = false;
             }
         }
-
-        // Verifica se o jogador saiu do raio de interação enquanto o diálogo está ativo
         if (!OnRadius && dialogueStarted)
         {
-            Dialo.EndDialogue(); // Finaliza o diálogo se o jogador sair do raio
+            Dialo.EndDialogue(); 
             dialogueStarted = false;
         }
     }
@@ -71,28 +68,3 @@ public class NPC : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, radius);
     }
 }
-=======
-
-public class NPC : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.gameObject.tag == "Player")
-        {
-            Debug.Log("Olá Sou .... Pressione enter para abrir a meu arsenal");
-        }
-    }
-}
->>>>>>> 7bf7f1fcf3f23368a608c949a4ca9503b2ad2f49
