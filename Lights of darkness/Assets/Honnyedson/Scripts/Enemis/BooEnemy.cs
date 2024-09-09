@@ -12,12 +12,14 @@ public class BooEnemy : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;       
     private float lastAttackTime;
-
+    private BossController boss;
     public int Life = 3;
 
     void Start()
     {
+        player = FindObjectOfType<PlayerController>().transform; 
         spriteRenderer = GetComponent<SpriteRenderer>();
+        boss = FindObjectOfType<BossController>();
     }
 
     void Update()
@@ -70,7 +72,6 @@ public class BooEnemy : MonoBehaviour
 
     private void Die()
     {
-        // Adicione a lógica para destruir o inimigo ou desativar o objeto
         Debug.Log("O inimigo morreu!");
         Destroy(gameObject);
     }

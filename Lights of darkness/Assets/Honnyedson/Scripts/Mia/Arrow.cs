@@ -12,5 +12,12 @@ public class Arrow : MonoBehaviour
             booEnemy.TakeDamage(damage);
             Destroy(gameObject); // Destruir a flecha após causar dano
         }
+        DodgeEnemy dodgeEnemy = other.GetComponent<DodgeEnemy>();
+        if (dodgeEnemy != null)
+        {
+            dodgeEnemy.OnArrowHit();
+            Destroy(gameObject); 
+            
+        }
     }
 }

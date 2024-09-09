@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -33,6 +34,9 @@ public class PlayerController : MonoBehaviour
     private bool isMeleeAttack = true;
     public float attackInterval = 1f; 
     private float lastAttackTime = 0f; 
+    
+    private static bool isFrozen = false;
+    public int damage = 1;
 
 
     void Awake()
@@ -55,20 +59,23 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        CheckGround();
-        Move();
-        Jump();
-        WallJump();
-
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (isFrozen == false)
         {
-            ToggleAttackMode();
-        }
+                CheckGround();
+                Move();
+                Jump();
+                WallJump();
         
-        if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastAttackTime + attackInterval)
-        {
-            StartCoroutine(PerformAttack());
-            lastAttackTime = Time.time;
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    ToggleAttackMode();
+                }
+                
+                if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastAttackTime + attackInterval)
+                {
+                    StartCoroutine(PerformAttack());
+                    lastAttackTime = Time.time;
+                }    
         }
     }
 
@@ -149,12 +156,19 @@ public class PlayerController : MonoBehaviour
         foreach (Collider2D enemy in hitEnemies)
         {
             BooEnemy booEnemy = enemy.GetComponent<BooEnemy>();
+            DodgeEnemy Enemy2 = enemy.GetComponent<DodgeEnemy>();
             if (booEnemy != null)
             {
-                booEnemy.TakeDamage(1); 
+                booEnemy.TakeDamage(damage); 
                 Debug.Log("Hit enemy with melee attack: " + enemy.name);
             }
+
+            if (Enemy2 != null)
+            {
+                Enemy2.TakeDamage(damage);
+            }
         }
+        
     }
 
     IEnumerator RangedAttack()
@@ -174,6 +188,13 @@ public class PlayerController : MonoBehaviour
         GameManager.Instance.Life = 3;
     }
 
+    public static IEnumerator FreezeCoroutine()
+    {
+        isFrozen = true;
+        yield return new WaitForSeconds(3);
+        isFrozen = false;
+    }
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.blue;
@@ -187,5 +208,13 @@ public class PlayerController : MonoBehaviour
 
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(attackPoint.position, meleeAttackRange);
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "EspcialProject")
+        {
+            StartCoroutine(FreezeCoroutine());
+        }
     }
 }
