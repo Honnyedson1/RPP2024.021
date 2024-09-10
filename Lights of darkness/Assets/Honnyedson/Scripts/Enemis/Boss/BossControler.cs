@@ -2,16 +2,17 @@ using UnityEngine;
 
 public class BossController : MonoBehaviour
 {
-    public GameObject projectilePrefab; // Prefab do projétil normal
-    public GameObject specialProjectilePrefab; // Prefab do projétil especial
-    public Transform[] teleportPoints; // Pontos onde o boss pode teletransportar
-    public float attackRange = 10f; // Distância do ataque
-    public float teleportCooldown = 5f; // Tempo entre teletransportes
-    public float attackCooldown = 3f; // Tempo entre ataques
-    public float specialAttackChance = 0.30f; // Chance de ataque especial (aumentada para 30%)
-    public float detectionRadius = 5f; // Raio de detecção do jogador
-    public float projectileLifetime = 3f; // Duração do projétil antes de ser destruído
+    public GameObject projectilePrefab; 
+    public GameObject specialProjectilePrefab; 
+    public Transform[] teleportPoints; 
+    public float attackRange = 10f; 
+    public float teleportCooldown = 5f; 
+    public float attackCooldown = 3f; 
+    public float specialAttackChance = 0.30f; 
+    public float detectionRadius = 5f; 
+    public float projectileLifetime = 3f;
 
+    private int Lifeboss = 2;
     private Transform player;
     private float teleportTimer;
     private float attackTimer;
@@ -32,23 +33,19 @@ public class BossController : MonoBehaviour
     void Update()
     {
         if (player == null) return;
-
-        // Atualiza os timers
         teleportTimer -= Time.deltaTime;
         attackTimer -= Time.deltaTime;
-
-        // Controle do teletransporte
         if (teleportTimer <= 0f)
         {
             Teleport();
-            teleportTimer = teleportCooldown; // Reinicia o timer
+            teleportTimer = teleportCooldown; 
         }
 
         // Controle do ataque
         if (playerInRange && attackTimer <= 0f)
         {
             PerformAttack();
-            attackTimer = attackCooldown; // Reinicia o timer
+            attackTimer = attackCooldown; 
         }
     }
 
@@ -62,12 +59,6 @@ public class BossController : MonoBehaviour
 
     void PerformAttack()
     {
-        if (projectilePrefab == null || specialProjectilePrefab == null)
-        {
-            Debug.LogWarning("Projectile prefabs are not assigned.");
-            return;
-        }
-
         GameObject projectileToShoot = Random.value < specialAttackChance ? specialProjectilePrefab : projectilePrefab;
         GameObject projectile = Instantiate(projectileToShoot, transform.position, Quaternion.identity);
 
@@ -75,18 +66,23 @@ public class BossController : MonoBehaviour
         if (rb != null)
         {
             Vector2 direction = (player.position - transform.position).normalized;
-            rb.velocity = direction * 15f; // Ajuste a velocidade conforme necessário
-
-            // Destroi o projétil após 3 segundos
+            rb.velocity = direction * 15f;
             Destroy(projectile, projectileLifetime);
         }
-        else
+    }
+    public void TakeDamage(int damage)
+    {
+        Lifeboss -= damage;
+        if (Lifeboss <= 0)
         {
-            Debug.LogWarning("Projectile does not have a Rigidbody2D component.");
+            Die();
         }
     }
-
-    // Detecta o jogador entrando na área de detecção
+    private void Die()
+    {
+        Debug.Log("O inimigo morreu!");
+        Destroy(gameObject);
+    }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -94,8 +90,6 @@ public class BossController : MonoBehaviour
             playerInRange = true;
         }
     }
-
-    // Detecta o jogador saindo da área de detecção
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -103,8 +97,6 @@ public class BossController : MonoBehaviour
             playerInRange = false;
         }
     }
-
-    // Desenha gizmos na cena para visualizar a área de detecção
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

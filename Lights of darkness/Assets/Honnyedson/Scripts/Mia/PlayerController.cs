@@ -38,20 +38,6 @@ public class PlayerController : MonoBehaviour
     private static bool isFrozen = false;
     public int damage = 1;
 
-
-    void Awake()
-    {
-        if (_instance == null)
-        {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -167,6 +153,7 @@ public class PlayerController : MonoBehaviour
             {
                 Enemy2.TakeDamage(damage);
             }
+            
         }
         
     }
@@ -188,9 +175,11 @@ public class PlayerController : MonoBehaviour
         GameManager.Instance.Life = 3;
     }
 
-    public static IEnumerator FreezeCoroutine()
+    public IEnumerator FreezeCoroutine()
     {
         isFrozen = true;
+        GameManager.Instance.Life--;
+        rb.velocity = new Vector2(0, 0);
         yield return new WaitForSeconds(3);
         isFrozen = false;
     }
@@ -215,6 +204,11 @@ public class PlayerController : MonoBehaviour
         if (col.gameObject.tag == "EspcialProject")
         {
             StartCoroutine(FreezeCoroutine());
+        }
+        if (col.gameObject.tag == "BossAtack")
+        {
+            GameManager.Instance.Life--;
+            Destroy(col.gameObject, 0.2f);
         }
     }
 }

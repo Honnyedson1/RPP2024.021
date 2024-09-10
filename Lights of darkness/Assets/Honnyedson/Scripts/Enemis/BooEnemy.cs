@@ -58,7 +58,6 @@ public class BooEnemy : MonoBehaviour
     private void Attack()
     {
         GameManager.Instance.Life--;
-        Debug.Log("Boo atacou!");
     }
     
     public void TakeDamage(int damage)
