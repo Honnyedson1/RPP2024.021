@@ -42,7 +42,18 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
     }
-
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
     void Update()
     {
         if (isFrozen == false)
@@ -103,6 +114,7 @@ public class PlayerController : MonoBehaviour
         if (isTouchingWall && !isGrounded && Input.GetButtonDown("Jump"))
         {
             isWallJumping = true;
+            
             Vector2 force = new Vector2(wallJumpForceX * -Mathf.Sign(transform.localScale.x), wallJumpForceY);
             rb.velocity = force;
         }

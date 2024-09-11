@@ -4,11 +4,10 @@ using System.Collections.Generic;
 public class CoinManager : MonoBehaviour
 {
     public int CoinCaunt = 0;
-
-    
     public void AddCoin(int i)
     {
         CoinCaunt += i;
+        GameManager.Instance.score = CoinCaunt;
     }
 
     private void OnEnable()
