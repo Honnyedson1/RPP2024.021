@@ -1,19 +1,18 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    public static GameManager Instance;
     public bool isGamePaused;
     [Header("Player Variaveis")] 
     public int Life = 3;
     public int score;
-    
     [Header("CheckPoints")]
     private Vector3 lastCheckpointPosition;
-
-    public string uiSceneName = "UI";
+    public GameObject Player;
 
     private void Awake()
     {
@@ -28,22 +27,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        Player = GameObject.FindWithTag("Player");
+        lastCheckpointPosition = Player.transform.position;
+    }
+
     private void Update()
     {
         if (Life <=0)
         {
-            PlayerController._instance.Die();
+            RespawnPlayer();
         }
 
     }
+    
     public void SetCheckpoint(Vector3 position)
     {
         lastCheckpointPosition = position;
     }
-
-    public void RespawnPlayer(GameObject player)
+    
+    public void RespawnPlayer()
     {
-        player.transform.position = lastCheckpointPosition;
+        if (lastCheckpointPosition != Vector3.zero)
+        {
+            Player.transform.position = lastCheckpointPosition;
+        }
+        Life = 3; 
     }
 
     public void PauseGame()

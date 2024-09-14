@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 666076707280940274}
   - component: {fileID: 2590874797940513894}
   - component: {fileID: 3354108890950539932}
+  - component: {fileID: 4139895529301753569}
   m_Layer: 3
   m_Name: PlayerO
   m_TagString: Player
@@ -303,7 +304,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 2.01
+  m_GravityScale: 2.5
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -373,8 +374,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  jumpForce: 10
-  wallJumpForceX: 8
+  jumpForce: 15.57
+  wallJumpForceX: 10
   wallJumpForceY: 10
   wallCheckPoint: {fileID: 7558463984848983437}
   wallCheckSize: {x: 0.52, y: 0.6}
@@ -388,12 +389,35 @@ MonoBehaviour:
     m_Bits: 64
   meleeAttackRange: 1
   rangedAttackRange: 5
-  attackPoint: {fileID: 0}
+  attackPoint: {fileID: 6797726472391282788}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
-  arrowPrefab: {fileID: 0}
-  arrowSpeed: 10
+  arrowPrefab: {fileID: 3172378032170160655, guid: d4269883071c2d04db4e710c499071d4, type: 3}
+  arrowSpeed: 15
+  attackInterval: 1
+  damage: 1
+--- !u!95 &4139895529301753569
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6576984473704893818}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 51a9fc6090dce794faaa082bfdda7c58, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8175006437262095854
 GameObject:
   m_ObjectHideFlags: 0

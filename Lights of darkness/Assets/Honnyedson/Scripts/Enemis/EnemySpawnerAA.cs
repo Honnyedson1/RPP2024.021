@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemySpawner : MonoBehaviour
+public class EnemySpawnerAA : MonoBehaviour
 {
     public GameObject enemyPrefab; // Prefab do inimigo a ser instanciado
     public Transform spawnPoint1; // Ponto de spawn 1

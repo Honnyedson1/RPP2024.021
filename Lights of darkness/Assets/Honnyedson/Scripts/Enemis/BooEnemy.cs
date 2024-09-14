@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BooEnemy : MonoBehaviour
 {
-    public Transform player;
+    public GameObject player;
     public float speed = 2f;
     public float stopDistance = 2f;
     public float attackRange = 1f;
@@ -14,31 +14,35 @@ public class BooEnemy : MonoBehaviour
     private float lastAttackTime;
     private BossController boss;
     public int Life = 3;
+    public int dmg;
 
     void Start()
     {
-        player = FindObjectOfType<PlayerController>().transform; 
         spriteRenderer = GetComponent<SpriteRenderer>();
         boss = FindObjectOfType<BossController>();
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
     }
 
     void Update()
     {
         if (IsPlayerInArea())
         {
-            Vector3 directionToPlayer = player.position - transform.position; 
+            Vector3 directionToPlayer = player.transform.position - transform.position; 
             float distanceToPlayer = directionToPlayer.magnitude;           
 
             bool isPlayerLooking = IsPlayerLooking(); 
 
             if (distanceToPlayer <= attackRange && Time.time > lastAttackTime + attackCooldown)
             {
-                Attack(); 
+                player.GetComponent<PlayerController>().TakeDmg(dmg);
                 lastAttackTime = Time.time; 
             }
             else if (!isPlayerLooking && distanceToPlayer > stopDistance)
             {
-                transform.position = Vector3.MoveTowards(transform.position, player.position, speed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
             }
             spriteRenderer.flipX = directionToPlayer.x < 0;
         }
@@ -46,20 +50,15 @@ public class BooEnemy : MonoBehaviour
 
     private bool IsPlayerInArea()
     {
-        return areaLimit.GetComponent<Collider2D>().bounds.Contains(player.position);
+        return areaLimit.GetComponent<Collider2D>().bounds.Contains(player.transform.position);
     }
 
     private bool IsPlayerLooking()
     {
-        Vector3 playerLookDirection = player.localScale.x > 0 ? Vector3.right : Vector3.left;
-        return Vector3.Dot(playerLookDirection, (transform.position - player.position).normalized) > 0;
+        Vector3 playerLookDirection = player.transform.localScale.x > 0 ? Vector3.right : Vector3.left;
+        return Vector3.Dot(playerLookDirection, (transform.position - player.transform.position).normalized) > 0;
     }
 
-    private void Attack()
-    {
-        GameManager.Instance.Life--;
-    }
-    
     public void TakeDamage(int damage)
     {
         Life -= damage;

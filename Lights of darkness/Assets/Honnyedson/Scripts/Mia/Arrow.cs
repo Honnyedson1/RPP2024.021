@@ -6,18 +6,28 @@ public class Arrow : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        // Verifica se atingiu um BooEnemy
         BooEnemy booEnemy = other.GetComponent<BooEnemy>();
         if (booEnemy != null)
         {
             booEnemy.TakeDamage(damage);
             Destroy(gameObject); // Destruir a flecha após causar dano
         }
+
+        // Verifica se atingiu um DodgeEnemy
         DodgeEnemy dodgeEnemy = other.GetComponent<DodgeEnemy>();
         if (dodgeEnemy != null)
         {
             dodgeEnemy.OnArrowHit();
-            Destroy(gameObject); 
-            
+            Destroy(gameObject);
+        }
+
+        // Verifica se atingiu o Boss
+        BossController boss = other.GetComponent<BossController>();
+        if (boss != null)
+        {
+            boss.TakeDamage(damage); // Aplica dano ao Boss
+            Destroy(gameObject); // Destrói a flecha após causar dano
         }
     }
 }

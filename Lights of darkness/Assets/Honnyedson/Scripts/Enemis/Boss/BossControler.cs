@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BossController : MonoBehaviour
 {
@@ -11,19 +13,22 @@ public class BossController : MonoBehaviour
     public float specialAttackChance = 0.30f; 
     public float detectionRadius = 5f; 
     public float projectileLifetime = 3f;
+    private bool phaseTwoActivated = false; 
 
-    private int Lifeboss = 2;
+    public int Lifeboss = 25;
     private Transform player;
     private float teleportTimer;
     private float attackTimer;
     private bool playerInRange = false;
+    public LayerMask playerLayer;
+    private bool Isdead = false;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         if (player == null)
         {
-            Debug.LogError("Player not found. Ensure that the player object is tagged with 'Player'.");
+            Debug.LogError("Player não encontrado!");
             return;
         }
         teleportTimer = teleportCooldown;
@@ -33,19 +38,32 @@ public class BossController : MonoBehaviour
     void Update()
     {
         if (player == null) return;
-        teleportTimer -= Time.deltaTime;
-        attackTimer -= Time.deltaTime;
-        if (teleportTimer <= 0f)
+
+        // Checa se está na metade da vida e ativa uma nova mecânica
+        if (Lifeboss <= 12 && !phaseTwoActivated)
         {
-            Teleport();
-            teleportTimer = teleportCooldown; 
+            ActivatePhaseTwo();
         }
 
-        // Controle do ataque
-        if (playerInRange && attackTimer <= 0f)
+        if (Isdead == false)
         {
-            PerformAttack();
-            attackTimer = attackCooldown; 
+            teleportTimer -= Time.deltaTime;
+            attackTimer -= Time.deltaTime;
+        
+            // Verifica manualmente se o jogador está na área de detecção
+            playerInRange = Physics2D.OverlapCircle(transform.position, detectionRadius, playerLayer);
+
+            if (teleportTimer <= 0f)
+            {
+                Teleport();
+                teleportTimer = teleportCooldown; 
+            }
+
+            if (playerInRange && attackTimer <= 0f)
+            {
+                PerformAttack();
+                attackTimer = attackCooldown; 
+            }
         }
     }
 
@@ -59,6 +77,7 @@ public class BossController : MonoBehaviour
 
     void PerformAttack()
     {
+        Debug.Log("Boss atacando!");
         GameObject projectileToShoot = Random.value < specialAttackChance ? specialProjectilePrefab : projectilePrefab;
         GameObject projectile = Instantiate(projectileToShoot, transform.position, Quaternion.identity);
 
@@ -70,6 +89,16 @@ public class BossController : MonoBehaviour
             Destroy(projectile, projectileLifetime);
         }
     }
+    
+    void ActivatePhaseTwo()
+    {
+        phaseTwoActivated = true;
+        specialAttackChance = 0.6f; // Aumenta chance de ataque especial
+        teleportCooldown = 3f; // Boss teleporta com mais frequência
+        attackCooldown = 2f; // Ataques ficam mais rápidos
+        Debug.Log("O Boss ativou a fase 2!");
+    }
+
     public void TakeDamage(int damage)
     {
         Lifeboss -= damage;
@@ -78,24 +107,16 @@ public class BossController : MonoBehaviour
             Die();
         }
     }
+
     private void Die()
     {
-        Debug.Log("O inimigo morreu!");
-        Destroy(gameObject);
+        StartCoroutine(EndLevelAfterDelay(5f)); // Espera 5 segundos antes de trocar a fase
     }
-    private void OnTriggerEnter2D(Collider2D other)
+
+    private IEnumerator EndLevelAfterDelay(float delay)
     {
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = true;
-        }
-    }
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = false;
-        }
+        yield return new WaitForSeconds(delay);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); // Carrega a próxima cena
     }
     private void OnDrawGizmosSelected()
     {

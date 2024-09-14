@@ -7,6 +7,9 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Honnyedson/Scenes/Level1.unity
+    guid: de2962f6e4eb1784b828ff3b02fa9a50
+  - enabled: 1
+    path: Assets/Honnyedson/Scenes/Level2.unity
     guid: 4c084c8972326ee4b8a99ad60660d4f7
   - enabled: 1
     path: Assets/Honnyedson/Scenes/Menu.unity

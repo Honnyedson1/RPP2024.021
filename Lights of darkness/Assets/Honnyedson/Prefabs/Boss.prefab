@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2539577613433407258}
   - component: {fileID: 5273469168188557524}
   - component: {fileID: 7464706733237124998}
-  - component: {fileID: 5984613890698387517}
   m_Layer: 8
   m_Name: Boss
   m_TagString: Untagged
@@ -183,50 +182,9 @@ MonoBehaviour:
   teleportCooldown: 5
   attackCooldown: 3
   specialAttackChance: 0.15
-  detectionRadius: 15.6
+  detectionRadius: 16.4
   projectileLifetime: 3
---- !u!61 &5984613890698387517
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7776788342137734688}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
+  Lifeboss: 25
+  playerLayer:
     serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.26845837, y: 0.5161166}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 31.068117, y: 4.085449}
-  m_EdgeRadius: 0
+    m_Bits: 8

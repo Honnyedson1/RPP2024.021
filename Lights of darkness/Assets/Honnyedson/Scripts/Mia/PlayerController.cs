@@ -42,18 +42,6 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
     }
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-    }
     void Update()
     {
         if (isFrozen == false)
@@ -157,13 +145,17 @@ public class PlayerController : MonoBehaviour
             DodgeEnemy Enemy2 = enemy.GetComponent<DodgeEnemy>();
             if (booEnemy != null)
             {
-                booEnemy.TakeDamage(damage); 
-                Debug.Log("Hit enemy with melee attack: " + enemy.name);
+                booEnemy.TakeDamage(damage);
             }
 
             if (Enemy2 != null)
             {
                 Enemy2.TakeDamage(damage);
+            }
+            BossController boss = enemy.GetComponent<BossController>();
+            if (boss != null)
+            {
+                boss.TakeDamage(damage); // Causa dano no Boss
             }
             
         }
@@ -181,10 +173,22 @@ public class PlayerController : MonoBehaviour
         yield return null;
     }
 
-    public void Die()
+    public void TakeDmg(int dmg)
     {
-        GameManager.Instance.RespawnPlayer(gameObject);
-        GameManager.Instance.Life = 3;
+        GameManager.Instance.Life -= dmg;
+
+        if (GameManager.Instance.Life <= 0)
+        {
+            StartCoroutine(DieAndRespawn());
+        }
+    }
+    private IEnumerator DieAndRespawn()
+    {
+        isFrozen = true;
+        rb.velocity = Vector2.zero;
+        yield return new WaitForSeconds(1);
+        GameManager.Instance.RespawnPlayer();
+        isFrozen = false;
     }
 
     public IEnumerator FreezeCoroutine()
