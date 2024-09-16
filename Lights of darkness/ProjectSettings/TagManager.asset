@@ -9,6 +9,7 @@ TagManager:
   - NPC
   - EspcialProject
   - BossAtack
+  - NextLevel
   layers:
   - Default
   - TransparentFX

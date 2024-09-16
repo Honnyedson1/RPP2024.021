@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -18,7 +17,11 @@ public class PlayerController : MonoBehaviour
     public Transform wallCheckPoint;
     public Vector2 wallCheckSize;
     public LayerMask wallLayer;
-    
+    [SerializeField] private bool isJumping = false;
+    [SerializeField] private bool isWallSliding = false;
+    [SerializeField] private bool isWalking = false;
+    [SerializeField] private bool isAttacking = false;
+
     [Header("Ground Check")]
     public Transform groundCheck;
     public float groundCheckRadius = 0.2f;
@@ -32,41 +35,55 @@ public class PlayerController : MonoBehaviour
     public GameObject arrowPrefab; 
     public float arrowSpeed = 10f;
     private bool isMeleeAttack = true;
-    public float attackInterval = 1f; 
     private float lastAttackTime = 0f; 
     
     private static bool isFrozen = false;
     public int damage = 1;
 
+    private Animator anim;
+
     void Start()
     {
+        anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
     }
+
     void Update()
     {
-        if (isFrozen == false)
+        if (!isFrozen)
         {
-                CheckGround();
-                Move();
+            CheckGround();
+            Move();
+            WallJump();
+
+            if (Input.GetButtonDown("Jump"))
+            {
                 Jump();
-                WallJump();
-        
-                if (Input.GetKeyDown(KeyCode.Q))
-                {
-                    ToggleAttackMode();
-                }
-                
-                if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastAttackTime + attackInterval)
-                {
-                    StartCoroutine(PerformAttack());
-                    lastAttackTime = Time.time;
-                }    
+            }
+
+            HandleAnimations(); // Gerencia as animações
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                ToggleAttackMode();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastAttackTime + GameManager.Instance.attackInterval)
+            {
+                StartCoroutine(PerformAttack());
+                lastAttackTime = Time.time;
+            }
         }
     }
 
     void CheckGround()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        if (isGrounded)
+        {
+            isJumping = false;
+            isWallSliding = false;
+        }
     }
 
     void Move()
@@ -74,7 +91,7 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         Vector2 velocity = rb.velocity;
 
-        if (!isWallJumping)
+        if (!isWallJumping && !isJumping)
         {
             velocity.x = horizontal * moveSpeed;
             rb.velocity = velocity;
@@ -88,10 +105,26 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetButtonDown("Jump"))
         {
-            isGrounded = false;
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            if (isGrounded)
+            {
+                // Pulo normal
+                isJumping = true;
+                anim.SetInteger("Transition", 1); // Ativa a animação de pulo
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            }
+            else if (isTouchingWall && !isGrounded)
+            {
+                // Wall Jump
+                isJumping = true;
+                anim.SetInteger("Transition", 1); // Ativa a animação de pulo
+                Vector2 force = new Vector2(wallJumpForceX * -Mathf.Sign(transform.localScale.x), wallJumpForceY);
+                rb.velocity = force;
+
+                // Inicia o Wall Slide e o encerra após um breve delay
+                StartCoroutine(EndWallSlide());
+            }
         }
     }
 
@@ -99,23 +132,23 @@ public class PlayerController : MonoBehaviour
     {
         isTouchingWall = Physics2D.OverlapBox(wallCheckPoint.position, wallCheckSize, 0, wallLayer);
 
-        if (isTouchingWall && !isGrounded && Input.GetButtonDown("Jump"))
+        if (isTouchingWall && !isGrounded && rb.velocity.y < 0)
         {
-            isWallJumping = true;
-            
-            Vector2 force = new Vector2(wallJumpForceX * -Mathf.Sign(transform.localScale.x), wallJumpForceY);
-            rb.velocity = force;
+            isWallSliding = true; // Ativa o Wall Slide
+            anim.SetInteger("Transition", 3); // Ativa a animação de Wall Slide
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -2f)); // Controla a velocidade de deslizamento
         }
+        else
+        {
+            isWallSliding = false; // Desativa o Wall Slide quando não estiver tocando na parede
+        }
+    }
 
-        if (isTouchingWall && !isGrounded)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -1f));
-        }
-
-        if (rb.velocity.y < 0 && !isTouchingWall)
-        {
-            isWallJumping = false;
-        }
+    IEnumerator EndWallSlide()
+    {
+        yield return new WaitForSeconds(0.3f); // Ajuste conforme necessário
+        isWallSliding = false;
+        isJumping = false;
     }
 
     void ToggleAttackMode()
@@ -125,16 +158,60 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PerformAttack()
     {
+        // Para o jogador por 0.2 segundos durante o ataque
+        rb.velocity = Vector2.zero;
+        isAttacking = true;
+
         if (isMeleeAttack)
         {
+            anim.SetInteger("Transition", 5); // Ativa a animação de ataque com espada
+            yield return new WaitForSeconds(0.2f); // Tempo da animação de ataque
             MeleeAttack();
         }
         else
         {
+            anim.SetInteger("Transition", 4); // Ativa a animação de ataque com arco
+            yield return new WaitForSeconds(0.2f); // Tempo da animação de ataque
             yield return StartCoroutine(RangedAttack());
         }
+
+        yield return new WaitForSeconds( GameManager.Instance.attackInterval); // Espera o intervalo do ataque
+        isAttacking = false;
     }
 
+    void HandleAnimations()
+    {
+        // Idle Animation
+        if (isGrounded && Mathf.Abs(rb.velocity.x) < 0.1f && !isAttacking && !isJumping && !isWallSliding)
+        {
+            anim.SetInteger("Transition", 0); // Idle
+        }
+        // Walk Animation
+        else if (isGrounded && Mathf.Abs(rb.velocity.x) > 0.1f && !isJumping && !isWallSliding)
+        {
+            anim.SetInteger("Transition", 2); // Walk
+        }
+        // Wall Slide Animation
+        else if (isWallSliding)
+        {
+            anim.SetInteger("Transition", 3); // Wall Slide
+        }
+        // Jump Animation
+        else if (isJumping && !isGrounded)
+        {
+            anim.SetInteger("Transition", 1); // Jump
+        }
+        // Melee Attack Animation
+        else if (isAttacking && isMeleeAttack)
+        {
+            anim.SetInteger("Transition", 5); // Attack Sword
+        }
+        // Ranged Attack Animation
+        else if (isAttacking && !isMeleeAttack)
+        {
+            anim.SetInteger("Transition", 4); // Attack Bow
+        }
+    }
 
     void MeleeAttack()
     {
@@ -142,31 +219,29 @@ public class PlayerController : MonoBehaviour
         foreach (Collider2D enemy in hitEnemies)
         {
             BooEnemy booEnemy = enemy.GetComponent<BooEnemy>();
-            DodgeEnemy Enemy2 = enemy.GetComponent<DodgeEnemy>();
+            DodgeEnemy enemy2 = enemy.GetComponent<DodgeEnemy>();
             if (booEnemy != null)
             {
                 booEnemy.TakeDamage(damage);
             }
 
-            if (Enemy2 != null)
+            if (enemy2 != null)
             {
-                Enemy2.TakeDamage(damage);
+                enemy2.TakeDamage(damage);
             }
             BossController boss = enemy.GetComponent<BossController>();
             if (boss != null)
             {
                 boss.TakeDamage(damage); // Causa dano no Boss
             }
-            
         }
-        
     }
 
     IEnumerator RangedAttack()
     {
         GameObject arrow = Instantiate(arrowPrefab, attackPoint.position, Quaternion.identity);
         Rigidbody2D arrowRb = arrow.GetComponent<Rigidbody2D>();
-        float direction = Mathf.Sign(transform.localScale.x); 
+        float direction = Mathf.Sign(transform.localScale.x);
         arrowRb.velocity = new Vector2(direction * arrowSpeed, 0);
         Destroy(arrow, 2f);
 
@@ -182,6 +257,7 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(DieAndRespawn());
         }
     }
+
     private IEnumerator DieAndRespawn()
     {
         isFrozen = true;

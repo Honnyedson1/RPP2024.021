@@ -1,14 +1,15 @@
 using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public bool isGamePaused;
-    [Header("Player Variaveis")] 
+    [Header("Player Variaveis")]
+    public int PlayerDmage = 1;
+    public float attackInterval = 1.2f;
     public int Life = 3;
+    public int VidaMaxima = 3;
     public int score;
     [Header("CheckPoints")]
     private Vector3 lastCheckpointPosition;
@@ -35,11 +36,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Life <=0)
+        if (Life <= 0)
         {
             RespawnPlayer();
         }
-
     }
     
     public void SetCheckpoint(Vector3 position)
@@ -54,6 +54,10 @@ public class GameManager : MonoBehaviour
             Player.transform.position = lastCheckpointPosition;
         }
         Life = 3; 
+    }
+    public void OI()
+    {
+        Debug.Log("OIIII");
     }
 
     public void PauseGame()
@@ -72,5 +76,4 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Game Over!");
     }
-    
 }
