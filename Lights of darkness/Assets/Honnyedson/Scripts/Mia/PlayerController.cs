@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     private float lastAttackTime = 0f; 
     
     private static bool isFrozen = false;
+    public bool canMove = false;
     public int damage = 1;
 
     private Animator anim;
@@ -50,30 +51,33 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (!isFrozen)
+        if (canMove)
         {
-            CheckGround();
-            Move();
-            WallJump();
-
-            if (Input.GetButtonDown("Jump"))
+            if (!isFrozen)
             {
-                Jump();
-            }
-
-            HandleAnimations(); // Gerencia as animações
-
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                ToggleAttackMode();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastAttackTime + GameManager.Instance.attackInterval)
-            {
-                StartCoroutine(PerformAttack());
-                lastAttackTime = Time.time;
-            }
+                CheckGround();
+                Move();
+                WallJump();
+                if (Input.GetButtonDown("Jump"))
+                {
+                    Jump();
+                }
+        
+                HandleAnimations(); // Gerencia as animações
+        
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    ToggleAttackMode();
+                }
+        
+                if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastAttackTime + GameManager.Instance.attackInterval)
+                {
+                    StartCoroutine(PerformAttack());
+                    lastAttackTime = Time.time;
+                }
+            }    
         }
+
     }
 
     void CheckGround()
@@ -177,6 +181,10 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds( GameManager.Instance.attackInterval); // Espera o intervalo do ataque
         isAttacking = false;
+    }
+    public void SetPlayerControl(bool isEnabled)
+    {
+        canMove = isEnabled;
     }
 
     void HandleAnimations()

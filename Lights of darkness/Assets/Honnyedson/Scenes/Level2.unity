@@ -2659,7 +2659,7 @@ GameObject:
   - component: {fileID: 1475548631}
   - component: {fileID: 1475548634}
   m_Layer: 0
-  m_Name: Square
+  m_Name: NextLevel(TEMP)
   m_TagString: NextLevel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

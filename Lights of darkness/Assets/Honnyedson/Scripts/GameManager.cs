@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        Player = GameObject.FindWithTag("Player");
         if (Life <= 0)
         {
             RespawnPlayer();
@@ -55,10 +57,6 @@ public class GameManager : MonoBehaviour
         }
         Life = 3; 
     }
-    public void OI()
-    {
-        Debug.Log("OIIII");
-    }
 
     public void PauseGame()
     {
@@ -75,5 +73,10 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         Debug.Log("Game Over!");
+    }
+
+    public void PlayGame()
+    {
+        SceneManager.LoadScene("Vilarejo");
     }
 }

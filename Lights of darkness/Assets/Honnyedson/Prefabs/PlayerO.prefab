@@ -211,6 +211,7 @@ GameObject:
   - component: {fileID: 2590874797940513894}
   - component: {fileID: 3354108890950539932}
   - component: {fileID: 4139895529301753569}
+  - component: {fileID: 8050456876046579401}
   m_Layer: 3
   m_Name: PlayerO
   m_TagString: Player
@@ -382,6 +383,10 @@ MonoBehaviour:
   wallLayer:
     serializedVersion: 2
     m_Bits: 128
+  isJumping: 0
+  isWallSliding: 0
+  isWalking: 0
+  isAttacking: 0
   groundCheck: {fileID: 7370359267155374619}
   groundCheckRadius: 0.25
   groundLayer:
@@ -395,7 +400,6 @@ MonoBehaviour:
     m_Bits: 256
   arrowPrefab: {fileID: 3172378032170160655, guid: d4269883071c2d04db4e710c499071d4, type: 3}
   arrowSpeed: 15
-  attackInterval: 1
   damage: 1
 --- !u!95 &4139895529301753569
 Animator:
@@ -418,6 +422,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8050456876046579401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6576984473704893818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals: []
+    m_Events: []
 --- !u!1 &8175006437262095854
 GameObject:
   m_ObjectHideFlags: 0
