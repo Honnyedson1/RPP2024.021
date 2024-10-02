@@ -18,12 +18,12 @@ EditorBuildSettings:
     path: Assets/Honnyedson/Scenes/Caverna.unity
     guid: 68992ae2ef0f4c341aeb1642ae75105b
   - enabled: 1
-    path: Assets/Honnyedson/Scenes/Level1.unity
-    guid: de2962f6e4eb1784b828ff3b02fa9a50
+    path: Assets/Honnyedson/Scenes/FlorestP1.unity
+    guid: 1faaf8026ad1ab545ac505153c3cab26
   - enabled: 1
-    path: Assets/Honnyedson/Scenes/Level2.unity
-    guid: 4c084c8972326ee4b8a99ad60660d4f7
-  - enabled: 0
-    path: Assets/Honnyedson/Scenes/UI.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    path: Assets/Honnyedson/Scenes/FlorestP2.unity
+    guid: 31ea7f997f9fea14cae34c35d6e1a7d4
+  - enabled: 1
+    path: Assets/Honnyedson/Scenes/VilarejoFinal.unity
+    guid: bb7b151eca524224c8b51280139d7faf
   m_configObjects: {}

@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 wallCheckSize;
     public LayerMask wallLayer;
     [SerializeField] private bool isJumping = false;
+    [SerializeField] private bool isJumpingWall = false;
     [SerializeField] private bool isWallSliding = false;
     [SerializeField] private bool isWalking = false;
     [SerializeField] private bool isAttacking = false;
@@ -95,14 +96,18 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         Vector2 velocity = rb.velocity;
 
-        if (!isWallJumping && !isJumping)
+        if (isJumping == false && isWallJumping == false)
         {
             velocity.x = horizontal * moveSpeed;
             rb.velocity = velocity;
 
-            if (horizontal != 0)
+            if (horizontal > 0)
             {
-                transform.localScale = new Vector3(Mathf.Sign(horizontal), transform.localScale.y, transform.localScale.z);
+                transform.eulerAngles = new Vector3(0, 0, 0);
+            }
+            if (horizontal < 0)
+            {
+                transform.eulerAngles = new Vector3(0, 180, 0);
             }
         }
     }
@@ -121,12 +126,10 @@ public class PlayerController : MonoBehaviour
             else if (isTouchingWall && !isGrounded)
             {
                 // Wall Jump
-                isJumping = true;
+                isJumpingWall = true;
                 anim.SetInteger("Transition", 1); // Ativa a animação de pulo
                 Vector2 force = new Vector2(wallJumpForceX * -Mathf.Sign(transform.localScale.x), wallJumpForceY);
                 rb.velocity = force;
-
-                // Inicia o Wall Slide e o encerra após um breve delay
                 StartCoroutine(EndWallSlide());
             }
         }
