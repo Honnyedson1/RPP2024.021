@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class GameManager : MonoBehaviour
     [Header("CheckPoints")]
     private Vector3 lastCheckpointPosition;
     public GameObject Player;
+    public Image ArcoSelected;
+    public Image SwordSelected;
+    public bool EstouComArco;
 
     private void Awake()
     {
@@ -31,12 +35,24 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        ArcoSelected.gameObject.SetActive(false);
+        SwordSelected.gameObject.SetActive(true);
         Player = GameObject.FindWithTag("Player");
         lastCheckpointPosition = Player.transform.position;
     }
 
     private void Update()
     {
+        if (EstouComArco)
+        {
+            ArcoSelected.gameObject.SetActive(false);
+            SwordSelected.gameObject.SetActive(true);
+        }
+        else
+        {
+            ArcoSelected.gameObject.SetActive(true);
+            SwordSelected.gameObject.SetActive(false);
+        }
         Player = GameObject.FindWithTag("Player");
         if (Life <= 0)
         {

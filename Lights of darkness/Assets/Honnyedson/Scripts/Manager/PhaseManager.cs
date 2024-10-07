@@ -5,8 +5,8 @@ using System.Collections;
 
 public class PhaseManager : MonoBehaviour
 {
-    public Image fadeImage; // A imagem para o fade
-    public float fadeDuration = 2f; // Duração do fade
+    public Image fadeImage; 
+    public float fadeDuration = 2f; 
 
     private void Start()
     {

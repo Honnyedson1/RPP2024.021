@@ -18,7 +18,6 @@ public class PlayerController : MonoBehaviour
     public Vector2 wallCheckSize;
     public LayerMask wallLayer;
     [SerializeField] private bool isJumping = false;
-    [SerializeField] private bool isJumpingWall = false;
     [SerializeField] private bool isWallSliding = false;
     [SerializeField] private bool isWalking = false;
     [SerializeField] private bool isAttacking = false;
@@ -37,6 +36,8 @@ public class PlayerController : MonoBehaviour
     public float arrowSpeed = 10f;
     private bool isMeleeAttack = true;
     private float lastAttackTime = 0f; 
+    private int direction = 1; 
+
     
     private static bool isFrozen = false;
     public bool canMove = false;
@@ -56,22 +57,25 @@ public class PlayerController : MonoBehaviour
         {
             if (!isFrozen)
             {
+                if (!isGrounded && rb.velocity.y > 0 && !isJumping)
+                {
+                    isJumping = true;
+                    anim.SetInteger("Transition", 1);
+                }
+                else if (isGrounded && isJumping)
+                {
+                    isJumping = false;
+                    anim.SetInteger("Transition", 0);
+                }
                 CheckGround();
                 Move();
                 WallJump();
-                if (Input.GetButtonDown("Jump"))
-                {
-                    Jump();
-                }
-        
-                HandleAnimations(); // Gerencia as animações
-        
-                if (Input.GetKeyDown(KeyCode.Q))
+                Jump();
+                if (Input.GetKeyDown(KeyCode.J))
                 {
                     ToggleAttackMode();
                 }
-        
-                if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastAttackTime + GameManager.Instance.attackInterval)
+                if (Input.GetKeyDown(KeyCode.K) && Time.time >= lastAttackTime + GameManager.Instance.attackInterval)
                 {
                     StartCoroutine(PerformAttack());
                     lastAttackTime = Time.time;
@@ -88,52 +92,66 @@ public class PlayerController : MonoBehaviour
         {
             isJumping = false;
             isWallSliding = false;
+            isWallJumping = false; // Resetar estado de Wall Jump quando tocar no chão
         }
     }
 
     void Move()
     {
         float horizontal = Input.GetAxis("Horizontal");
-        Vector2 velocity = rb.velocity;
 
-        if (isJumping == false && isWallJumping == false)
+        // Verificar se o jogador está no Wall Jump
+        if (!isWallJumping)
         {
+            // Permitir movimento apenas se não estiver no Wall Jump
+            Vector2 velocity = rb.velocity;
             velocity.x = horizontal * moveSpeed;
             rb.velocity = velocity;
+        }
 
-            if (horizontal > 0)
-            {
-                transform.eulerAngles = new Vector3(0, 0, 0);
-            }
-            if (horizontal < 0)
-            {
-                transform.eulerAngles = new Vector3(0, 180, 0);
-            }
+        // Sempre permitir que o jogador vire
+        if (horizontal > 0)
+        {
+            direction = 1; // Jogador virado para a direita
+            transform.eulerAngles = new Vector3(0, 0, 0);
+        }
+        else if (horizontal < 0)
+        {
+            direction = -1; // Jogador virado para a esquerda
+            transform.eulerAngles = new Vector3(0, 180, 0);
+        }
+
+        // Atualizar animação apenas se não estiver atacando, pulando ou deslizando
+        if (!isJumping && !isAttacking && !isWallSliding)
+        {
+            anim.SetInteger("Transition", horizontal != 0 ? 2 : 0);
         }
     }
-
     void Jump()
     {
         if (Input.GetButtonDown("Jump"))
         {
             if (isGrounded)
             {
-                // Pulo normal
                 isJumping = true;
-                anim.SetInteger("Transition", 1); // Ativa a animação de pulo
+                anim.SetInteger("Transition", 1); 
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             }
             else if (isTouchingWall && !isGrounded)
             {
-                // Wall Jump
-                isJumpingWall = true;
-                anim.SetInteger("Transition", 1); // Ativa a animação de pulo
-                Vector2 force = new Vector2(wallJumpForceX * -Mathf.Sign(transform.localScale.x), wallJumpForceY);
+                isJumping = true;
+                isWallJumping = true; // Iniciar o estado de Wall Jump
+                anim.SetInteger("Transition", 1);
+            
+                // Aplicar impulso na direção oposta
+                Vector2 force = new Vector2(wallJumpForceX * -direction, wallJumpForceY);
                 rb.velocity = force;
-                StartCoroutine(EndWallSlide());
+            
+                StartCoroutine(EndWallJump());
             }
         }
     }
+
 
     void WallJump()
     {
@@ -141,87 +159,52 @@ public class PlayerController : MonoBehaviour
 
         if (isTouchingWall && !isGrounded && rb.velocity.y < 0)
         {
-            isWallSliding = true; // Ativa o Wall Slide
-            anim.SetInteger("Transition", 3); // Ativa a animação de Wall Slide
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -2f)); // Controla a velocidade de deslizamento
+            isWallSliding = true; 
+            anim.SetInteger("Transition", 3); 
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -2f)); 
         }
         else
         {
-            isWallSliding = false; // Desativa o Wall Slide quando não estiver tocando na parede
+            isWallSliding = false; 
         }
-    }
-
-    IEnumerator EndWallSlide()
-    {
-        yield return new WaitForSeconds(0.3f); // Ajuste conforme necessário
-        isWallSliding = false;
-        isJumping = false;
     }
 
     void ToggleAttackMode()
     {
         isMeleeAttack = !isMeleeAttack;
+        GameManager.Instance.EstouComArco = !GameManager.Instance.EstouComArco;
     }
 
     IEnumerator PerformAttack()
     {
-        // Para o jogador por 0.2 segundos durante o ataque
+        
         rb.velocity = Vector2.zero;
         isAttacking = true;
 
         if (isMeleeAttack)
         {
-            anim.SetInteger("Transition", 5); // Ativa a animação de ataque com espada
-            yield return new WaitForSeconds(0.2f); // Tempo da animação de ataque
+            anim.SetInteger("Transition", 5); 
+            yield return new WaitForSeconds(0.2f);
             MeleeAttack();
         }
         else
         {
-            anim.SetInteger("Transition", 4); // Ativa a animação de ataque com arco
-            yield return new WaitForSeconds(0.2f); // Tempo da animação de ataque
+            anim.SetInteger("Transition", 4); 
+            yield return new WaitForSeconds(0.2f); 
             yield return StartCoroutine(RangedAttack());
         }
 
-        yield return new WaitForSeconds( GameManager.Instance.attackInterval); // Espera o intervalo do ataque
+        yield return new WaitForSeconds( GameManager.Instance.attackInterval); 
         isAttacking = false;
     }
     public void SetPlayerControl(bool isEnabled)
     {
         canMove = isEnabled;
     }
-
-    void HandleAnimations()
+    IEnumerator EndWallJump()
     {
-        // Idle Animation
-        if (isGrounded && Mathf.Abs(rb.velocity.x) < 0.1f && !isAttacking && !isJumping && !isWallSliding)
-        {
-            anim.SetInteger("Transition", 0); // Idle
-        }
-        // Walk Animation
-        else if (isGrounded && Mathf.Abs(rb.velocity.x) > 0.1f && !isJumping && !isWallSliding)
-        {
-            anim.SetInteger("Transition", 2); // Walk
-        }
-        // Wall Slide Animation
-        else if (isWallSliding)
-        {
-            anim.SetInteger("Transition", 3); // Wall Slide
-        }
-        // Jump Animation
-        else if (isJumping && !isGrounded)
-        {
-            anim.SetInteger("Transition", 1); // Jump
-        }
-        // Melee Attack Animation
-        else if (isAttacking && isMeleeAttack)
-        {
-            anim.SetInteger("Transition", 5); // Attack Sword
-        }
-        // Ranged Attack Animation
-        else if (isAttacking && !isMeleeAttack)
-        {
-            anim.SetInteger("Transition", 4); // Attack Bow
-        }
+        yield return new WaitForSeconds(0.4f); // Tempo de duração do Wall Jump
+        isWallJumping = false; // Permitir movimento normal após o Wall Jump
     }
 
     void MeleeAttack()
@@ -243,7 +226,7 @@ public class PlayerController : MonoBehaviour
             BossController boss = enemy.GetComponent<BossController>();
             if (boss != null)
             {
-                boss.TakeDamage(damage); // Causa dano no Boss
+                boss.TakeDamage(damage);
             }
         }
     }
@@ -252,8 +235,10 @@ public class PlayerController : MonoBehaviour
     {
         GameObject arrow = Instantiate(arrowPrefab, attackPoint.position, Quaternion.identity);
         Rigidbody2D arrowRb = arrow.GetComponent<Rigidbody2D>();
-        float direction = Mathf.Sign(transform.localScale.x);
+
+        // Usar a variável direction para disparar a flecha na direção correta
         arrowRb.velocity = new Vector2(direction * arrowSpeed, 0);
+
         Destroy(arrow, 2f);
 
         yield return null;

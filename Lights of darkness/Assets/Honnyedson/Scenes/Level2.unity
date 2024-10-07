@@ -426,17 +426,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1233767958401357212, guid: 44bb7f1cc92e7bc4ba4cdad8580cd85f, type: 3}
   m_PrefabInstance: {fileID: 982558370}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &235886867 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6155243139943928862, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-  m_PrefabInstance: {fileID: 1805710278}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a3d7af8c2fad9249baafb8c7a780ccb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &272082424
 GameObject:
   m_ObjectHideFlags: 0
@@ -2789,6 +2778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0796332d698d6645b129a635e3b64fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  phaseManager: {fileID: 0}
 --- !u!1 &1502901169
 GameObject:
   m_ObjectHideFlags: 0
@@ -3353,22 +3343,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 119507579327392768, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 235886867}
-    - target: {fileID: 119507579327392768, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: BuyShootTimeReduction
-      objectReference: {fileID: 0}
-    - target: {fileID: 119507579327392768, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Shop, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 1654304577954997489, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_Name
-      value: TotalCoins
-      objectReference: {fileID: 0}
     - target: {fileID: 2021737833987640097, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.8706226
@@ -3412,70 +3386,6 @@ PrefabInstance:
     - target: {fileID: 3271001621384921318, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
       propertyPath: m_Name
       value: GameManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 4379492282930891650, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_Name
-      value: Player Dano
-      objectReference: {fileID: 0}
-    - target: {fileID: 4981887677571073809, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 235886867}
-    - target: {fileID: 4981887677571073809, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: BuyHealth
-      objectReference: {fileID: 0}
-    - target: {fileID: 4981887677571073809, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Shop, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 5657175427852810745, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_Name
-      value: Player shotTime
-      objectReference: {fileID: 0}
-    - target: {fileID: 5697747460005574200, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6201415796898027593, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_Name
-      value: Vida
-      objectReference: {fileID: 0}
-    - target: {fileID: 6357906305918317539, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -19.28
-      objectReference: {fileID: 0}
-    - target: {fileID: 6751231052177280902, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 235886867}
-    - target: {fileID: 6751231052177280902, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: BuyDamage
-      objectReference: {fileID: 0}
-    - target: {fileID: 6751231052177280902, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Shop, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 7379466074654685249, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_Name
-      value: TimeShot
-      objectReference: {fileID: 0}
-    - target: {fileID: 7660177375014268303, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_Name
-      value: Player Vida
-      objectReference: {fileID: 0}
-    - target: {fileID: 8088106324371260695, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_Name
-      value: Dano
-      objectReference: {fileID: 0}
-    - target: {fileID: 8423814364069793299, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -19.28003
-      objectReference: {fileID: 0}
-    - target: {fileID: 8423814364069793299, guid: f5be6fe149a12aa4f958dfbb232756be, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
