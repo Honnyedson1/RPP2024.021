@@ -19,6 +19,11 @@ public class GameManager : MonoBehaviour
     public Image ArcoSelected;
     public Image SwordSelected;
     public bool EstouComArco;
+    public int QFlechas = 20;
+
+    public Text LifeText;
+    public Text FlechasText;
+    public Text Scoretext;
 
     private void Awake()
     {
@@ -43,6 +48,9 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        LifeText.text = Life.ToString();
+        FlechasText.text = QFlechas.ToString();
+        Scoretext.text = score.ToString();
         if (EstouComArco)
         {
             ArcoSelected.gameObject.SetActive(false);

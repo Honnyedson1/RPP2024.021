@@ -171,31 +171,58 @@ public class PlayerController : MonoBehaviour
 
     void ToggleAttackMode()
     {
-        isMeleeAttack = !isMeleeAttack;
         GameManager.Instance.EstouComArco = !GameManager.Instance.EstouComArco;
     }
 
     IEnumerator PerformAttack()
     {
         
-        rb.velocity = Vector2.zero;
         isAttacking = true;
 
-        if (isMeleeAttack)
+        if (GameManager.Instance.EstouComArco == false)
         {
-            anim.SetInteger("Transition", 5); 
-            yield return new WaitForSeconds(0.2f);
-            MeleeAttack();
+            if (isGrounded == true)
+            {
+                rb.velocity = Vector2.zero;
+                canMove = false;
+                anim.SetInteger("Transition", 5); 
+                yield return new WaitForSeconds(0.5f);
+                MeleeAttack();
+            }
+            else
+            {
+                anim.SetInteger("Transition", 5); 
+                yield return new WaitForSeconds(0.4f);
+                MeleeAttack();
+            }
         }
         else
         {
-            anim.SetInteger("Transition", 4); 
-            yield return new WaitForSeconds(0.2f); 
-            yield return StartCoroutine(RangedAttack());
-        }
+            if (GameManager.Instance.QFlechas > 0)
+            {
+                if (isGrounded == true)
+                {
+                    rb.velocity = Vector2.zero;
+                    canMove = false;
+                    anim.SetInteger("Transition", 4); 
+                    yield return new WaitForSeconds(0.4f); 
+                    yield return StartCoroutine(RangedAttack());
+                    yield return new WaitForSeconds(0.4f);     
+                }
+                else
+                {
+                    anim.SetInteger("Transition", 4); 
+                    yield return new WaitForSeconds(0.4f); 
+                    yield return StartCoroutine(RangedAttack());
+                    yield return new WaitForSeconds(0.4f);  
+                }
 
-        yield return new WaitForSeconds( GameManager.Instance.attackInterval); 
+            }
+
+        }
+        canMove = true;
         isAttacking = false;
+        yield return new WaitForSeconds( GameManager.Instance.attackInterval);
     }
     public void SetPlayerControl(bool isEnabled)
     {
@@ -203,9 +230,11 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator EndWallJump()
     {
-        yield return new WaitForSeconds(0.4f); // Tempo de duração do Wall Jump
-        isWallJumping = false; // Permitir movimento normal após o Wall Jump
+        yield return new WaitForSeconds(0.4f); // Aumentar ou ajustar o tempo se necessário
+        isWallJumping = false;
+        canMove = true; // Restaurar o movimento apenas após o término do impulso
     }
+
 
     void MeleeAttack()
     {
@@ -235,8 +264,7 @@ public class PlayerController : MonoBehaviour
     {
         GameObject arrow = Instantiate(arrowPrefab, attackPoint.position, Quaternion.identity);
         Rigidbody2D arrowRb = arrow.GetComponent<Rigidbody2D>();
-
-        // Usar a variável direction para disparar a flecha na direção correta
+        GameManager.Instance.QFlechas--;
         arrowRb.velocity = new Vector2(direction * arrowSpeed, 0);
 
         Destroy(arrow, 2f);
