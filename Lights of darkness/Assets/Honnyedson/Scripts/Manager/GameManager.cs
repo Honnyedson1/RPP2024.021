@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public bool isGamePaused;
+    public GameObject PauseImage;
+    public GameObject Options;
     [Header("Player Variaveis")]
     public int PlayerDmage = 1;
     public float attackInterval = 1.2f;
@@ -48,6 +50,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseGame();
+        }
         LifeText.text = Life.ToString();
         FlechasText.text = QFlechas.ToString();
         Scoretext.text = score.ToString();
@@ -81,18 +87,35 @@ public class GameManager : MonoBehaviour
         }
         Life = 3; 
     }
-
     public void PauseGame()
     {
+        PauseImage.gameObject.SetActive(true);
         isGamePaused = true;
         Time.timeScale = 0;
     }
-
     public void ResumeGame()
     {
+        PauseImage.gameObject.SetActive(false);
         isGamePaused = false;
         Time.timeScale = 1;
     }
+
+    public void OptionsGame()
+    {
+        Options.gameObject.SetActive(true);
+        PauseImage.gameObject.SetActive(false);
+    }
+    public void Back()
+    {
+        Options.gameObject.SetActive(false);
+        PauseImage.gameObject.SetActive(true);
+    }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene(1);
+    }
+    
 
     public void EndGame()
     {
