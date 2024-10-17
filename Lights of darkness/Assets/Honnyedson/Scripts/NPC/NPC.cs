@@ -24,6 +24,7 @@ public class NPC : MonoBehaviour
 
     private void Update()
     {
+        Dialo = FindObjectOfType<Dialogue>();
         if (Input.GetKeyDown(KeyCode.E) && OnRadius && !dialogueStarted)
         {
             Dialo.speach(Profile, Speachtext, NameN);
