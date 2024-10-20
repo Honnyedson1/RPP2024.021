@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 10f;
     public float wallJumpForceX = 8f;
     public float wallJumpForceY = 10f;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     private bool isGrounded;
     private bool isWallJumping;
     private bool isTouchingWall;
@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
     public bool canMove = false;
     public int damage = 1;
 
-    private Animator anim;
+    public Animator anim;
 
     void Start()
     {
@@ -57,6 +57,10 @@ public class PlayerController : MonoBehaviour
         {
             if (!isFrozen)
             {
+                CheckGround(); // Mova isso para cima para atualizar o estado de isGrounded primeiro
+                WallJump(); // Verifique a parede primeiro
+                Move();
+                Jump();
                 if (!isGrounded && rb.velocity.y > 0 && !isJumping)
                 {
                     isJumping = true;
@@ -67,10 +71,6 @@ public class PlayerController : MonoBehaviour
                     isJumping = false;
                     anim.SetInteger("Transition", 0);
                 }
-                CheckGround();
-                Move();
-                WallJump();
-                Jump();
                 if (Input.GetKeyDown(KeyCode.J))
                 {
                     ToggleAttackMode();
@@ -139,15 +139,18 @@ public class PlayerController : MonoBehaviour
             }
             else if (isTouchingWall && !isGrounded)
             {
-                isJumping = true;
-                isWallJumping = true; // Iniciar o estado de Wall Jump
-                anim.SetInteger("Transition", 1);
-            
-                // Aplicar impulso na direção oposta
-                Vector2 force = new Vector2(wallJumpForceX * -direction, wallJumpForceY);
-                rb.velocity = force;
-            
-                StartCoroutine(EndWallJump());
+                if (!isWallJumping) // Verifique se não está já wall jumping
+                {
+                    isJumping = true;
+                    isWallJumping = true; // Iniciar o estado de Wall Jump
+                    anim.SetInteger("Transition", 1);
+                
+                    // Aplicar impulso na direção oposta
+                    Vector2 force = new Vector2(wallJumpForceX * -direction, wallJumpForceY);
+                    rb.velocity = force;
+
+                    StartCoroutine(EndWallJump());
+                }
             }
         }
     }
@@ -155,13 +158,14 @@ public class PlayerController : MonoBehaviour
 
     void WallJump()
     {
+        // Verifique se o jogador está tocando a parede
         isTouchingWall = Physics2D.OverlapBox(wallCheckPoint.position, wallCheckSize, 0, wallLayer);
 
         if (isTouchingWall && !isGrounded && rb.velocity.y < 0)
         {
             isWallSliding = true; 
             anim.SetInteger("Transition", 3); 
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -2f)); 
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -2f)); // Permita deslizar pela parede
         }
         else
         {
@@ -230,7 +234,7 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator EndWallJump()
     {
-        yield return new WaitForSeconds(0.4f); // Aumentar ou ajustar o tempo se necessário
+        yield return new WaitForSeconds(0.5f); // Aumentar ou ajustar o tempo se necessário
         isWallJumping = false;
         canMove = true; // Restaurar o movimento apenas após o término do impulso
     }
@@ -243,19 +247,24 @@ public class PlayerController : MonoBehaviour
         {
             BooEnemy booEnemy = enemy.GetComponent<BooEnemy>();
             DodgeEnemy enemy2 = enemy.GetComponent<DodgeEnemy>();
+            BossController boss = enemy.GetComponent<BossController>();
+            Enemy EnemySpawner = enemy.GetComponent<Enemy>();
             if (booEnemy != null)
             {
                 booEnemy.TakeDamage(damage);
             }
-
             if (enemy2 != null)
             {
                 enemy2.TakeDamage(damage);
             }
-            BossController boss = enemy.GetComponent<BossController>();
             if (boss != null)
             {
                 boss.TakeDamage(damage);
+            }
+
+            if (EnemySpawner!=null)
+            {
+                EnemySpawner.takedmg(damage);
             }
         }
     }

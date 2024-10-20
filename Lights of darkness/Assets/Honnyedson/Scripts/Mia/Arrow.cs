@@ -44,6 +44,12 @@ public class Arrow : MonoBehaviour
             dodgeEnemy.OnArrowHit();
             Destroy(gameObject);
         }
+        Enemy enemy = other.GetComponent<Enemy>();
+        if (enemy != null)
+        {
+            enemy.takedmg(damage);
+            Destroy(gameObject);
+        }
 
         // Verifica se atingiu o Boss
         BossController boss = other.GetComponent<BossController>();

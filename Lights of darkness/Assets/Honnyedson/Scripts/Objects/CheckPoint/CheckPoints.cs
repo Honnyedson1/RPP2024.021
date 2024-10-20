@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class CheckPoints : MonoBehaviour
 {
-    private CircleCollider2D cir;
+    private BoxCollider2D cir;
 
     private void Start()
     {
-        cir = GetComponent<CircleCollider2D>();
+        cir = GetComponent<BoxCollider2D>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -17,7 +17,7 @@ public class CheckPoints : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             GameManager.Instance.SetCheckpoint(transform.position);
-            cir.GetComponent<CircleCollider2D>().enabled = false;
+            cir.GetComponent<BoxCollider2D>().enabled = false;
         }
     }
 }

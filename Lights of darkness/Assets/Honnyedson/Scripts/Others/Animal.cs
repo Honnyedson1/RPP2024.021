@@ -15,11 +15,12 @@ public class AnimalBehaviour : MonoBehaviour
 
     private bool isRunning = false;   // Indica se o animal está fugindo
     private bool collectMessageShown = false;  // Verifica se a mensagem de coleta já foi mostrada
-
+    private Rigidbody2D Rig;
     private Animator Anim;
 
     private void Start()
     {
+        Rig = GetComponent<Rigidbody2D>();
         Anim = GetComponent<Animator>();
     }
 
@@ -70,7 +71,8 @@ public class AnimalBehaviour : MonoBehaviour
         Anim.SetTrigger("Die");
         isDead = true;
         isRunning = false;  // Parar o movimento quando o animal morre
-        ShowCollectMessage();  // Mostra a mensagem de coleta
+        ShowCollectMessage();
+        
     }
 
     // Mostra a mensagem de coleta

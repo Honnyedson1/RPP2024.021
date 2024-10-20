@@ -17,22 +17,25 @@ public class ControlTrigger : MonoBehaviour
             switch (gameObject.name) 
             {
                 case "MovimentarColisor":
-                    controlTutorial.DisplayMessage("Pressione A ou D para movimentar.");
+                    controlTutorial.DisplayMessage("Pressione 'A' ou 'D' para movimentar.");
                     break;
                 case "InteragirColisor":
-                    controlTutorial.DisplayMessage("Pressione E para interagir com personagens.");
+                    controlTutorial.DisplayMessage("Pressione 'E' para interagir com personagens.");
                     break;
                 case "PularColisor":
-                    controlTutorial.DisplayMessage("Pressione Espaço para pular.");
+                    controlTutorial.DisplayMessage("Pressione 'Espaço' para pular.");
                     break;
                 case "AlternarArcoColisor":
-                    controlTutorial.DisplayMessage("Pressione J para alternar entre o arco e a flecha.");
+                    controlTutorial.DisplayMessage("Pressione 'J' para alternar entre o arco e a flecha.");
                     break;
                 case "PularNaParede":
                     controlTutorial.DisplayMessage("Pule em Direção a Parede e em seguida Pule Novamante");
                     break;
                 case "AtacarColisor":
-                    controlTutorial.DisplayMessage("Pressione K para atacar.");
+                    controlTutorial.DisplayMessage("Pressione 'K' para atacar.");
+                    break;
+                case "Shop":
+                    controlTutorial.DisplayMessage("Pressione 'E' para Falar com a Curandeira ou 'R' Para Abrir A Melhoria de Equipamentos ");
                     break;
                 case "Animal":
                     controlTutorial.DisplayMessage("Equipe O Arco e Ataque o Animal");

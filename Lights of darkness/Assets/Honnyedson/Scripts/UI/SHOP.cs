@@ -87,14 +87,14 @@ public class Shop : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            itemText.text = "Items: " + playerItems;
-            healthCostText.text = "Buy +1 Health: " + healthCost + " Items";
-            damageCostText.text = "Buy +1 Damage: " + damageCost + " Items";
-            shootTimeCostText.text = "Reduce Shoot Time: " + shootTimeCost + " Items";
+            itemText.text = "Você Tem: " + playerItems + " Saquinhos";
+            healthCostText.text = "Comprar +1 Vida: " + healthCost + " Saquinhos";
+            damageCostText.text = "Comprar +1 Dano: " + damageCost + " Saquinho";
+            shootTimeCostText.text = "Velocidade de Ataque: " + shootTimeCost + " Saquinho";
 
-            playerHealthText.text = "Health: " + GameManager.Instance.VidaMaxima;
-            playerDamageText.text = "Damage: " + GameManager.Instance.PlayerDmage;
-            shootTimeText.text = "Shoot Time: " + GameManager.Instance.attackInterval.ToString("F1") + "s";
+            playerHealthText.text = "Você Tem: " + GameManager.Instance.VidaMaxima + "Vida Maxima";
+            playerDamageText.text = "Você Tem: " + GameManager.Instance.PlayerDmage + "Dano";
+            shootTimeText.text = "Você Tem: " + GameManager.Instance.attackInterval.ToString("F1") + "s" + "Velocidade de Ataque";
         }
     }
 }
