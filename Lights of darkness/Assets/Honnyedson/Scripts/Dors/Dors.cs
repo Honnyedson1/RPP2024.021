@@ -8,6 +8,8 @@ public class Dors : MonoBehaviour
     private Animator Anim;
     public bool IsOpen;
     private BoxCollider2D box;
+    
+    
     private void Start()
     {
         Anim = GetComponent<Animator>();
