@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController _instance;
-
+    public bool isFacingRight = true;
     [Header("Wall Jump And Movement")]
     public float moveSpeed = 5f;
     public float jumpForce = 10f;
@@ -112,11 +112,13 @@ public class PlayerController : MonoBehaviour
         // Sempre permitir que o jogador vire
         if (horizontal > 0)
         {
+            isFacingRight = true;
             direction = 1; // Jogador virado para a direita
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
         else if (horizontal < 0)
         {
+            isFacingRight = false;
             direction = -1; // Jogador virado para a esquerda
             transform.eulerAngles = new Vector3(0, 180, 0);
         }

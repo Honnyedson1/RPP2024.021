@@ -20,6 +20,7 @@ public class BooEnemy : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         boss = FindObjectOfType<BossController>();
+        
         if (player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
@@ -32,8 +33,7 @@ public class BooEnemy : MonoBehaviour
         {
             Vector3 directionToPlayer = player.transform.position - transform.position; 
             float distanceToPlayer = directionToPlayer.magnitude;           
-
-            bool isPlayerLooking = IsPlayerLooking(); 
+            bool isPlayerLooking = IsPlayerLooking();
 
             if (distanceToPlayer <= attackRange && Time.time > lastAttackTime + attackCooldown)
             {
@@ -42,7 +42,15 @@ public class BooEnemy : MonoBehaviour
             }
             else if (!isPlayerLooking && distanceToPlayer > stopDistance)
             {
-                transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
+                Vector3 targetPosition = player.transform.position;
+
+                // Define a altura mínima do fantasma como a altura do jogador
+                if (transform.position.y < player.transform.position.y)
+                {
+                    targetPosition.y = player.transform.position.y;
+                }
+
+                transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
             }
             spriteRenderer.flipX = directionToPlayer.x < 0;
         }
@@ -55,8 +63,11 @@ public class BooEnemy : MonoBehaviour
 
     private bool IsPlayerLooking()
     {
-        Vector3 playerLookDirection = player.transform.localScale.x > 0 ? Vector3.right : Vector3.left;
-        return Vector3.Dot(playerLookDirection, (transform.position - player.transform.position).normalized) > 0;
+        PlayerController playerController = player.GetComponent<PlayerController>();
+        Vector3 directionToEnemy = (transform.position - player.transform.position).normalized;
+
+        return (playerController.isFacingRight && directionToEnemy.x > 0) ||
+               (!playerController.isFacingRight && directionToEnemy.x < 0);
     }
 
     public void TakeDamage(int damage)
@@ -73,6 +84,7 @@ public class BooEnemy : MonoBehaviour
         Debug.Log("O inimigo morreu!");
         Destroy(gameObject);
     }
+
     private void OnDrawGizmos()
     {
         if (areaLimit != null)
@@ -84,6 +96,7 @@ public class BooEnemy : MonoBehaviour
         Gizmos.color = Color.red; 
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
+    
     private void OnDrawGizmosSelected()
     {
         if (areaLimit != null)
