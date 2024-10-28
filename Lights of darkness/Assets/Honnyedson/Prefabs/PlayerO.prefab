@@ -374,10 +374,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e33cb1e94288fdc458caede74870c805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isFacingRight: 1
   moveSpeed: 5
   jumpForce: 12
   wallJumpForceX: 10
   wallJumpForceY: 10
+  rb: {fileID: 0}
   wallCheckPoint: {fileID: 7558463984848983437}
   wallCheckSize: {x: 0.52, y: 0.6}
   wallLayer:
@@ -402,6 +404,7 @@ MonoBehaviour:
   arrowSpeed: 15
   canMove: 1
   damage: 1
+  anim: {fileID: 0}
 --- !u!95 &4139895529301753569
 Animator:
   serializedVersion: 5

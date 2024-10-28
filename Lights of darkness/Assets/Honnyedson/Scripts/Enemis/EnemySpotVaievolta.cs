@@ -37,6 +37,15 @@ public class InimigoMovimentoLinear : MonoBehaviour
         Mover();
         VerificarVisao();
     }
+    IEnumerator PlayerMorreu()
+    {
+        yield return new WaitForSeconds(1f);
+        PlayerVivo = false;
+        yield return new WaitForSeconds(1f);
+        PlayerVivo = true;
+        inimigosSpawnados = 0;
+        inimigosAtivos = false;
+    }
 
     void Mover()
     {
@@ -82,16 +91,6 @@ public class InimigoMovimentoLinear : MonoBehaviour
                 }
             }
         }
-    }
-
-    IEnumerator PlayerMorreu()
-    {
-        yield return new WaitForSeconds(1f);
-        PlayerVivo = false;
-        yield return new WaitForSeconds(1f);
-        PlayerVivo = true;
-        inimigosSpawnados = 0;
-        inimigosAtivos = false;
     }
 
     void SpawnInimigos()

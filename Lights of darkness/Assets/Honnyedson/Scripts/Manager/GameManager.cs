@@ -115,12 +115,6 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(1);
     }
-    
-
-    public void EndGame()
-    {
-        Debug.Log("Game Over!");
-    }
 
     public void PlayGame()
     {

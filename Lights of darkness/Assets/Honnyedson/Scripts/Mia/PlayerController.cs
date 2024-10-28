@@ -211,16 +211,16 @@ public class PlayerController : MonoBehaviour
                     rb.velocity = Vector2.zero;
                     canMove = false;
                     anim.SetInteger("Transition", 4); 
-                    yield return new WaitForSeconds(0.4f); 
+                    yield return new WaitForSeconds(0.2f); 
                     yield return StartCoroutine(RangedAttack());
-                    yield return new WaitForSeconds(0.4f);     
+                    yield return new WaitForSeconds(0.2f);     
                 }
                 else
                 {
                     anim.SetInteger("Transition", 4); 
-                    yield return new WaitForSeconds(0.4f); 
+                    yield return new WaitForSeconds(0.2f); 
                     yield return StartCoroutine(RangedAttack());
-                    yield return new WaitForSeconds(0.4f);  
+                    yield return new WaitForSeconds(0.2f);  
                 }
 
             }

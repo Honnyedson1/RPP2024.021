@@ -11,6 +11,7 @@ TagManager:
   - BossAtack
   - NextLevel
   - Flecha
+  - Obstacle
   layers:
   - Default
   - TransparentFX

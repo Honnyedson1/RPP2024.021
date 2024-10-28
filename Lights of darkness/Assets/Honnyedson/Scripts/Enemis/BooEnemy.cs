@@ -16,15 +16,27 @@ public class BooEnemy : MonoBehaviour
     public int Life = 3;
     public int dmg;
 
+    // Referências para os objetos de luz
+    public GameObject lightObjectLeft;
+    public GameObject lightObjectRight;
+
+    // Referência ao Animator
+    private Animator animator;
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
         boss = FindObjectOfType<BossController>();
         
         if (player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
         }
+
+        // Desativar as luzes inicialmente
+        lightObjectLeft.SetActive(false);
+        lightObjectRight.SetActive(false);
     }
 
     void Update()
@@ -35,24 +47,85 @@ public class BooEnemy : MonoBehaviour
             float distanceToPlayer = directionToPlayer.magnitude;           
             bool isPlayerLooking = IsPlayerLooking();
 
-            if (distanceToPlayer <= attackRange && Time.time > lastAttackTime + attackCooldown)
+            // Atualiza a animação dependendo do estado
+            if (Life <= 0)
             {
+                animator.SetInteger("Transition", 4); // Morre
+                return; // Para a execução se o inimigo estiver morrendo
+            }
+
+            if (!isPlayerLooking)
+            {
+                // Ativar a luz dependendo da direção do inimigo
+                if (directionToPlayer.x > 0) // O inimigo está à esquerda do jogador
+                {
+                    lightObjectRight.SetActive(true);
+                    lightObjectLeft.SetActive(false);
+                }
+                else // O inimigo está à direita do jogador
+                {
+                    lightObjectLeft.SetActive(true);
+                    lightObjectRight.SetActive(false);
+                }
+
+                // Muda a camada do inimigo para um grupo de colisão que não recebe dano
+                gameObject.layer = LayerMask.NameToLayer("Default");
+
+                // Move o inimigo
+                if (distanceToPlayer > stopDistance)
+                {
+                    MoveTowardsPlayer(directionToPlayer);
+                }
+                else
+                {
+                    animator.SetInteger("Transition", 0); // Idle
+                }
+            }
+            else
+            {
+                // Desativar luz e voltar a camada normal se o jogador está olhando
+                lightObjectLeft.SetActive(false);
+                lightObjectRight.SetActive(false);
+                gameObject.layer = LayerMask.NameToLayer("Enemy"); // Ou outra camada padrão
+                animator.SetInteger("Transition", 0); // Idle
+            }
+
+            // Lógica de ataque
+            if (distanceToPlayer <= attackRange && isPlayerLooking && Time.time > lastAttackTime + attackCooldown)
+            {
+                animator.SetInteger("Transition", 2); // Atacando
                 player.GetComponent<PlayerController>().TakeDmg(dmg);
                 lastAttackTime = Time.time; 
             }
-            else if (!isPlayerLooking && distanceToPlayer > stopDistance)
-            {
-                Vector3 targetPosition = player.transform.position;
+        }
+        else
+        {
+            animator.SetInteger("Transition", 0); // Idle se o jogador não estiver na área
+        }
+    }
 
-                // Define a altura mínima do fantasma como a altura do jogador
-                if (transform.position.y < player.transform.position.y)
-                {
-                    targetPosition.y = player.transform.position.y;
-                }
+    private void MoveTowardsPlayer(Vector3 directionToPlayer)
+    {
+        Vector3 targetPosition = player.transform.position;
 
-                transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
-            }
-            spriteRenderer.flipX = directionToPlayer.x < 0;
+        // Define a altura mínima do fantasma como a altura do jogador
+        if (transform.position.y < player.transform.position.y)
+        {
+            targetPosition.y = player.transform.position.y;
+        }
+
+        // Mova o inimigo em direção ao jogador
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+        animator.SetInteger("Transition", 1); // Andando
+
+        // Flip do sprite dependendo da direção
+        if (directionToPlayer.x < 0)
+        {
+            spriteRenderer.flipX = true; // Inverter o sprite para a esquerda
+        }
+        else if (directionToPlayer.x > 0)
+        {
+            spriteRenderer.flipX = false; // Mostrar o sprite para a direita
         }
     }
 
@@ -72,17 +145,22 @@ public class BooEnemy : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        Life -= damage;
-        if (Life <= 0)
+        if (gameObject.layer == LayerMask.NameToLayer("Default")) // Apenas recebe dano na camada padrão
         {
-            Die();
+            Life -= damage;
+            animator.SetTrigger("Hit");
+            if (Life <= 0)
+            {
+                Die();
+            }
         }
     }
 
     private void Die()
     {
         Debug.Log("O inimigo morreu!");
-        Destroy(gameObject);
+        animator.SetTrigger("Die");
+        Destroy(gameObject, 1f); // Aguarda um tempo antes de destruir
     }
 
     private void OnDrawGizmos()

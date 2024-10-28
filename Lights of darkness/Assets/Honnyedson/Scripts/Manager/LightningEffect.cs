@@ -4,6 +4,7 @@ using UnityEngine.Rendering.Universal;
 public class LightningFlash : MonoBehaviour
 {
     public Light2D globalLight;  // Referência à Global Light 2D
+    public AudioClip thunderSound;  // Som do relâmpago
     public float minInterval = 2f;  // Intervalo mínimo entre raios
     public float maxInterval = 5f;  // Intervalo máximo entre raios
     public float rampUpDuration = 0.3f;  // Duração para aumentar a intensidade até o máximo
@@ -14,11 +15,16 @@ public class LightningFlash : MonoBehaviour
 
     private float nextFlashTime;
     private float originalIntensity;
+    private AudioSource audioSource;
 
     void Start()
     {
         originalIntensity = globalLight.intensity;  // Salva a intensidade original
         ScheduleNextFlash();
+        
+        // Configura o AudioSource
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.clip = thunderSound;
     }
 
     void Update()
@@ -37,6 +43,9 @@ public class LightningFlash : MonoBehaviour
 
     System.Collections.IEnumerator FlashLightning()
     {
+        // Toca o som do relâmpago
+        audioSource.Play();
+
         for (int i = 0; i < numberOfFlashes; i++)
         {
             // Aumenta a intensidade gradualmente

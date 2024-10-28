@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     public float attackCooldown = 1f; // Tempo entre ataques
     public float moveSpeed = 5f; // Velocidade de movimento do inimigo
     public float attackDelay = 0.4f; // Tempo de atraso antes de atacar
+    public float spacingDistance = 1f; // Distância mínima para manter dos outros inimigos
     private int vida = 4;
     private float lastAttackTime;
     private Transform player;
@@ -23,52 +24,60 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (InimigoMovimentoLinear.PlayerVivo == false)
+        if (InimigoMovimentoLinear.PlayerVivo == false || InimigoRaycastVisao.PlayerVivo == false)
         {
             Debug.Log("Morreu");
-            Destroy(gameObject);
+            Destroy(this.gameObject);
         }
-        if (isdead == false)
+        if (isdead == false && player != null)
         {
-                if (player != null)
-                {
-                    float distanceToPlayer = Mathf.Abs(player.position.x - transform.position.x); // Distância no eixo X
-                    float yDifference = Mathf.Abs(player.position.y - transform.position.y); // Diferença no eixo Y
-        
-                    // Verifica se o inimigo está dentro da distância de seguir no eixo X e dentro da tolerância no eixo Y
-                    if (!isAttacking && distanceToPlayer <= followDistance)
-                    {
-                        FollowPlayerOnXAxis(distanceToPlayer, yDifference);
-                    }
-                }    
+            float distanceToPlayer = Mathf.Abs(player.position.x - transform.position.x); // Distância no eixo X
+            float yDifference = Mathf.Abs(player.position.y - transform.position.y); // Diferença no eixo Y
+            
+            // Verifica se o inimigo está dentro da distância de seguir no eixo X e dentro da tolerância no eixo Y
+            if (!isAttacking && distanceToPlayer <= followDistance)
+            {
+                FollowPlayerOnXAxis(distanceToPlayer, yDifference);
+            }
         }
-
     }
-    
 
     public void takedmg(int dmg)
     {
         vida -= dmg;
-        if (vida<= 0)
+        if (vida <= 0)
         {
-            Destroy(gameObject,2f);
+            Destroy(gameObject, 2f);
             isdead = true;
         }
     }
 
     private void FollowPlayerOnXAxis(float distanceToPlayer, float yDifference)
     {
-        if (distanceToPlayer > attackDistance || yDifference > yTolerance)
+        // Check for other enemies in front
+        if (!IsBlockedByAnotherEnemy())
         {
-            // Move apenas no eixo X em direção ao jogador, mantendo a posição Y constante
-            Vector2 targetPosition = new Vector2(player.position.x, transform.position.y);
-            transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            if (distanceToPlayer > attackDistance || yDifference > yTolerance)
+            {
+                // Move apenas no eixo X em direção ao jogador, mantendo a posição Y constante
+                Vector2 targetPosition = new Vector2(player.position.x, transform.position.y);
+                transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            }
+            else
+            {
+                // Se estiver na distância de ataque e dentro da tolerância de altura, atacar
+                StartCoroutine(PrepareAttack());
+            }
         }
-        else
-        {
-            // Se estiver na distância de ataque e dentro da tolerância de altura, atacar
-            StartCoroutine(PrepareAttack());
-        }
+    }
+
+    private bool IsBlockedByAnotherEnemy()
+    {
+        // Raycast para verificar se há um inimigo na frente
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right * Mathf.Sign(player.position.x - transform.position.x), spacingDistance, LayerMask.GetMask("Enemy"));
+
+        // Retorna true se encontrar outro inimigo
+        return hit.collider != null && hit.collider.gameObject != this.gameObject;
     }
 
     private IEnumerator PrepareAttack()

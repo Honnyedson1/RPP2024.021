@@ -103,17 +103,6 @@ public class InimigoRaycastVisao : MonoBehaviour
         }
     }
 
-    public void InimigoMorreu()
-    {
-        inimigosSpawnados--;
-        if (inimigosSpawnados <= 0)
-        {
-            // Reseta a lógica para permitir spawn novamente
-            inimigosAtivos = false;
-            inimigosSpawnados = 0;
-        }
-    }
-
     Vector2 DirecaoAPartirDeAngulo(float anguloGraus)
     {
         float radianos = anguloGraus * Mathf.Deg2Rad;
