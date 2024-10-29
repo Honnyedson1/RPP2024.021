@@ -96,7 +96,6 @@ public class InimigoRaycastVisao : MonoBehaviour
 
             // Spawnar os inimigos nas posições calculadas
             Instantiate(inimigoPrefab, posicaoEsquerda, Quaternion.identity);
-            Instantiate(inimigoPrefab, posicaoDireita, Quaternion.identity);
 
             inimigosAtivos = true;
             inimigosSpawnados = 2; // Define que 2 inimigos foram spawnados

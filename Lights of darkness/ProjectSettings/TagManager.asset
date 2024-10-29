@@ -12,6 +12,7 @@ TagManager:
   - NextLevel
   - Flecha
   - Obstacle
+  - Box
   layers:
   - Default
   - TransparentFX

@@ -298,7 +298,6 @@ public class PlayerController : MonoBehaviour
         isFrozen = true;
         rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(1);
-        GameManager.Instance.RespawnPlayer();
         isFrozen = false;
     }
 

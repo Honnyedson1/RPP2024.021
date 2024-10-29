@@ -5,11 +5,10 @@ public class Enemy : MonoBehaviour
 {
     public float followDistance = 5f; // Distância máxima para seguir o jogador
     public float attackDistance = 1.5f; // Distância para atacar
-    public float yTolerance = 0.5f; // Tolerância no eixo Y para o ataque
+    public float yTolerance = 0.5f; // Tolerância no eixo Y para seguir o jogador
     public float attackCooldown = 1f; // Tempo entre ataques
-    public float moveSpeed = 5f; // Velocidade de movimento do inimigo
-    public float attackDelay = 0.4f; // Tempo de atraso antes de atacar
-    public float spacingDistance = 1f; // Distância mínima para manter dos outros inimigos
+    public float moveSpeed = 10f; // Velocidade de movimento do inimigo
+    public float attackDelay = 0.1f; // Tempo de atraso antes de atacar
     private int vida = 4;
     private float lastAttackTime;
     private Transform player;
@@ -29,16 +28,25 @@ public class Enemy : MonoBehaviour
             Debug.Log("Morreu");
             Destroy(this.gameObject);
         }
-        if (isdead == false && player != null)
+
+        if (!isdead)
         {
-            float distanceToPlayer = Mathf.Abs(player.position.x - transform.position.x); // Distância no eixo X
-            float yDifference = Mathf.Abs(player.position.y - transform.position.y); // Diferença no eixo Y
-            
-            // Verifica se o inimigo está dentro da distância de seguir no eixo X e dentro da tolerância no eixo Y
-            if (!isAttacking && distanceToPlayer <= followDistance)
+            if (player != null)
             {
-                FollowPlayerOnXAxis(distanceToPlayer, yDifference);
-            }
+                float distanceToPlayer = Mathf.Abs(player.position.x - transform.position.x); // Distância no eixo X
+                float yDifference = Mathf.Abs(player.position.y - transform.position.y); // Diferença no eixo Y
+
+                // Verifica se o inimigo está dentro da distância de seguir no eixo X
+                if (!isAttacking && distanceToPlayer <= followDistance && yDifference <= yTolerance)
+                {
+                    FollowPlayerOnXAxis();
+                }
+                else
+                {
+                    // Se o jogador sair da tolerância, o inimigo pode passar direto
+                    Debug.Log("Jogador saiu do campo de visão do inimigo.");
+                }
+            }    
         }
     }
 
@@ -52,32 +60,19 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void FollowPlayerOnXAxis(float distanceToPlayer, float yDifference)
+    private void FollowPlayerOnXAxis()
     {
-        // Check for other enemies in front
-        if (!IsBlockedByAnotherEnemy())
+        // Move apenas no eixo X em direção ao jogador, mantendo a posição Y constante
+        Vector2 targetPosition = new Vector2(player.position.x, transform.position.y);
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+
+        float distanceToPlayer = Mathf.Abs(player.position.x - transform.position.x); // Distância no eixo X
+
+        // Se estiver na distância de ataque, ataque
+        if (distanceToPlayer <= attackDistance)
         {
-            if (distanceToPlayer > attackDistance || yDifference > yTolerance)
-            {
-                // Move apenas no eixo X em direção ao jogador, mantendo a posição Y constante
-                Vector2 targetPosition = new Vector2(player.position.x, transform.position.y);
-                transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-            }
-            else
-            {
-                // Se estiver na distância de ataque e dentro da tolerância de altura, atacar
-                StartCoroutine(PrepareAttack());
-            }
+            StartCoroutine(PrepareAttack());
         }
-    }
-
-    private bool IsBlockedByAnotherEnemy()
-    {
-        // Raycast para verificar se há um inimigo na frente
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right * Mathf.Sign(player.position.x - transform.position.x), spacingDistance, LayerMask.GetMask("Enemy"));
-
-        // Retorna true se encontrar outro inimigo
-        return hit.collider != null && hit.collider.gameObject != this.gameObject;
     }
 
     private IEnumerator PrepareAttack()
@@ -91,6 +86,9 @@ public class Enemy : MonoBehaviour
         float distanceToPlayer = Mathf.Abs(player.position.x - transform.position.x);
         float yDifference = Mathf.Abs(player.position.y - transform.position.y);
 
+        // Verifica se o jogador está pulando
+        PlayerController playerController = player.GetComponent<PlayerController>();
+
         if (distanceToPlayer <= attackDistance && yDifference <= yTolerance)
         {
             // Atacar o jogador se ele ainda estiver dentro do alcance
@@ -98,8 +96,8 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            // Cancelar o ataque se o jogador tiver saído da área de ataque
-            Debug.Log("Jogador saiu da área de ataque. Ataque cancelado.");
+            // Cancelar o ataque se o jogador tiver saído da área de ataque ou está pulando
+            Debug.Log("Jogador saiu da área de ataque ou está pulando. Ataque cancelado.");
         }
 
         isAttacking = false; // Ataque concluído ou cancelado
@@ -107,34 +105,30 @@ public class Enemy : MonoBehaviour
 
     private void AttackPlayer()
     {
-        if (Time.time >= lastAttackTime + attackCooldown)
+        // O inimigo causa dano instantaneamente ao jogador
+        PlayerController playerHealth = player.GetComponent<PlayerController>();
+        if (playerHealth != null)
         {
-            lastAttackTime = Time.time;
-            StartCoroutine(PerformAttack());
+            playerHealth.TakeDmg(100); // O jogador morre instantaneamente
+            Debug.Log("Inimigo atacou o jogador e causou hit kill!");
         }
     }
 
-    private IEnumerator PerformAttack()
+    // Detectar colisão com o jogador
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Espera 0.4 segundos antes de realmente causar o dano (pausa antes do ataque)
-        yield return new WaitForSeconds(0.4f);
-
-        // Chama a função TakeDamage do jogador se ele ainda estiver no alcance
-        float distanceToPlayer = Mathf.Abs(player.position.x - transform.position.x);
-        float yDifference = Mathf.Abs(player.position.y - transform.position.y);
-
-        if (distanceToPlayer <= attackDistance && yDifference <= yTolerance)
+        if (collision.CompareTag("Player"))
         {
-            PlayerController playerHealth = player.GetComponent<PlayerController>();
-            if (playerHealth != null)
+            PlayerController playerController = collision.GetComponent<PlayerController>();
+            if (playerController != null) // Apenas cause dano se o jogador não estiver pulando
             {
-                playerHealth.TakeDmg(1); // O valor do dano pode ser ajustado
-                Debug.Log("Inimigo atacou o jogador!");
+                AttackPlayer(); // Causa dano ao jogador
             }
-        }
-        else
-        {
-            Debug.Log("Jogador saiu do alcance antes do ataque finalizado. Dano cancelado.");
+            else
+            {
+                Debug.Log("Jogador pulou e passou pelo inimigo.");
+                // Aqui você pode adicionar a lógica adicional que quiser quando o jogador pula.
+            }
         }
     }
 

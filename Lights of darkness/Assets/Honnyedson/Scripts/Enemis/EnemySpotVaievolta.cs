@@ -34,17 +34,39 @@ public class InimigoMovimentoLinear : MonoBehaviour
         {
             StartCoroutine(PlayerMorreu());
         }
-        Mover();
-        VerificarVisao();
+        else // Certifique-se de que o movimento e a verificação de visão só ocorram se o jogador estiver vivo
+        {
+            Mover();
+            VerificarVisao();
+        }
     }
+
     IEnumerator PlayerMorreu()
     {
         yield return new WaitForSeconds(1f);
         PlayerVivo = false;
         yield return new WaitForSeconds(1f);
         PlayerVivo = true;
-        inimigosSpawnados = 0;
+
+        // Reseta os inimigos
+        ResetarInimigos();
+    }
+
+    void ResetarInimigos()
+    {
+        // Destroi os inimigos spawnados, se houver
+        if (inimigosSpawnados > 0)
+        {
+            GameObject[] inimigos = GameObject.FindGameObjectsWithTag("Inimigo"); // Supondo que você tenha uma tag "Inimigo" para os inimigos
+            foreach (GameObject inimigo in inimigos)
+            {
+                Destroy(inimigo);
+            }
+        }
+
+        // Reseta as variáveis de controle
         inimigosAtivos = false;
+        inimigosSpawnados = 0;
     }
 
     void Mover()
@@ -108,8 +130,6 @@ public class InimigoMovimentoLinear : MonoBehaviour
 
             // Spawnar os inimigos nas posições calculadas
             Instantiate(inimigoPrefab, posicaoEsquerda, Quaternion.identity);
-            Instantiate(inimigoPrefab, posicaoDireita, Quaternion.identity);
-
             inimigosAtivos = true;
             inimigosSpawnados = 2; // Define que 2 inimigos foram spawnados
         }

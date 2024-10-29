@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,6 +8,7 @@ public class GameManager : MonoBehaviour
     public bool isGamePaused;
     public GameObject PauseImage;
     public GameObject Options;
+    public GameObject RespawnPanel; // Novo painel de respawn
     [Header("Player Variaveis")]
     public int PlayerDmage = 1;
     public float attackInterval = 1.2f;
@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
         SwordSelected.gameObject.SetActive(true);
         Player = GameObject.FindWithTag("Player");
         lastCheckpointPosition = Player.transform.position;
+        RespawnPanel.SetActive(false); // Esconder o painel de respawn
     }
 
     private void Update()
@@ -54,9 +55,11 @@ public class GameManager : MonoBehaviour
         {
             PauseGame();
         }
+
         LifeText.text = Life.ToString();
         FlechasText.text = QFlechas.ToString();
         Scoretext.text = score.ToString();
+
         if (EstouComArco)
         {
             ArcoSelected.gameObject.SetActive(false);
@@ -67,10 +70,10 @@ public class GameManager : MonoBehaviour
             ArcoSelected.gameObject.SetActive(true);
             SwordSelected.gameObject.SetActive(false);
         }
-        Player = GameObject.FindWithTag("Player");
+
         if (Life <= 0)
         {
-            RespawnPlayer();
+            ShowRespawnPanel();
         }
     }
     
@@ -81,18 +84,36 @@ public class GameManager : MonoBehaviour
     
     public void RespawnPlayer()
     {
-        if (lastCheckpointPosition != Vector3.zero)
-        {
-            Player.transform.position = lastCheckpointPosition;
-        }
-        Life = 3; 
+        Player.transform.position = lastCheckpointPosition; // Reposiciona o jogador
+        Life = VidaMaxima; // Restaura a vida ao máximo
+        RespawnPanel.SetActive(false); // Esconde o painel de respawn
+        Time.timeScale = 1; // Retorna o tempo normal
     }
+
+    private void ShowRespawnPanel()
+    {
+        RespawnPanel.SetActive(true); // Mostra o painel de respawn
+        Time.timeScale = 0; // Pausa o jogo
+    }
+
+    public void ReturnToMenu()
+    {
+        Time.timeScale = 1; // Retorna o tempo normal
+        SceneManager.LoadScene(1); // Troca para a cena do menu principal (verifique o índice)
+    }
+
+    public void ReturnToCheckpoint()
+    {
+        RespawnPlayer(); // Respawna o jogador
+    }
+
     public void PauseGame()
     {
         PauseImage.gameObject.SetActive(true);
         isGamePaused = true;
         Time.timeScale = 0;
     }
+
     public void ResumeGame()
     {
         PauseImage.gameObject.SetActive(false);
@@ -105,6 +126,7 @@ public class GameManager : MonoBehaviour
         Options.gameObject.SetActive(true);
         PauseImage.gameObject.SetActive(false);
     }
+
     public void Back()
     {
         Options.gameObject.SetActive(false);
