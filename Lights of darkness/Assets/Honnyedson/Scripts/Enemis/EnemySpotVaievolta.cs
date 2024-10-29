@@ -54,7 +54,6 @@ public class InimigoMovimentoLinear : MonoBehaviour
 
     void ResetarInimigos()
     {
-        // Destroi os inimigos spawnados, se houver
         if (inimigosSpawnados > 0)
         {
             GameObject[] inimigos = GameObject.FindGameObjectsWithTag("Inimigo"); // Supondo que você tenha uma tag "Inimigo" para os inimigos
