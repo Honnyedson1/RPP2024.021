@@ -172,8 +172,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followDistance: 15
-  attackDistance: 1.2
-  yTolerance: 1
-  attackCooldown: 1
-  moveSpeed: 6
-  attackDelay: 0.4
+  attackDistance: 1
+  moveSpeed: 5.4

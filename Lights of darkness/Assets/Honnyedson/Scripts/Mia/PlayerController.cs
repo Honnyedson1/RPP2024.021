@@ -146,7 +146,7 @@ public class PlayerController : MonoBehaviour
                     isJumping = true;
                     isWallJumping = true; // Iniciar o estado de Wall Jump
                     anim.SetInteger("Transition", 1);
-                
+
                     // Aplicar impulso na direção oposta
                     Vector2 force = new Vector2(wallJumpForceX * -direction, wallJumpForceY);
                     rb.velocity = force;
@@ -156,8 +156,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
-
     void WallJump()
     {
         // Verifique se o jogador está tocando a parede
@@ -238,7 +236,12 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f); // Aumentar ou ajustar o tempo se necessário
         isWallJumping = false;
-        canMove = true; // Restaurar o movimento apenas após o término do impulso
+        canMove = true; // Restaurar o movimento após o término do impulso
+
+        // Virar o personagem na direção oposta após o wall jump
+        isFacingRight = !isFacingRight;
+        direction = isFacingRight ? 1 : -1;
+        transform.eulerAngles = isFacingRight ? Vector3.zero : new Vector3(0, 180, 0);
     }
 
 

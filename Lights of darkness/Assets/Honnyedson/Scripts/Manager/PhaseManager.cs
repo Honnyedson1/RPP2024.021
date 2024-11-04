@@ -7,11 +7,17 @@ public class PhaseManager : MonoBehaviour
 {
     public Image fadeImage; 
     public float fadeDuration = 2f; 
+    private CanvasGroup fadeCanvasGroup;
 
     private void Start()
     {
-        fadeImage.color = new Color(0f, 0f, 0f, 0f); // Começa transparente
-        fadeImage.gameObject.SetActive(true);
+        fadeCanvasGroup = fadeImage.GetComponent<CanvasGroup>();
+        if (fadeCanvasGroup == null)
+        {
+            fadeCanvasGroup = fadeImage.gameObject.AddComponent<CanvasGroup>();
+        }
+        fadeCanvasGroup.alpha = 0f; // Começa transparente
+        fadeCanvasGroup.blocksRaycasts = false; // Ignora cliques no começo
     }
 
     public void TriggerNextPhase()
@@ -39,12 +45,12 @@ public class PhaseManager : MonoBehaviour
     private IEnumerator FadeOut()
     {
         float alpha = 0f;
-        fadeImage.gameObject.SetActive(true);
+        fadeCanvasGroup.blocksRaycasts = true; // Bloqueia cliques durante o fade out
 
         while (alpha < 1f)
         {
-            alpha += Time.deltaTime / fadeDuration; // Aumenta a opacidade
-            fadeImage.color = new Color(0f, 0f, 0f, alpha);
+            alpha += Time.deltaTime / fadeDuration;
+            fadeCanvasGroup.alpha = alpha;
             yield return null;
         }
     }
@@ -52,15 +58,16 @@ public class PhaseManager : MonoBehaviour
     private IEnumerator FadeIn()
     {
         float alpha = 1f;
-        fadeImage.gameObject.SetActive(true);
+        fadeCanvasGroup.alpha = 1f;
+        fadeCanvasGroup.blocksRaycasts = true;
 
         while (alpha > 0f)
         {
-            alpha -= Time.deltaTime / fadeDuration; // Diminui a opacidade
-            fadeImage.color = new Color(0f, 0f, 0f, alpha);
+            alpha -= Time.deltaTime / fadeDuration;
+            fadeCanvasGroup.alpha = alpha;
             yield return null;
         }
 
-        fadeImage.gameObject.SetActive(false); // Desativa a imagem após o fade in
+        fadeCanvasGroup.blocksRaycasts = false; // Permite cliques novamente
     }
 }
