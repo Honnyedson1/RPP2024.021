@@ -7,17 +7,11 @@ public class PhaseManager : MonoBehaviour
 {
     public Image fadeImage; 
     public float fadeDuration = 2f; 
-    private CanvasGroup fadeCanvasGroup;
 
     private void Start()
     {
-        fadeCanvasGroup = fadeImage.GetComponent<CanvasGroup>();
-        if (fadeCanvasGroup == null)
-        {
-            fadeCanvasGroup = fadeImage.gameObject.AddComponent<CanvasGroup>();
-        }
-        fadeCanvasGroup.alpha = 0f; // Começa transparente
-        fadeCanvasGroup.blocksRaycasts = false; // Ignora cliques no começo
+        fadeImage.color = new Color(0f, 0f, 0f, 0f); // Começa transparente
+        fadeImage.gameObject.SetActive(true);
     }
 
     public void TriggerNextPhase()
@@ -45,29 +39,29 @@ public class PhaseManager : MonoBehaviour
     private IEnumerator FadeOut()
     {
         float alpha = 0f;
-        fadeCanvasGroup.blocksRaycasts = true; // Bloqueia cliques durante o fade out
+        fadeImage.gameObject.SetActive(true);
 
         while (alpha < 1f)
         {
-            alpha += Time.deltaTime / fadeDuration;
-            fadeCanvasGroup.alpha = alpha;
+            alpha += Time.deltaTime / fadeDuration; // Aumenta a opacidade
+            fadeImage.color = new Color(0f, 0f, 0f, alpha);
             yield return null;
         }
+        fadeImage.gameObject.SetActive(false); // Desativa a imagem após o fade in
     }
 
     private IEnumerator FadeIn()
     {
         float alpha = 1f;
-        fadeCanvasGroup.alpha = 1f;
-        fadeCanvasGroup.blocksRaycasts = true;
+        fadeImage.gameObject.SetActive(true);
 
         while (alpha > 0f)
         {
-            alpha -= Time.deltaTime / fadeDuration;
-            fadeCanvasGroup.alpha = alpha;
+            alpha -= Time.deltaTime / fadeDuration; // Diminui a opacidade
+            fadeImage.color = new Color(0f, 0f, 0f, alpha);
             yield return null;
         }
 
-        fadeCanvasGroup.blocksRaycasts = false; // Permite cliques novamente
+        fadeImage.gameObject.SetActive(false); // Desativa a imagem após o fade in
     }
 }

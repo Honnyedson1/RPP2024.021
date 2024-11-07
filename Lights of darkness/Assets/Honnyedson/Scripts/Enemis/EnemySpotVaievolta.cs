@@ -3,29 +3,29 @@ using UnityEngine;
 
 public class InimigoMovimentoLinear : MonoBehaviour
 {
-    public float distanciaMovimento = 5f; // Distância que o inimigo se moverá
-    public float velocidade = 2f; // Velocidade do movimento
-    public float raioVisao = 10f; // Distância dos raycasts (campo de visão)
-    public float anguloBaseVisao = 270f; // Ângulo base para onde o inimigo "olha" (270 graus = para baixo)
-    public float campoDeVisao = 90f; // Ângulo de abertura do campo de visão
-    public int quantidadeRaycasts = 10; // Número de raios no campo de visão
-    public Transform alvo; // Referência ao jogador
-    public LayerMask camadaJogador; // Layer do jogador
-    public LayerMask camadaObstaculos; // Obstáculos que bloqueiam o campo de visão
+    public float distanciaMovimento = 5f;
+    public float velocidade = 2f; 
+    public float raioVisao = 10f; 
+    public float anguloBaseVisao = 270f; 
+    public float campoDeVisao = 90f; 
+    public int quantidadeRaycasts = 10; 
+    public Transform alvo; 
+    public LayerMask camadaJogador;
+    public LayerMask camadaObstaculos; 
 
-    private Vector3 pontoInicial; // Ponto inicial do movimento
-    private Vector3 pontoFinal; // Ponto final do movimento
-    private bool indoParaFrente = true; // Define se o inimigo está indo ou voltando
+    private Vector3 pontoInicial; 
+    private Vector3 pontoFinal; 
+    private bool indoParaFrente = true; 
 
-    public GameObject inimigoPrefab; // Prefab do inimigo a ser spawnado
-    private bool inimigosAtivos = false; // Verifica se inimigos já foram spawnados
-    private int inimigosSpawnados = 0; // Contador de inimigos spawnados
+    public GameObject inimigoPrefab;
+    private bool inimigosAtivos = false; 
+    private int inimigosSpawnados = 0; 
     public static bool PlayerVivo = true;
 
     void Start()
     {
         pontoInicial = transform.position;
-        pontoFinal = pontoInicial + transform.right * distanciaMovimento; // Movimento no eixo x
+        pontoFinal = pontoInicial + transform.right * distanciaMovimento;
     }
 
     void Update()
@@ -34,7 +34,7 @@ public class InimigoMovimentoLinear : MonoBehaviour
         {
             StartCoroutine(PlayerMorreu());
         }
-        else // Certifique-se de que o movimento e a verificação de visão só ocorram se o jogador estiver vivo
+        else 
         {
             Mover();
             VerificarVisao();
@@ -47,25 +47,8 @@ public class InimigoMovimentoLinear : MonoBehaviour
         PlayerVivo = false;
         yield return new WaitForSeconds(1f);
         PlayerVivo = true;
-
-        // Reseta os inimigos
-        ResetarInimigos();
-    }
-
-    void ResetarInimigos()
-    {
-        if (inimigosSpawnados > 0)
-        {
-            GameObject[] inimigos = GameObject.FindGameObjectsWithTag("Inimigo"); // Supondo que você tenha uma tag "Inimigo" para os inimigos
-            foreach (GameObject inimigo in inimigos)
-            {
-                Destroy(inimigo);
-            }
-        }
-
-        // Reseta as variáveis de controle
-        inimigosAtivos = false;
         inimigosSpawnados = 0;
+        inimigosAtivos = false;
     }
 
     void Mover()
@@ -92,8 +75,8 @@ public class InimigoMovimentoLinear : MonoBehaviour
 
     void VerificarVisao()
     {
-        float anguloInicio = anguloBaseVisao - (campoDeVisao / 2f); // Começa no limite esquerdo do campo de visão
-        float incrementoAngulo = campoDeVisao / (quantidadeRaycasts - 1); // Divide o campo de visão entre os raycasts
+        float anguloInicio = anguloBaseVisao - (campoDeVisao / 2f); 
+        float incrementoAngulo = campoDeVisao / (quantidadeRaycasts - 1); 
 
         for (int i = 0; i < quantidadeRaycasts; i++)
         {
@@ -106,9 +89,8 @@ public class InimigoMovimentoLinear : MonoBehaviour
             {
                 if (hit.collider.CompareTag("Player"))
                 {
-                    Debug.Log("Jogador Detectado!");
                     SpawnInimigos();
-                    break; // Evita múltiplos spawns
+                    break; 
                 }
             }
         }
@@ -119,18 +101,11 @@ public class InimigoMovimentoLinear : MonoBehaviour
         if (!inimigosAtivos)
         {
             Vector3 jogadorPosicao = alvo.position;
-
-            // Distância fixa para spawn dos inimigos em relação ao jogador
-            float distanciaSpawn = 3f; // Ajuste essa distância conforme necessário
-
-            // Calcular a posição de spawn à esquerda e à direita do jogador
+            float distanciaSpawn = 3f;
             Vector3 posicaoEsquerda = new Vector3(jogadorPosicao.x - distanciaSpawn, jogadorPosicao.y, jogadorPosicao.z);
-            Vector3 posicaoDireita = new Vector3(jogadorPosicao.x + distanciaSpawn, jogadorPosicao.y, jogadorPosicao.z);
-
-            // Spawnar os inimigos nas posições calculadas
             Instantiate(inimigoPrefab, posicaoEsquerda, Quaternion.identity);
             inimigosAtivos = true;
-            inimigosSpawnados = 2; // Define que 2 inimigos foram spawnados
+            inimigosSpawnados = 1;
         }
     }
 
@@ -143,11 +118,7 @@ public class InimigoMovimentoLinear : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-
-        // Desenha linha de movimento entre ponto inicial e ponto final
         Gizmos.DrawLine(pontoInicial, pontoFinal);
-
-        // Desenha o campo de visão no ponto atual
         float anguloInicio = anguloBaseVisao - (campoDeVisao / 2f);
         float incrementoAngulo = campoDeVisao / (quantidadeRaycasts - 1);
 
@@ -155,8 +126,7 @@ public class InimigoMovimentoLinear : MonoBehaviour
         {
             float anguloRay = anguloInicio + incrementoAngulo * i;
             Vector2 direcaoRay = DirecaoAPartirDeAngulo(anguloRay);
-
-            Gizmos.DrawRay(transform.position, direcaoRay * raioVisao); // Aumenta a distância com raioVisao
+            Gizmos.DrawRay(transform.position, direcaoRay * raioVisao); 
         }
     }
 }

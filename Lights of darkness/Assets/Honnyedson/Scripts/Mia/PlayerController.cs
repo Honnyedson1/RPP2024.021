@@ -57,8 +57,8 @@ public class PlayerController : MonoBehaviour
         {
             if (!isFrozen)
             {
-                CheckGround(); // Mova isso para cima para atualizar o estado de isGrounded primeiro
-                WallJump(); // Verifique a parede primeiro
+                CheckGround(); 
+                WallJump(); 
                 Move();
                 Jump();
                 if (!isGrounded && rb.velocity.y > 0 && !isJumping)
@@ -92,38 +92,31 @@ public class PlayerController : MonoBehaviour
         {
             isJumping = false;
             isWallSliding = false;
-            isWallJumping = false; // Resetar estado de Wall Jump quando tocar no chão
+            isWallJumping = false; 
         }
     }
 
     void Move()
     {
         float horizontal = Input.GetAxis("Horizontal");
-
-        // Verificar se o jogador está no Wall Jump
         if (!isWallJumping)
         {
-            // Permitir movimento apenas se não estiver no Wall Jump
             Vector2 velocity = rb.velocity;
             velocity.x = horizontal * moveSpeed;
             rb.velocity = velocity;
         }
-
-        // Sempre permitir que o jogador vire
         if (horizontal > 0)
         {
             isFacingRight = true;
-            direction = 1; // Jogador virado para a direita
+            direction = 1; 
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
         else if (horizontal < 0)
         {
             isFacingRight = false;
-            direction = -1; // Jogador virado para a esquerda
+            direction = -1; 
             transform.eulerAngles = new Vector3(0, 180, 0);
         }
-
-        // Atualizar animação apenas se não estiver atacando, pulando ou deslizando
         if (!isJumping && !isAttacking && !isWallSliding)
         {
             anim.SetInteger("Transition", horizontal != 0 ? 2 : 0);
@@ -141,13 +134,11 @@ public class PlayerController : MonoBehaviour
             }
             else if (isTouchingWall && !isGrounded)
             {
-                if (!isWallJumping) // Verifique se não está já wall jumping
+                if (!isWallJumping) 
                 {
                     isJumping = true;
-                    isWallJumping = true; // Iniciar o estado de Wall Jump
+                    isWallJumping = true; 
                     anim.SetInteger("Transition", 1);
-
-                    // Aplicar impulso na direção oposta
                     Vector2 force = new Vector2(wallJumpForceX * -direction, wallJumpForceY);
                     rb.velocity = force;
 
@@ -158,14 +149,13 @@ public class PlayerController : MonoBehaviour
     }
     void WallJump()
     {
-        // Verifique se o jogador está tocando a parede
         isTouchingWall = Physics2D.OverlapBox(wallCheckPoint.position, wallCheckSize, 0, wallLayer);
 
         if (isTouchingWall && !isGrounded && rb.velocity.y < 0)
         {
             isWallSliding = true; 
             anim.SetInteger("Transition", 3); 
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -2f)); // Permita deslizar pela parede
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -2f)); 
         }
         else
         {
@@ -180,10 +170,8 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PerformAttack()
     {
-        
         isAttacking = true;
-
-        if (GameManager.Instance.EstouComArco == false)
+        if (GameManager.Instance.EstouComArco == false && isWallSliding == false)
         {
             if (isGrounded == true)
             {
@@ -202,7 +190,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (GameManager.Instance.QFlechas > 0)
+            if (GameManager.Instance.QFlechas > 0 && isWallSliding == false)
             {
                 if (isGrounded == true)
                 {
@@ -234,11 +222,9 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator EndWallJump()
     {
-        yield return new WaitForSeconds(0.5f); // Aumentar ou ajustar o tempo se necessário
+        yield return new WaitForSeconds(0.5f);
         isWallJumping = false;
-        canMove = true; // Restaurar o movimento após o término do impulso
-
-        // Virar o personagem na direção oposta após o wall jump
+        canMove = true; 
         isFacingRight = !isFacingRight;
         direction = isFacingRight ? 1 : -1;
         transform.eulerAngles = isFacingRight ? Vector3.zero : new Vector3(0, 180, 0);
@@ -280,16 +266,13 @@ public class PlayerController : MonoBehaviour
         Rigidbody2D arrowRb = arrow.GetComponent<Rigidbody2D>();
         GameManager.Instance.QFlechas--;
         arrowRb.velocity = new Vector2(direction * arrowSpeed, 0);
-
         Destroy(arrow, 2f);
-
         yield return null;
     }
 
     public void TakeDmg(int dmg)
     {
         GameManager.Instance.Life -= dmg;
-
         if (GameManager.Instance.Life <= 0)
         {
             StartCoroutine(DieAndRespawn());
@@ -301,6 +284,7 @@ public class PlayerController : MonoBehaviour
         isFrozen = true;
         rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(1);
+        anim.SetInteger("Transition", 0);
         isFrozen = false;
     }
 

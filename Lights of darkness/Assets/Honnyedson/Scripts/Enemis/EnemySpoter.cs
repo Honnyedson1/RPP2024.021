@@ -3,22 +3,22 @@ using UnityEngine;
 
 public class InimigoRaycastVisao : MonoBehaviour
 {
-    public float raioVisao = 5f; // Distância do campo de visão
-    public float anguloVisao = 45f; // Ângulo do cone de visão
-    public int quantidadeRaycasts = 10; // Número de raios no campo de visão
-    public Transform alvo; // Referência ao jogador
-    public LayerMask camadaJogador; // Layer do jogador
-    public LayerMask camadaObstaculos; // Obstáculos que bloqueiam o campo de visão
+    public float raioVisao = 5f; 
+    public float anguloVisao = 45f; 
+    public int quantidadeRaycasts = 10; 
+    public Transform alvo;
+    public LayerMask camadaJogador; 
+    public LayerMask camadaObstaculos; 
 
-    public float velocidadeRotacao = 10f; // Reduzida a velocidade de rotação
-    public float anguloMin = -30f; // Ângulo mínimo de rotação ajustado
-    public float anguloMax = 30f; // Ângulo máximo de rotação ajustado
-    private float direcao = 1f; // Direção da rotação
-    private float anguloAtual; // Variável para armazenar o ângulo atual da oscilação
+    public float velocidadeRotacao = 10f; 
+    public float anguloMin = -30f; 
+    public float anguloMax = 30f;
+    private float direcao = 1f;
+    private float anguloAtual; 
 
-    public GameObject inimigoPrefab; // Prefab do inimigo a ser spawnado
-    private bool inimigosAtivos = false; // Verifica se inimigos já foram spawnados
-    private int inimigosSpawnados = 0; // Contador de inimigos spawnados
+    public GameObject inimigoPrefab; 
+    private bool inimigosAtivos = false; 
+    private int inimigosSpawnados = 0; 
     public static bool PlayerVivo = true;
     void Update()
     {
@@ -73,9 +73,8 @@ public class InimigoRaycastVisao : MonoBehaviour
             {
                 if (hit.collider.CompareTag("Player"))
                 {
-                    Debug.Log("Jogador Detectado!");
                     SpawnInimigos();
-                    break; // Para evitar múltiplos spawns em um único frame
+                    break;
                 }
             }
         }
@@ -86,19 +85,11 @@ public class InimigoRaycastVisao : MonoBehaviour
         if (!inimigosAtivos)
         {
             Vector3 jogadorPosicao = alvo.position;
-
-            // Distância fixa para spawn dos inimigos em relação ao jogador
-            float distanciaSpawn = 3f; // Ajuste essa distância conforme necessário
-
-            // Calcular a posição de spawn à esquerda e à direita do jogador
+            float distanciaSpawn = 3f;
             Vector3 posicaoEsquerda = new Vector3(jogadorPosicao.x - distanciaSpawn, jogadorPosicao.y, jogadorPosicao.z);
-            Vector3 posicaoDireita = new Vector3(jogadorPosicao.x + distanciaSpawn, jogadorPosicao.y, jogadorPosicao.z);
-
-            // Spawnar os inimigos nas posições calculadas
             Instantiate(inimigoPrefab, posicaoEsquerda, Quaternion.identity);
-
             inimigosAtivos = true;
-            inimigosSpawnados = 2; // Define que 2 inimigos foram spawnados
+            inimigosSpawnados = 2; 
         }
     }
 
@@ -123,11 +114,10 @@ public class InimigoRaycastVisao : MonoBehaviour
             Vector2 direcaoRay = DirecaoAPartirDeAngulo(transform.eulerAngles.z + anguloRay - 90);
 
             Vector3 pontoFinal = origem + (Vector3)(direcaoRay * raioVisao);
-            Gizmos.DrawLine(origem, pontoFinal); // Desenha os raios
+            Gizmos.DrawLine(origem, pontoFinal);
 
             if (i > 0)
             {
-                // Desenha linhas entre os raios para visualizar o cone
                 Vector2 direcaoRayAnterior = DirecaoAPartirDeAngulo(transform.eulerAngles.z + (anguloInicio + incrementoAngulo * (i - 1)) - 90);
                 Vector3 pontoAnterior = origem + (Vector3)(direcaoRayAnterior * raioVisao);
                 Gizmos.DrawLine(pontoFinal, pontoAnterior);

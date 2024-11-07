@@ -16,6 +16,7 @@ public class Curandeira : MonoBehaviour
     public Dialogue Dialo;
     public bool OnRadius;
     private bool dialogueStarted = false;
+    private bool dialogueEnded = false; // Novo flag para verificar se o diálogo acabou
     private PlayerController playerMovement; // Referência ao script de movimento do jogador
 
     private void Start()
@@ -27,7 +28,8 @@ public class Curandeira : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && OnRadius && !dialogueStarted)
+        // Se o jogador estiver na área de interação e o diálogo não foi iniciado, inicia o diálogo
+        if (Input.GetKeyDown(KeyCode.E) && OnRadius && !dialogueStarted && !dialogueEnded)
         {
             Dialo.speach(Profile, Speachtext, NameN);
             dialogueStarted = true;
@@ -36,21 +38,25 @@ public class Curandeira : MonoBehaviour
             playerMovement.anim.SetInteger("Transition", 0);
         }
 
-        if (Input.GetKeyDown(KeyCode.E) && dialogueStarted)
+        // Se o diálogo foi iniciado, permite avançar nas falas
+        if (Input.GetKeyDown(KeyCode.E) && dialogueStarted && !dialogueEnded)
         {
             Dialo.nextsentence();
-            if (!Dialo.isActive())
+            if (!Dialo.isActive()) // Quando o diálogo termina
             {
                 dialogueStarted = false;
+                dialogueEnded = true; // Marca que o diálogo terminou
                 playerMovement.canMove = true;
-                phaseManager.TriggerNextPhase(); 
+                phaseManager.TriggerNextPhase();
             }
         }
 
+        // Se o jogador sair do raio, o diálogo é encerrado e a interação é resetada
         if (!OnRadius && dialogueStarted)
         {
             Dialo.EndDialogue();
             dialogueStarted = false;
+            dialogueEnded = false; // Resetando a flag quando o jogador sai da área de interação
             playerMovement.enabled = true; // Reabilita o movimento do jogador caso saia do raio do NPC
         }
     }

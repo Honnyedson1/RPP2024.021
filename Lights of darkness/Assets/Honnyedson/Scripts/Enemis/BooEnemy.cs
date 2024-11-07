@@ -20,10 +20,10 @@ public class BooEnemy : MonoBehaviour
     // Referências para os objetos de luz
     public GameObject lightObjectLeft;
     public GameObject lightObjectRight;
+    private Vector2 initialPosition;
 
     // Referência ao Animator
     private Animator animator;
-
     private Coroutine attackCoroutine; // Para gerenciar a coroutine de ataque
     private bool isAttacking = false; // Para verificar se o inimigo está atacando
 
@@ -32,6 +32,7 @@ public class BooEnemy : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         boss = FindObjectOfType<BossController>();
+        initialPosition = transform.position;
 
         if (player == null)
         {
@@ -44,79 +45,73 @@ public class BooEnemy : MonoBehaviour
     }
 
     void Update()
+{
+    if (GameManager.Instance.Life <= 0)
     {
-        if (IsPlayerInArea())
+        transform.position = initialPosition;
+    }
+
+    if (IsPlayerInArea())
+    {
+        Vector3 directionToPlayer = player.transform.position - transform.position;
+        float distanceToPlayer = directionToPlayer.magnitude;
+        bool isPlayerLooking = IsPlayerLooking();
+
+        // Atualiza a animação dependendo do estado
+        if (Life <= 0)
         {
-            Vector3 directionToPlayer = player.transform.position - transform.position;
-            float distanceToPlayer = directionToPlayer.magnitude;
-            bool isPlayerLooking = IsPlayerLooking();
+            animator.SetInteger("Transition", 4); // Morre
+            return;
+        }
 
-            // Atualiza a animação dependendo do estado
-            if (Life <= 0)
+        if (!isPlayerLooking)
+        {
+            // Ativar a luz dependendo da direção do inimigo
+            if (directionToPlayer.x > 0)
             {
-                animator.SetInteger("Transition", 4); // Morre
-                return; // Para a execução se o inimigo estiver morrendo
-            }
-
-            if (!isPlayerLooking)
-            {
-                // Ativar a luz dependendo da direção do inimigo
-                if (directionToPlayer.x > 0) // O inimigo está à esquerda do jogador
-                {
-                    lightObjectRight.SetActive(true);
-                    lightObjectLeft.SetActive(true);
-                }
-                else // O inimigo está à direita do jogador
-                {
-                    lightObjectLeft.SetActive(true);
-                    lightObjectRight.SetActive(true);
-                }
-
-                // Muda a camada do inimigo para um grupo de colisão que não recebe dano
-                gameObject.layer = LayerMask.NameToLayer("Default");
-
-                // Move o inimigo
-                if (distanceToPlayer > stopDistance)
-                {
-                    MoveTowardsPlayer(directionToPlayer);
-                }
-                else
-                {
-                    animator.SetInteger("Transition", 0); // Idle
-                }
-
-                // Iniciar ataque se dentro do alcance de ataque
-                if (IsPlayerInAttackRange() && Time.time > lastAttackTime + attackCooldown)
-                {
-                    if (attackCoroutine == null) // Se não há ataque em execução
-                    {
-                        attackCoroutine = StartCoroutine(AttackCoroutine());
-                    }
-                }
-                else if (!isAttacking) // Se não está atacando, muda para idle
-                {
-                    animator.SetInteger("Transition", 0); // Idle
-                }
+                lightObjectRight.SetActive(true);
+                lightObjectLeft.SetActive(true);
             }
             else
             {
-                // Desativar luz e voltar a camada normal se o jogador está olhando
-                lightObjectLeft.SetActive(false);
-                lightObjectRight.SetActive(false);
-                gameObject.layer = LayerMask.NameToLayer("Enemy"); // Ou outra camada padrão
+                lightObjectLeft.SetActive(true);
+                lightObjectRight.SetActive(true);
+            }
+
+            // Muda a camada do inimigo para um grupo de colisão que não recebe dano
+            gameObject.layer = LayerMask.NameToLayer("Default");
+
+            // Mover o inimigo
+            if (distanceToPlayer > stopDistance)
+            {
+                MoveTowardsPlayer(directionToPlayer);
+            }
+            else
+            {
                 animator.SetInteger("Transition", 0); // Idle
-                // Cancelar ataque se o jogador estiver olhando
-                if (attackCoroutine != null)
+            }
+
+            // Iniciar ataque se dentro do alcance de ataque
+            if (IsPlayerInAttackRange() && Time.time > lastAttackTime + attackCooldown)
+            {
+                if (attackCoroutine == null)
                 {
-                    StopCoroutine(attackCoroutine);
-                    attackCoroutine = null;
+                    attackCoroutine = StartCoroutine(AttackCoroutine());
                 }
+            }
+            else if (!isAttacking)
+            {
+                animator.SetInteger("Transition", 1); // Correndo
             }
         }
         else
         {
-            animator.SetInteger("Transition", 0); // Idle se o jogador não estiver na área
-            // Cancelar ataque se o jogador não estiver na área
+            // Desativar luz e voltar a camada normal se o jogador está olhando
+            lightObjectLeft.SetActive(false);
+            lightObjectRight.SetActive(false);
+            gameObject.layer = LayerMask.NameToLayer("Enemy"); // Ou outra camada padrão
+            animator.SetInteger("Transition", 0); // Idle
+            // Cancelar ataque se o jogador estiver olhando
             if (attackCoroutine != null)
             {
                 StopCoroutine(attackCoroutine);
@@ -124,40 +119,44 @@ public class BooEnemy : MonoBehaviour
             }
         }
     }
+    else
+    {
+        animator.SetInteger("Transition", 0); // Idle se o jogador não estiver na área
+        // Cancelar ataque se o jogador não estiver na área
+        if (attackCoroutine != null)
+        {
+            StopCoroutine(attackCoroutine);
+            attackCoroutine = null;
+        }
+    }
+}
 
     private IEnumerator AttackCoroutine()
     {
-        isAttacking = true; // Define como atacando
-        yield return new WaitForSeconds(1.2f); // Espera 0.8 segundos antes de verificar se o jogador ainda está na área
-        if (IsPlayerInAttackRange()) // Verifica se o jogador ainda está na área de ataque
+        isAttacking = true; 
+        animator.SetTrigger("Attack");
+        yield return new WaitForSeconds(0.2f);
+        if (IsPlayerInAttackRange()) 
         {
-            animator.SetTrigger("Attack"); // Ativa o trigger de ataque
-            yield return new WaitForSeconds(0.3f);
             player.GetComponent<PlayerController>().TakeDmg(dmg);
             lastAttackTime = Time.time;
         }
-
-        yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para retornar ao estado Idle
-        isAttacking = false; // Define como não atacando
-        animator.SetInteger("Transition", 0); // Retorna para Idle
-
-        attackCoroutine = null; // Reseta a referência da coroutine após o ataque
+        yield return new WaitForSeconds(0.5f); 
+        isAttacking = false; 
+        animator.SetInteger("Transition", 0);
+        attackCoroutine = null; 
     }
 
     private void MoveTowardsPlayer(Vector3 directionToPlayer)
     {
         Vector3 targetPosition = player.transform.position;
         targetPosition.y += 1.4f;
-
-        // Define a altura mínima do fantasma como a altura do jogador
-        if (transform.position.y < player.transform.position.y)
-        {
-            targetPosition.y = player.transform.position.y;
-        }
-
+        
         // Mova o inimigo em direção ao jogador
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
-        animator.SetInteger("Transition", 1); // Andando
+        
+        // Ativa a animação de movimento enquanto o inimigo se move
+        animator.SetInteger("Transition", 1); // Correndo
 
         // Flip do sprite dependendo da direção
         if (directionToPlayer.x < 0)
@@ -186,7 +185,6 @@ public class BooEnemy : MonoBehaviour
     {
         PlayerController playerController = player.GetComponent<PlayerController>();
         Vector3 directionToEnemy = (transform.position - player.transform.position).normalized;
-
         return (playerController.isFacingRight && directionToEnemy.x > 0) ||
                (!playerController.isFacingRight && directionToEnemy.x < 0);
     }
@@ -196,10 +194,13 @@ public class BooEnemy : MonoBehaviour
         if (gameObject.layer == LayerMask.NameToLayer("Default")) // Apenas recebe dano na camada padrão
         {
             Life -= damage;
-            animator.SetTrigger("Hit");
             if (Life <= 0)
             {
                 Die();
+            }
+            else
+            {
+                animator.SetTrigger("Hit");
             }
         }
     }

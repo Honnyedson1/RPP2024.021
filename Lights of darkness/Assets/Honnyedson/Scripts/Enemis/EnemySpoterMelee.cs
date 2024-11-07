@@ -12,16 +12,18 @@ public class Enemy : MonoBehaviour
     private bool isAttacking = false; 
     private bool isdead;
 
+    private Animator animator;
+
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        animator = GetComponent<Animator>(); 
     }
 
     void Update()
     {
         if (InimigoMovimentoLinear.PlayerVivo == false || InimigoRaycastVisao.PlayerVivo == false)
         {
-            Debug.Log("Morreu");
             Destroy(this.gameObject);
         }
 
@@ -33,11 +35,14 @@ public class Enemy : MonoBehaviour
                 if (!isAttacking && distanceToPlayer <= followDistance)
                 {
                     FollowPlayerOnXAxis();
+                    animator.SetBool("isWalking", true); 
                 }
                 else
                 {
-                    Debug.Log("Jogador saiu do campo de visão do inimigo.");
+                    animator.SetBool("isWalking", false); 
                 }
+
+                FlipTowardsPlayer(); 
             }    
         }
     }
@@ -45,10 +50,12 @@ public class Enemy : MonoBehaviour
     public void takedmg(int dmg)
     {
         vida -= dmg;
+        animator.SetTrigger("TakeDamage");
         if (vida <= 0)
         {
-            Destroy(gameObject, 2f);
             isdead = true;
+            animator.SetTrigger("Die"); 
+            Destroy(gameObject, 2f);
         }
     }
 
@@ -58,9 +65,9 @@ public class Enemy : MonoBehaviour
         transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
 
         float distanceToPlayer = Mathf.Abs(player.position.x - transform.position.x); 
-        float heightDifference = Mathf.Abs(player.position.y - transform.position.y); // Calcula a diferença de altura
+        float heightDifference = Mathf.Abs(player.position.y - transform.position.y);
 
-        if (distanceToPlayer <= attackDistance && heightDifference < 1f) // Verifica se a altura é similar
+        if (distanceToPlayer <= attackDistance && heightDifference < 1f)
         {
             StartCoroutine(PrepareAttack());
         }
@@ -68,20 +75,19 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator PrepareAttack()
     {
-        isAttacking = true; 
+        isAttacking = true;
+        animator.SetBool("isWalking", false); 
+        animator.SetTrigger("Attack"); 
+        yield return new WaitForSeconds(0.15f);
         float distanceToPlayer = Mathf.Abs(player.position.x - transform.position.x);
         float heightDifference = Mathf.Abs(player.position.y - transform.position.y);
 
-        if (distanceToPlayer <= attackDistance && heightDifference < 1f) // Confirma novamente a posição antes do ataque
+        if (distanceToPlayer <= 2 && heightDifference < 1f)
         {
             AttackPlayer();
         }
-        else
-        {
-            Debug.Log("Jogador saiu da área de ataque ou está pulando. Ataque cancelado.");
-        }
         yield return new WaitForSeconds(1);
-        isAttacking = false; 
+        isAttacking = false;
     }
 
     private void AttackPlayer()
@@ -92,7 +98,19 @@ public class Enemy : MonoBehaviour
             playerHealth.TakeDmg(100);
         }
     }
-    
+
+    private void FlipTowardsPlayer()
+    {
+        if (player.position.x < transform.position.x)
+        {
+            transform.eulerAngles = new Vector3(0, 0, 0); 
+        }
+        else
+        {
+            transform.eulerAngles = new Vector3(0, 180, 0);
+        }
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
