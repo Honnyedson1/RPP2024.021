@@ -37,6 +37,13 @@ public class PlayerController : MonoBehaviour
     private bool isMeleeAttack = true;
     private float lastAttackTime = 0f; 
     private int direction = 1; 
+    
+    [Header("Dash Settings")]
+    public float dashSpeed = 20f;
+    public float dashDuration = 0.2f;
+    private bool isDashing = false;
+    private float dashCooldown = 1f;
+    private float lastDashTime;
 
     
     private static bool isFrozen = false;
@@ -57,6 +64,7 @@ public class PlayerController : MonoBehaviour
         {
             if (!isFrozen)
             {
+                Dash();
                 CheckGround(); 
                 WallJump(); 
                 Move();
@@ -96,6 +104,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void Dash()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + dashCooldown && !isDashing)
+        {
+            StartCoroutine(PerformDash());
+            lastDashTime = Time.time;
+        }
+    }
+
+    IEnumerator PerformDash()
+    {
+        isDashing = true;
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0;
+        rb.velocity = new Vector2(isFacingRight ? dashSpeed : -dashSpeed, 0);
+        anim.SetInteger("Transition", 6); // Transição para o dash
+    
+        yield return new WaitForSeconds(dashDuration);
+    
+        rb.gravityScale = originalGravity;
+        isDashing = false;
+        anim.SetInteger("Transition", 0); // Volta para a animação padrão
+    }
     void Move()
     {
         float horizontal = Input.GetAxis("Horizontal");
@@ -262,10 +293,21 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator RangedAttack()
     {
+        // Instancia a flecha na posição do ponto de ataque
         GameObject arrow = Instantiate(arrowPrefab, attackPoint.position, Quaternion.identity);
         Rigidbody2D arrowRb = arrow.GetComponent<Rigidbody2D>();
         GameManager.Instance.QFlechas--;
+
+        // Define a direção da flecha com base no valor de "direction"
         arrowRb.velocity = new Vector2(direction * arrowSpeed, 0);
+
+        // Ajusta a rotação da flecha para que ela aponte para a direção em que está sendo disparada
+        if (direction < 0)
+        {
+            arrow.transform.rotation = Quaternion.Euler(0, 0, 180);
+        }
+
+        // Destroi a flecha após 2 segundos
         Destroy(arrow, 2f);
         yield return null;
     }

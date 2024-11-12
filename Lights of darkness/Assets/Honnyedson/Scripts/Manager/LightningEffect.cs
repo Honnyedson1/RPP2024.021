@@ -23,7 +23,7 @@ public class LightningFlash : MonoBehaviour
         ScheduleNextFlash();
         
         // Configura o AudioSource
-        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource = gameObject.GetComponent<AudioSource>();
         audioSource.clip = thunderSound;
     }
 

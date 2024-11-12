@@ -6,6 +6,8 @@ public class Arrow : MonoBehaviour
 {
     public int damage = 1; // Quantidade de dano que a flecha causa
     public Light2D arrowLight; // Referência ao componente Light2D
+    public bool stop; // Flag para indicar se a flecha deve parar
+    private Rigidbody2D rb; // Referência ao Rigidbody2D para parar a flecha
 
     private void Start()
     {
@@ -21,14 +23,21 @@ public class Arrow : MonoBehaviour
         {
             arrowLight.enabled = false; // Desativa a luz
         }
+
+        // Obtém o Rigidbody2D para manipular o movimento
+        rb = GetComponent<Rigidbody2D>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        // Verifica se a colisão ocorreu com objetos nas camadas 6 ou 7
         if (other.gameObject.layer == 7 || other.gameObject.layer == 6)
         {
-            Destroy(gameObject);
+            stop = true;
+            rb.velocity = Vector2.zero; // Para o movimento da flecha
+            rb.isKinematic = true; // Desativa a física da flecha
         }
+
         // Verifica se atingiu um BooEnemy
         BooEnemy booEnemy = other.GetComponent<BooEnemy>();
         if (booEnemy != null)
@@ -44,6 +53,8 @@ public class Arrow : MonoBehaviour
             dodgeEnemy.OnArrowHit();
             Destroy(gameObject);
         }
+
+        // Verifica se atingiu um Enemy genérico
         Enemy enemy = other.GetComponent<Enemy>();
         if (enemy != null)
         {
