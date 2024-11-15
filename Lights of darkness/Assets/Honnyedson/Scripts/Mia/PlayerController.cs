@@ -36,14 +36,17 @@ public class PlayerController : MonoBehaviour
     public float arrowSpeed = 10f;
     private bool isMeleeAttack = true;
     private float lastAttackTime = 0f; 
-    private int direction = 1; 
-    
-    [Header("Dash Settings")]
+    private int direction = 1;
+
+    [Header("Double Jump Settings && Dash")]
+    public bool doubleJumpUnlocked = false; // Para verificar se o jogador desbloqueou o pulo duplo
+    private bool canDoubleJump = false;
+    public bool dashUnlocked = false;
     public float dashSpeed = 20f;
     public float dashDuration = 0.2f;
     private bool isDashing = false;
     private float dashCooldown = 1f;
-    private float lastDashTime;
+    private float lastDashTime;// Direção do dash (definida pelo jogador)
 
     
     private static bool isFrozen = false;
@@ -100,35 +103,43 @@ public class PlayerController : MonoBehaviour
         {
             isJumping = false;
             isWallSliding = false;
-            isWallJumping = false; 
+            isWallJumping = false;
+            canDoubleJump = GameManager.Instance.hasDoubleJump; // Permite o pulo duplo quando o jogador está no chão
         }
     }
 
     void Dash()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + dashCooldown && !isDashing)
+        if (GameManager.Instance.hasDash == true && Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + GameManager.Instance.TimeToNextDesh && !isDashing)
         {
             StartCoroutine(PerformDash());
             lastDashTime = Time.time;
         }
     }
 
+
     IEnumerator PerformDash()
     {
         isDashing = true;
         float originalGravity = rb.gravityScale;
-        rb.gravityScale = 0;
+        rb.gravityScale = 0; // Desativa temporariamente a gravidade para um dash horizontal puro
+
+        // Define a velocidade do dash diretamente, em linha reta na direção em que o jogador está virado
         rb.velocity = new Vector2(isFacingRight ? dashSpeed : -dashSpeed, 0);
-        anim.SetInteger("Transition", 6); // Transição para o dash
-    
+        anim.SetInteger("Transition", 7); // Animação de dash
+
+        // Impede movimento até que o dash termine
         yield return new WaitForSeconds(dashDuration);
-    
-        rb.gravityScale = originalGravity;
+
+        rb.gravityScale = originalGravity; // Restaura a gravidade ao final do dash
         isDashing = false;
-        anim.SetInteger("Transition", 0); // Volta para a animação padrão
+        anim.SetInteger("Transition", 0); // Retorna à animação padrão
     }
+
     void Move()
     {
+        if (isDashing) return; // Evita interferência no dash
+
         float horizontal = Input.GetAxis("Horizontal");
         if (!isWallJumping)
         {
@@ -160,21 +171,27 @@ public class PlayerController : MonoBehaviour
             if (isGrounded)
             {
                 isJumping = true;
+                canDoubleJump = GameManager.Instance.hasDoubleJump; // Permite o pulo duplo se desbloqueado
                 anim.SetInteger("Transition", 1); 
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             }
             else if (isTouchingWall && !isGrounded)
             {
-                if (!isWallJumping) 
+                if (!isWallJumping)
                 {
                     isJumping = true;
-                    isWallJumping = true; 
+                    isWallJumping = true;
                     anim.SetInteger("Transition", 1);
                     Vector2 force = new Vector2(wallJumpForceX * -direction, wallJumpForceY);
                     rb.velocity = force;
-
                     StartCoroutine(EndWallJump());
                 }
+            }
+            else if (canDoubleJump && isTouchingWall == false)
+            {
+                canDoubleJump = false; // Desativa o pulo duplo após o uso
+                anim.SetInteger("Transition", 1);
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             }
         }
     }
@@ -250,7 +267,9 @@ public class PlayerController : MonoBehaviour
     public void SetPlayerControl(bool isEnabled)
     {
         canMove = isEnabled;
+        isFrozen = !isEnabled;
     }
+
     IEnumerator EndWallJump()
     {
         yield return new WaitForSeconds(0.5f);
@@ -271,6 +290,7 @@ public class PlayerController : MonoBehaviour
             DodgeEnemy enemy2 = enemy.GetComponent<DodgeEnemy>();
             BossController boss = enemy.GetComponent<BossController>();
             Enemy EnemySpawner = enemy.GetComponent<Enemy>();
+            MiniBoss2D Mini = enemy.GetComponent<MiniBoss2D>();
             if (booEnemy != null)
             {
                 booEnemy.TakeDamage(damage);
@@ -287,6 +307,11 @@ public class PlayerController : MonoBehaviour
             if (EnemySpawner!=null)
             {
                 EnemySpawner.takedmg(damage);
+            }
+
+            if (Mini != null)
+            {
+                Mini.TakeDamage(damage);
             }
         }
     }
@@ -314,10 +339,15 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDmg(int dmg)
     {
-        GameManager.Instance.Life -= dmg;
-        if (GameManager.Instance.Life <= 0)
+        if (GameManager.Instance.Life > 0) // Garante que só aplicamos dano se ainda houver vida
         {
-            StartCoroutine(DieAndRespawn());
+            GameManager.Instance.Life -= damage;
+            anim.SetTrigger("Hit"); // Ativa a animação de hit
+
+            if (GameManager.Instance.Life <= 0)
+            {
+                StartCoroutine(DieAndRespawn());
+            }
         }
     }
 
@@ -325,11 +355,12 @@ public class PlayerController : MonoBehaviour
     {
         isFrozen = true;
         rb.velocity = Vector2.zero;
-        yield return new WaitForSeconds(1);
-        anim.SetInteger("Transition", 0);
-        isFrozen = false;
-    }
+        anim.SetTrigger("Die"); // Ativa a animação de morte
 
+        yield return new WaitForSeconds(1); // Tempo para a animação de morte
+
+        GameManager.Instance.ShowRespawnPanel(); // Mostra o painel de respawn
+    }
     public IEnumerator FreezeCoroutine()
     {
         isFrozen = true;

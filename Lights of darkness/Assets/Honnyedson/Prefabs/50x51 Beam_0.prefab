@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7256767077766048154
+--- !u!1 &4356075227728155916
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,40 +8,40 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5074959143417799074}
-  - component: {fileID: 3226950256826556499}
-  - component: {fileID: 9171506530706343459}
-  - component: {fileID: 4484392335742529213}
-  - component: {fileID: 5260876128428530405}
+  - component: {fileID: 5983413539772044967}
+  - component: {fileID: 1561115642732539947}
+  - component: {fileID: 8333666590541530209}
+  - component: {fileID: -1009357585515774398}
+  - component: {fileID: 7054869903793809043}
   m_Layer: 0
-  m_Name: Curandeira
-  m_TagString: NPC
+  m_Name: 50x51 Beam_0
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5074959143417799074
+--- !u!4 &5983413539772044967
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7256767077766048154}
+  m_GameObject: {fileID: 4356075227728155916}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -63.08, y: -2.91, z: 0}
-  m_LocalScale: {x: 5.0054984, y: 5.0054984, z: 5.0054984}
+  m_LocalPosition: {x: -37.148888, y: -3.2470865, z: 0}
+  m_LocalScale: {x: 5.4026737, y: 8.963016, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &3226950256826556499
+--- !u!212 &1561115642732539947
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7256767077766048154}
+  m_GameObject: {fileID: 4356075227728155916}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -75,25 +75,46 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 6
-  m_Sprite: {fileID: -1195492910, guid: 8525cc2b8a0cc28439a14368e92f9657, type: 3}
+  m_SortingOrder: 8
+  m_Sprite: {fileID: -1318516224, guid: ee282f8870367614a8414b369611a7ad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 0.44, y: 0.51}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &9171506530706343459
+--- !u!95 &8333666590541530209
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4356075227728155916}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1fdeb5978474b254490c18b74589b990, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!61 &-1009357585515774398
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7256767077766048154}
+  m_GameObject: {fileID: 4356075227728155916}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -119,64 +140,30 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.021513559, y: 0.017927632}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.32, y: 0.48}
-    newSize: {x: 1, y: 2}
+    oldSize: {x: 0.44, y: 0.51}
+    newSize: {x: 0.44, y: 0.51}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.23269247, y: 0.41518727}
+  m_Size: {x: 0.44, y: 0.51}
   m_EdgeRadius: 0
---- !u!114 &4484392335742529213
+--- !u!114 &7054869903793809043
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7256767077766048154}
+  m_GameObject: {fileID: 4356075227728155916}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4395f5b6323450546b4860278602fac1, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d6c7f6ae58670c46a6e6e5e0edd2227, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Profile: {fileID: 21300000, guid: 620b6d8db50227f4da11fd3e4cb9de7b, type: 3}
-  Speachtext:
-  - Ainda Continuarei Vagando Por Ai.
-  - "Seu arco e sua espada, embora poderosos, ainda n\xE3o est\xE3o no auge de seu
-    potencial. Eu posso fortalec\xEA-los ainda mais"
-  - "H\xE1 alguns saquinhos com itens espalhado por ai"
-  - "oque h\xE1 dentro \xE9 muito valioso, ent\xE3o traga-os para mim que te deixarei
-    Mais forte "
-  NameN: Curandeira
-  radius: 3.09
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  Dialo: {fileID: 0}
-  OnRadius: 0
---- !u!95 &5260876128428530405
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7256767077766048154}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ba5d6c2ccbe0c5c428650c5d191c8446, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  damage: 3
+  duration: 1.5

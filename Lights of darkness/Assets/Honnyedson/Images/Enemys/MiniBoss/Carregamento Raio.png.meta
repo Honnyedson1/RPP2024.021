@@ -1,0 +1,827 @@
+fileFormatVersion: 2
+guid: 075f551bc5b766e41b3c7f063952680b
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Carregamento Raio_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 193
+        width: 20
+        height: 24
+      alignment: 9
+      pivot: {x: 0.723952, y: 0.008544286}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e88e0234cfda1743a53d6c082fb2a76
+      internalID: 1775613262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_1
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 193
+        width: 25
+        height: 27
+      alignment: 9
+      pivot: {x: 0.69953555, y: 0.0069354023}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e91ab7fa7fbe3eb43898889289387ebf
+      internalID: 2058691774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_2
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 193
+        width: 25
+        height: 28
+      alignment: 9
+      pivot: {x: 0.70109373, y: 0.006738935}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6fd2ee88ba5d58d40b7d997d4a031d53
+      internalID: 730647113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_3
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 195
+        width: 25
+        height: 28
+      alignment: 9
+      pivot: {x: 0.7022522, y: 0.008553096}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6a867c3eda049e24e9fc9cb2df16bf02
+      internalID: 1245323224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_4
+      rect:
+        serializedVersion: 2
+        x: 565
+        y: 193
+        width: 25
+        height: 30
+      alignment: 9
+      pivot: {x: 0.7016211, y: 0.005924479}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cfa9f7562c6ccf14bb138c4bf62861f7
+      internalID: 488092742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_5
+      rect:
+        serializedVersion: 2
+        x: 730
+        y: 194
+        width: 25
+        height: 30
+      alignment: 9
+      pivot: {x: 0.70010257, y: 0.006273397}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c30283718a2bab40859ef3a13a16912
+      internalID: -1739932825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_6
+      rect:
+        serializedVersion: 2
+        x: 877
+        y: 197
+        width: 25
+        height: 31
+      alignment: 9
+      pivot: {x: 0.70029294, y: 0.006294497}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e517876c7cfbbe43af7186dcfa26712
+      internalID: 482024868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_7
+      rect:
+        serializedVersion: 2
+        x: 981
+        y: 193
+        width: 25
+        height: 29
+      alignment: 9
+      pivot: {x: 0.70266116, y: 0.0050648656}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3386204a1c091fb40938819c35b4bbbb
+      internalID: 1281692325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 131
+        width: 22
+        height: 28
+      alignment: 9
+      pivot: {x: 0.6167113, y: 0.0024659294}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6436954a6ead39946a8278f530dc1498
+      internalID: -670811627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_9
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 131
+        width: 24
+        height: 28
+      alignment: 9
+      pivot: {x: 0.6505149, y: 0.01398577}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5eb775e2315e6ac43b737c0b04b88e7d
+      internalID: -1648058331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_10
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 131
+        width: 26
+        height: 28
+      alignment: 9
+      pivot: {x: 0.59513736, y: 0.0030784607}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e825ecdc7fa1d44d98464de49e13670
+      internalID: -1172467922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_11
+      rect:
+        serializedVersion: 2
+        x: 392
+        y: 133
+        width: 27
+        height: 25
+      alignment: 9
+      pivot: {x: 0.61575884, y: 0.008292236}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c56136ef6f188c54c956ac0eb1369d64
+      internalID: 1160278445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_12
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 131
+        width: 30
+        height: 25
+      alignment: 9
+      pivot: {x: 0.52366537, y: 0.01154602}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e9658a493f1a0241b77f24a3470636e
+      internalID: 857597663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_13
+      rect:
+        serializedVersion: 2
+        x: 725
+        y: 132
+        width: 26
+        height: 24
+      alignment: 9
+      pivot: {x: 0.4580061, y: 0.007082621}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0bb03bb2279257c478356d29d6ac3141
+      internalID: -38454636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_14
+      rect:
+        serializedVersion: 2
+        x: 873
+        y: 135
+        width: 17
+        height: 24
+      alignment: 9
+      pivot: {x: 0.85058236, y: 0.004166285}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 518e64f38e2bb7e4c8f85a5598e192e1
+      internalID: 96536348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_15
+      rect:
+        serializedVersion: 2
+        x: 977
+        y: 131
+        width: 17
+        height: 24
+      alignment: 9
+      pivot: {x: 0.7930477, y: 0.0063730874}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7ac2c256d5c4954cb052c5ccf64b77f
+      internalID: -1918408342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_16
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 59
+        width: 17
+        height: 25
+      alignment: 9
+      pivot: {x: 0.6804345, y: 0.009072571}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6cd7f40e8d4d3b545a20ae6573131207
+      internalID: 716552840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_17
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 59
+        width: 29
+        height: 27
+      alignment: 9
+      pivot: {x: 0.46501923, y: 0.0925779}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d84f7e21d5af35748a059f866fa4ee4f
+      internalID: 528361642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_18
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 59
+        width: 28
+        height: 27
+      alignment: 9
+      pivot: {x: 0.4821423, y: 0.04444433}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b862454bda979e74fbef58d5e12742f5
+      internalID: -1477419041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_19
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 61
+        width: 27
+        height: 27
+      alignment: 9
+      pivot: {x: 0.6150264, y: 0.045769446}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 040c19f1cefcef14bae0b41dffa66f7c
+      internalID: -1876303532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_21
+      rect:
+        serializedVersion: 2
+        x: 563
+        y: 59
+        width: 29
+        height: 27
+      alignment: 9
+      pivot: {x: 0.6032631, y: 0.053165436}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63a21e76794a2ed428f20c400acdac7c
+      internalID: -799496693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_22
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 60
+        width: 30
+        height: 28
+      alignment: 9
+      pivot: {x: 0.72069293, y: 0.0536029}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22f1a64cb8797c049b1907de8272e664
+      internalID: -1349252004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_23
+      rect:
+        serializedVersion: 2
+        x: 873
+        y: 63
+        width: 36
+        height: 28
+      alignment: 9
+      pivot: {x: 0.5411479, y: 0.04940333}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1915dca684ad9474e9da9740539bc3ab
+      internalID: 925358582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_25
+      rect:
+        serializedVersion: 2
+        x: 980
+        y: 59
+        width: 29
+        height: 27
+      alignment: 9
+      pivot: {x: 0.5709502, y: 0.05110352}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bbc8ddf2bbce1a54483872713df99361
+      internalID: -781735197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_26
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 0
+        width: 101
+        height: 35
+      alignment: 9
+      pivot: {x: 0.47047514, y: 0.006033837}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 131e8fe684cb76b48aa73a84189adb25
+      internalID: -752628412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_29
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 0
+        width: 125
+        height: 33
+      alignment: 9
+      pivot: {x: 0.5319966, y: 0.0069468278}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0fdf4956d622744e91d4ee35665e98a
+      internalID: -1334832730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_31
+      rect:
+        serializedVersion: 2
+        x: 816
+        y: 0
+        width: 100
+        height: 37
+      alignment: 9
+      pivot: {x: 0.8246228, y: 0.114801444}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1eab953b4c8af194e90ce377959e7855
+      internalID: 1193456470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_32
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 0
+        width: 27
+        height: 27
+      alignment: 9
+      pivot: {x: 0.61010796, y: 0.055093225}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c92c1d2ea4b6df4cb68f831d7377934
+      internalID: 1633374420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_34
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 0
+        width: 133
+        height: 36
+      alignment: 9
+      pivot: {x: 0.42516127, y: 0.004803556}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec67f4fb433c66c4dbc9b4dea9e6c294
+      internalID: -888694623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_36
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 2
+        width: 142
+        height: 33
+      alignment: 9
+      pivot: {x: 0.42640278, y: 0.004538565}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 944cf163a6a5a35439fe57ad2e74d7fb
+      internalID: -626231006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Carregamento Raio_38
+      rect:
+        serializedVersion: 2
+        x: 684
+        y: 0
+        width: 112
+        height: 28
+      alignment: 9
+      pivot: {x: 0.59553254, y: 0.042656846}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 557dd330629e8a549a814359713a316c
+      internalID: -2093550035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Carregamento Raio_0: 1775613262
+      Carregamento Raio_1: 2058691774
+      Carregamento Raio_10: -1172467922
+      Carregamento Raio_11: 1160278445
+      Carregamento Raio_12: 857597663
+      Carregamento Raio_13: -38454636
+      Carregamento Raio_14: 96536348
+      Carregamento Raio_15: -1918408342
+      Carregamento Raio_16: 716552840
+      Carregamento Raio_17: 528361642
+      Carregamento Raio_18: -1477419041
+      Carregamento Raio_19: -1876303532
+      Carregamento Raio_2: 730647113
+      Carregamento Raio_20: -1413703943
+      Carregamento Raio_21: -799496693
+      Carregamento Raio_22: -1349252004
+      Carregamento Raio_23: 925358582
+      Carregamento Raio_24: 1577090191
+      Carregamento Raio_25: -781735197
+      Carregamento Raio_26: -752628412
+      Carregamento Raio_27: -1618100642
+      Carregamento Raio_28: -109078977
+      Carregamento Raio_29: -1334832730
+      Carregamento Raio_3: 1245323224
+      Carregamento Raio_30: -170084860
+      Carregamento Raio_31: 1193456470
+      Carregamento Raio_32: 1633374420
+      Carregamento Raio_33: -1227098375
+      Carregamento Raio_34: -888694623
+      Carregamento Raio_35: 336165995
+      Carregamento Raio_36: -626231006
+      Carregamento Raio_37: 793018778
+      Carregamento Raio_38: -2093550035
+      Carregamento Raio_39: 941080505
+      Carregamento Raio_4: 488092742
+      Carregamento Raio_40: -934616223
+      Carregamento Raio_41: 1572456238
+      Carregamento Raio_42: 1802076867
+      Carregamento Raio_43: 1033194526
+      Carregamento Raio_44: -1683966024
+      Carregamento Raio_45: -1947497857
+      Carregamento Raio_46: 753103859
+      Carregamento Raio_47: -480639331
+      Carregamento Raio_48: -977258991
+      Carregamento Raio_5: -1739932825
+      Carregamento Raio_6: 482024868
+      Carregamento Raio_7: 1281692325
+      Carregamento Raio_8: -670811627
+      Carregamento Raio_9: -1648058331
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

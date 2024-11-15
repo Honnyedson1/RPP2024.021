@@ -1,0 +1,457 @@
+fileFormatVersion: 2
+guid: 653a5ab9578a7ff4ea7814345ed42d6c
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Curandose_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 45
+        width: 21
+        height: 29
+      alignment: 9
+      pivot: {x: 0.7370688, y: 0.012516284}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b383fc86cfdb55449eb6690ac0a5023
+      internalID: 526016319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_1
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 46
+        width: 22
+        height: 27
+      alignment: 9
+      pivot: {x: 0.7523415, y: 0.015023973}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 208c2a530d60e3e4eb417bc44b948856
+      internalID: -676467336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_2
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 45
+        width: 24
+        height: 28
+      alignment: 9
+      pivot: {x: 0.7745082, y: 0.01423318}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2d864c04b23ee44ab2c890e089141f8
+      internalID: -1400626262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 47
+        width: 28
+        height: 27
+      alignment: 9
+      pivot: {x: 0.7688506, y: 0.019119263}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c1dd3f763eb1124fb1b6a6720c183e0
+      internalID: 1601025282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_4
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 47
+        width: 31
+        height: 27
+      alignment: 9
+      pivot: {x: 0.72501004, y: 0.024235055}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e0d734de190e374a93bc00420f7e6da
+      internalID: 1736319127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 47
+        width: 33
+        height: 30
+      alignment: 9
+      pivot: {x: 0.7113731, y: 0.014259338}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 544f857b8f7c04b44948c5ad5e4b7d98
+      internalID: 1143807128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_6
+      rect:
+        serializedVersion: 2
+        x: 393
+        y: 47
+        width: 23
+        height: 28
+      alignment: 9
+      pivot: {x: 0.6711545, y: 0.014094898}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 603e24eaea0dee943b27045099f9a9b7
+      internalID: 941458350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_7
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 0
+        width: 32
+        height: 28
+      alignment: 9
+      pivot: {x: 0.57221013, y: 0.0135315815}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e25004428acdac04090870a2780e56fb
+      internalID: -350191751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_8
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 1
+        width: 31
+        height: 28
+      alignment: 9
+      pivot: {x: 0.8216969, y: 0.013531362}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5780bc96d34607942884911b10417ec0
+      internalID: -1844727865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_9
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 0
+        width: 40
+        height: 27
+      alignment: 9
+      pivot: {x: 0.6611427, y: 0.022540245}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a92be17f6465bd5409915b19d99e7bc1
+      internalID: 2082910361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_10
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 2
+        width: 21
+        height: 27
+      alignment: 9
+      pivot: {x: 0.691048, y: 0.0067159776}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19410b4f8d09eb64689a0b5867023a78
+      internalID: -1371150227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_11
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 2
+        width: 30
+        height: 27
+      alignment: 9
+      pivot: {x: 0.6180023, y: 0.018497352}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 06a13ddcc71d420429003fa4fed235d8
+      internalID: 1264116361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_12
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 2
+        width: 23
+        height: 31
+      alignment: 9
+      pivot: {x: 0.7653729, y: 0.013684334}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c585eb3b45efce04c9035b3e4548d2c5
+      internalID: 1355254368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_13
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 2
+        width: 22
+        height: 27
+      alignment: 9
+      pivot: {x: 0.6581379, y: 0.013976203}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ab6c341a18a1454597c4dd178d9853a
+      internalID: -1949681990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Curandose_14
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 2
+        width: 20
+        height: 27
+      alignment: 9
+      pivot: {x: 0.7258316, y: 0.016236782}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de8efdd9bc7b7b84d9beacbdc253a957
+      internalID: 2083678391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Curandose_0: 526016319
+      Curandose_1: -676467336
+      Curandose_10: -1371150227
+      Curandose_11: 1264116361
+      Curandose_12: 1355254368
+      Curandose_13: -1949681990
+      Curandose_14: 2083678391
+      Curandose_2: -1400626262
+      Curandose_3: 1601025282
+      Curandose_4: 1736319127
+      Curandose_5: 1143807128
+      Curandose_6: 941458350
+      Curandose_7: -350191751
+      Curandose_8: -1844727865
+      Curandose_9: 2082910361
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -22,11 +22,13 @@ public class GameManager : MonoBehaviour
     public Image SwordSelected;
     public bool EstouComArco;
     public int QFlechas = 20;
-
+    public bool hasDash = false;
+    public bool hasDoubleJump = false;
+    public float TimeToNextDesh = 10f;
     public Text LifeText;
     public Text FlechasText;
     public Text Scoretext;
-
+    
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -56,7 +58,7 @@ public class GameManager : MonoBehaviour
             PauseGame();
         }
 
-        LifeText.text = Life.ToString();
+        LifeText.text = $"{Life}/{VidaMaxima}";
         FlechasText.text = QFlechas.ToString();
         Scoretext.text = score.ToString();
 
@@ -70,12 +72,8 @@ public class GameManager : MonoBehaviour
             ArcoSelected.gameObject.SetActive(true);
             SwordSelected.gameObject.SetActive(false);
         }
-
-        if (Life <= 0)
-        {
-            ShowRespawnPanel();
-        }
     }
+
     
     public void SetCheckpoint(Vector3 position)
     {
@@ -88,13 +86,30 @@ public class GameManager : MonoBehaviour
         Life = VidaMaxima; // Restaura a vida ao máximo
         RespawnPanel.SetActive(false); // Esconde o painel de respawn
         Time.timeScale = 1; // Retorna o tempo normal
+
+        // Libera o jogador para mover-se novamente
+        var playerController = Player.GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            playerController.SetPlayerControl(true); // Habilita o controle do jogador
+        }
     }
 
-    private void ShowRespawnPanel()
+    public void ShowRespawnPanel()
     {
-        RespawnPanel.SetActive(true); // Mostra o painel de respawn
-        Time.timeScale = 0; // Pausa o jogo
+        if (!RespawnPanel.activeSelf) // Só exibe se ainda não estiver ativo
+        {
+            RespawnPanel.SetActive(true);
+            Time.timeScale = 0;
+
+            var playerController = Player.GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                playerController.SetPlayerControl(false); // Desativa os controles do jogador
+            }
+        }
     }
+
 
     public void ReturnToMenu()
     {

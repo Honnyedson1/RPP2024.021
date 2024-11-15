@@ -45,6 +45,13 @@ public class Arrow : MonoBehaviour
             booEnemy.TakeDamage(damage);
             Destroy(gameObject); // Destruir a flecha após causar dano
         }
+        // Verifica se atingiu um BooEnemy
+        MiniBoss2D Mini = other.GetComponent<MiniBoss2D>();
+        if (Mini != null)
+        {
+            Mini.TakeDamage(damage);
+            Destroy(gameObject); // Destruir a flecha após causar dano
+        }
 
         // Verifica se atingiu um DodgeEnemy
         DodgeEnemy dodgeEnemy = other.GetComponent<DodgeEnemy>();

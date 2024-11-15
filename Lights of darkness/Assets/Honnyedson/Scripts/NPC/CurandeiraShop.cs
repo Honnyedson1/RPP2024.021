@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // Importação para manipular a interface do usuário
+using UnityEngine.UI;
 
 public class ShopNPC : MonoBehaviour
 {
-    private Image shopUI; // Referência à imagem da loja
-    private Button shopButton; // Referência ao botão para abrir a loja
+    public Image shopUI; // Referência ao painel da loja
     public Sprite Profile;
     public string[] Speachtext;
     public string NameN;
@@ -27,23 +26,10 @@ public class ShopNPC : MonoBehaviour
         {
             shopUI = shopUIObject.GetComponent<Image>(); // Obtém a referência ao componente Image
             shopUIObject.SetActive(false); // Certifica-se de que a loja começa fechada
-            
-            // Encontra automaticamente o botão dentro da loja
-            Button[] buttons = shopUIObject.GetComponentsInChildren<Button>(true); // Procura por todos os botões, incluindo os inativos
-            foreach (Button button in buttons)
-            {
-                if (button.name == "ShopButton") // Certifique-se de que o botão dentro da loja se chama "ShopButton"
-                {
-                    shopButton = button;
-                    break;
-                }
-            }
-
-            if (shopButton != null)
-            {
-                shopButton.gameObject.SetActive(false); // Esconde o botão no início
-                shopButton.onClick.AddListener(OpenShop); // Adiciona o evento de clique ao botão
-            }
+        }
+        else
+        {
+            Debug.LogError("Painel 'ShopUI' não encontrado na cena.");
         }
     }
 
@@ -51,20 +37,10 @@ public class ShopNPC : MonoBehaviour
     {
         Dialo = FindObjectOfType<Dialogue>();
 
-        // Mostra o botão de loja se o jogador estiver na área
-        if (OnRadius && !dialogueStarted)
+        // Controle de abertura/fechamento da loja com a tecla TAB
+        if (OnRadius && Input.GetKeyDown(KeyCode.Tab))
         {
-            if (shopButton != null)
-            {
-                shopButton.gameObject.SetActive(true); // Mostra o botão se o jogador estiver na área
-            }
-        }
-        else
-        {
-            if (shopButton != null)
-            {
-                shopButton.gameObject.SetActive(false); // Esconde o botão se o jogador não estiver na área
-            }
+            ToggleShop(); // Alterna entre abrir e fechar a loja
         }
 
         // Lógica para o diálogo
@@ -85,7 +61,7 @@ public class ShopNPC : MonoBehaviour
 
         if (!OnRadius && dialogueStarted)
         {
-            Dialo.EndDialogue(); 
+            Dialo.EndDialogue();
             dialogueStarted = false;
         }
     }
@@ -106,18 +82,15 @@ public class ShopNPC : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, radius);
     }
 
-    private void OpenShop()
+    private void ToggleShop()
     {
-        bool isActive = shopUI.gameObject.activeSelf;
-        shopUI.gameObject.SetActive(!isActive); // Alterna a visibilidade do painel da loja
+        if (shopUI != null)
+        {
+            bool isActive = shopUI.gameObject.activeSelf;
+            shopUI.gameObject.SetActive(!isActive); // Alterna a visibilidade do painel da loja
 
-        if (!isActive)
-        {
-            Time.timeScale = 0; // Pausa o jogo ao abrir a loja
-        }
-        else
-        {
-            Time.timeScale = 1; // Retoma o jogo ao fechar a loja
+            // Pausa ou retoma o jogo dependendo do estado da loja
+            Time.timeScale = isActive ? 1 : 0;
         }
     }
 }
