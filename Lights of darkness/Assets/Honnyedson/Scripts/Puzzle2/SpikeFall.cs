@@ -7,7 +7,8 @@ public class SpikeFall : MonoBehaviour
     public Transform player; // Referência ao jogador
     public float fallSpeed = 5f; // Velocidade de queda
     public float riseSpeed = 3f; // Velocidade para subir
-    public float detectionRange = 5f; // Distância para detectar o jogador
+    public float detectionRange = 5f; // Largura da área de detecção
+    public float detectionHeight = 2f; // Altura da área de detecção
     public float fallDistance = 3f; // Distância que o Thwomp cai
     public float waitTime = 1f; // Tempo de espera antes de subir
 
@@ -24,13 +25,13 @@ public class SpikeFall : MonoBehaviour
     private void Update()
     {
         // Calcula a distância entre o jogador e o Thwomp
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-
-        // Verifica se o jogador está dentro da área de detecção e se o Thwomp não está caindo
-        if (distanceToPlayer <= detectionRange && !isFalling && !isRising)
+        if (IsPlayerWithinBox())
         {
             // Inicia a queda
-            isFalling = true;
+            if (!isFalling && !isRising)
+            {
+                isFalling = true;
+            }
         }
 
         // Controle da queda
@@ -65,10 +66,21 @@ public class SpikeFall : MonoBehaviour
         isRising = true;
     }
 
+    private bool IsPlayerWithinBox()
+    {
+        // Verifica se o jogador está dentro de uma área retangular
+        Vector2 boxCenter = new Vector2(transform.position.x, transform.position.y - detectionHeight / 2);
+        return player.position.x > boxCenter.x - detectionRange / 2 &&
+               player.position.x < boxCenter.x + detectionRange / 2 &&
+               player.position.y > boxCenter.y - detectionHeight / 2 &&
+               player.position.y < boxCenter.y + detectionHeight / 2;
+    }
+
     private void OnDrawGizmosSelected()
     {
         // Desenha a área de detecção no editor para facilitar ajustes
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
+        Vector3 boxSize = new Vector3(detectionRange, detectionHeight, 0);
+        Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y - detectionHeight / 2, transform.position.z), boxSize);
     }
 }

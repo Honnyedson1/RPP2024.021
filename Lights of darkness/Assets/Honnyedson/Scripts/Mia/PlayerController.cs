@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     public float wallJumpForceX = 8f;
     public float wallJumpForceY = 10f;
     public Rigidbody2D rb;
-    private bool isGrounded;
+    public bool isGrounded;
     private bool isWallJumping;
     private bool isTouchingWall;
     public Transform wallCheckPoint;
@@ -290,7 +290,7 @@ public class PlayerController : MonoBehaviour
             DodgeEnemy enemy2 = enemy.GetComponent<DodgeEnemy>();
             BossController boss = enemy.GetComponent<BossController>();
             Enemy EnemySpawner = enemy.GetComponent<Enemy>();
-            MiniBoss2D Mini = enemy.GetComponent<MiniBoss2D>();
+            BossBehavior Mini = enemy.GetComponent<BossBehavior>();
             if (booEnemy != null)
             {
                 booEnemy.TakeDamage(damage);
@@ -341,7 +341,7 @@ public class PlayerController : MonoBehaviour
     {
         if (GameManager.Instance.Life > 0) // Garante que só aplicamos dano se ainda houver vida
         {
-            GameManager.Instance.Life -= damage;
+            GameManager.Instance.Life -= dmg;
             anim.SetTrigger("Hit"); // Ativa a animação de hit
 
             if (GameManager.Instance.Life <= 0)
@@ -351,7 +351,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator DieAndRespawn()
+    public void MorteInstantanea()
+    {
+        TakeDmg(10);
+    }
+
+    public IEnumerator DieAndRespawn()
     {
         isFrozen = true;
         rb.velocity = Vector2.zero;
@@ -364,7 +369,7 @@ public class PlayerController : MonoBehaviour
     public IEnumerator FreezeCoroutine()
     {
         isFrozen = true;
-        GameManager.Instance.Life--;
+        TakeDmg(1);
         rb.velocity = new Vector2(0, 0);
         yield return new WaitForSeconds(3);
         isFrozen = false;
@@ -393,7 +398,7 @@ public class PlayerController : MonoBehaviour
         }
         if (col.gameObject.tag == "BossAtack")
         {
-            GameManager.Instance.Life--;
+            TakeDmg(1);
             Destroy(col.gameObject, 0.2f);
         }
     }

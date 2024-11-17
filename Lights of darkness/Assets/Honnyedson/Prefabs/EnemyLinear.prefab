@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 8497134252907984967}
   - component: {fileID: 5577698236364899988}
   - component: {fileID: 5805135592810153478}
-  m_Layer: 0
+  - component: {fileID: 3034178859099352455}
+  m_Layer: 8
   m_Name: EnemyLinear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -28.85, y: 5.05, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5.9086733, y: 5.9086733, z: 5.9086733}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -75,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: -469933992, guid: 14a68c6935e6c9143b9d395172d0fd9f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -120,8 +121,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 0.5811, y: -7.16045, z: 0}
-    m_Extent: {x: 5.0484, y: 7.2459497, z: 0}
+    m_Center: {x: 0.12514389, y: -1.2302015, z: 0}
+    m_Extent: {x: 0.81535614, y: 1.2301016, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -129,13 +130,12 @@ MonoBehaviour:
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
-  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffSize: 0
   m_ShapeLightFalloffOffset: {x: 0, y: 0}
   m_ShapePath:
-  - {x: -3.969202, y: -13.905866, z: 0}
-  - {x: 5.129719, y: -13.530665, z: 0}
-  - {x: -0.022190094, y: -0.094353676, z: 0}
-  - {x: -0.017036438, y: -0.0753603, z: 0}
+  - {x: -0.69021225, y: -2.4128246, z: 0}
+  - {x: 0.9403591, y: -2.460303, z: 0}
+  - {x: -0.000013781452, y: -0.0009792483, z: 0}
 --- !u!114 &5805135592810153478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,7 +153,7 @@ MonoBehaviour:
   raioVisao: 14.5
   anguloBaseVisao: 272.5
   campoDeVisao: 36.7
-  quantidadeRaycasts: 4
+  quantidadeRaycasts: 7
   alvo: {fileID: 0}
   camadaJogador:
     serializedVersion: 2
@@ -162,3 +162,24 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   inimigoPrefab: {fileID: 6873139396986652967, guid: cea90f4507d66c2498cf4260a0af0ae3, type: 3}
+--- !u!95 &3034178859099352455
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5117561082267015622}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d0f215954e374754ba71b714ace7997a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
