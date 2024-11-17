@@ -6,18 +6,21 @@ public class Enemy : MonoBehaviour
     public float followDistance = 5f; 
     public float attackDistance = 1.5f; 
     public float moveSpeed = 10f;
-    private int vida = 4;
+    private int vida = 2;
     private float lastAttackTime;
     private Transform player;
     private bool isAttacking = false; 
     private bool isdead;
-
+    public int Dano;
     private Animator animator;
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         animator = GetComponent<Animator>(); 
+
+        // Inicia o timer de auto-destruição
+        StartCoroutine(AutoDestruct());
     }
 
     void Update()
@@ -95,7 +98,7 @@ public class Enemy : MonoBehaviour
         PlayerController playerHealth = player.GetComponent<PlayerController>();
         if (playerHealth != null)
         {
-            playerHealth.TakeDmg(100);
+            playerHealth.TakeDmg(2);
         }
     }
 
@@ -117,5 +120,14 @@ public class Enemy : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, attackDistance);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, followDistance);
+    }
+
+    private IEnumerator AutoDestruct()
+    {
+        yield return new WaitForSeconds(10f); // Aguarda 10 segundos
+        if (!isdead) // Apenas destrói se ainda estiver vivo
+        {
+            Destroy(gameObject);
+        }
     }
 }

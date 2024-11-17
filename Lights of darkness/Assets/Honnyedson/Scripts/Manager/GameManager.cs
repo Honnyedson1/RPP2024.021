@@ -28,7 +28,15 @@ public class GameManager : MonoBehaviour
     public Text LifeText;
     public Text FlechasText;
     public Text Scoretext;
-    
+
+    // Variáveis para salvar o estado do jogador
+    private int savedLife;
+    private int savedScore;
+    private bool savedEstouComArco;
+    private int savedQFlechas;
+    private bool savedHasDash;
+    private bool savedHasDoubleJump;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -74,18 +82,39 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    
     public void SetCheckpoint(Vector3 position)
     {
         lastCheckpointPosition = position;
+        SavePlayerState(); // Salva o estado atual do jogador ao alcançar um checkpoint
     }
-    
+
+    // Salva o estado atual do jogador
+    private void SavePlayerState()
+    {
+        savedLife = Life;
+        savedScore = score;
+        savedEstouComArco = EstouComArco;
+        savedQFlechas = QFlechas;
+        savedHasDash = hasDash;
+        savedHasDoubleJump = hasDoubleJump;
+    }
+
+    // Restaura o estado do jogador
+    private void RestorePlayerState()
+    {
+        Life = savedLife;
+        score = savedScore;
+        EstouComArco = savedEstouComArco;
+        QFlechas = savedQFlechas;
+        hasDash = savedHasDash;
+        hasDoubleJump = savedHasDoubleJump;
+    }
+
     public void RespawnPlayer()
     {
         Player.transform.position = lastCheckpointPosition; // Reposiciona o jogador
-        Life = VidaMaxima; // Restaura a vida ao máximo
+        RestorePlayerState(); // Restaura o estado salvo do jogador
         RespawnPanel.SetActive(false); // Esconde o painel de respawn
-        Time.timeScale = 1; // Retorna o tempo normal
 
         // Libera o jogador para mover-se novamente
         var playerController = Player.GetComponent<PlayerController>();
@@ -100,7 +129,6 @@ public class GameManager : MonoBehaviour
         if (!RespawnPanel.activeSelf) // Só exibe se ainda não estiver ativo
         {
             RespawnPanel.SetActive(true);
-            Time.timeScale = 0;
 
             var playerController = Player.GetComponent<PlayerController>();
             if (playerController != null)
@@ -109,7 +137,6 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
 
     public void ReturnToMenu()
     {

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3305064227200760396}
   - component: {fileID: 3211379073934976772}
   - component: {fileID: 4135365125820157460}
+  - component: {fileID: 879188529603546974}
   m_Layer: 0
   m_Name: EneemySpot
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -26.29, y: 2.51, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 7.373071, y: 7.373071, z: 7.373071}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -75,12 +76,12 @@ SpriteRenderer:
   m_SortingLayerID: -158777873
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: -469933992, guid: 14a68c6935e6c9143b9d395172d0fd9f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.19, y: 0.19}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -120,8 +121,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 0.02915001, y: -7.51385, z: 0}
-    m_Extent: {x: 6.70365, y: 7.98765, z: 0}
+    m_Center: {x: 0.0004299581, y: -1.03835, z: 0}
+    m_Extent: {x: 0.73017, y: 1.0389501, z: 0}
   m_PointLightInnerAngle: 49.63
   m_PointLightOuterAngle: 49.63
   m_PointLightInnerRadius: 3.61
@@ -129,13 +130,13 @@ MonoBehaviour:
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
-  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffSize: 0
   m_ShapeLightFalloffOffset: {x: 0, y: 0}
   m_ShapePath:
-  - {x: -6.1747546, y: -14.771829, z: 0}
-  - {x: 6.2327514, y: -15.002468, z: 0}
-  - {x: -0.0024493295, y: -0.027069092, z: 0}
-  - {x: -0.01186654, y: -0.030869681, z: 0}
+  - {x: -0.7297401, y: -2.0763037, z: 0.0000002453747}
+  - {x: 0.73040956, y: -2.0750492, z: -0.00000007211262}
+  - {x: 0.0005669951, y: -0.00026092565, z: 0.000000017394155}
+  - {x: -0.0004535725, y: -0.0024426498, z: 0.000000037047666}
 --- !u!114 &4135365125820157460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,8 +150,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raioVisao: 15.3
-  anguloVisao: 45
-  quantidadeRaycasts: 10
+  anguloVisao: 38.8
+  quantidadeRaycasts: 9
   alvo: {fileID: 0}
   camadaJogador:
     serializedVersion: 2
@@ -158,7 +159,28 @@ MonoBehaviour:
   camadaObstaculos:
     serializedVersion: 2
     m_Bits: 192
-  velocidadeRotacao: 15
-  anguloMin: -30
-  anguloMax: 15
+  velocidadeRotacao: 11
+  anguloMin: -20
+  anguloMax: 18.1
   inimigoPrefab: {fileID: 6873139396986652967, guid: cea90f4507d66c2498cf4260a0af0ae3, type: 3}
+--- !u!95 &879188529603546974
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6075872647263577373}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: af6f92ab1522e1e4aa2ce3ea93104728, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

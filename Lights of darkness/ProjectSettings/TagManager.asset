@@ -13,6 +13,7 @@ TagManager:
   - Flecha
   - Obstacle
   - Box
+  - ShopUI
   layers:
   - Default
   - TransparentFX
