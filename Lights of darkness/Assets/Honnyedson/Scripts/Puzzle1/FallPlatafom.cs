@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FallingPlatform : MonoBehaviour
@@ -22,19 +23,13 @@ public class FallingPlatform : MonoBehaviour
     {
         if (collision.collider.CompareTag("Player") && !isFalling)
         {
-            // Obtém o script do jogador para verificar o estado do groundCheck
-            var player = collision.collider.GetComponent<PlayerController>(); // Substitua pelo nome correto do script
-            if (player != null && player.isGrounded)
-            {
-                playerOnPlatform = true; // Marca que o jogador está na plataforma
-                Invoke("Fall", fallDelay); // Inicia o despencar após o tempo de delay
-                isFalling = true; // Marca a plataforma como caindo
-            }
+            playerOnPlatform = true; // Marca que o jogador está na plataforma
+            Invoke("Fall", fallDelay); // Inicia o despencar após o tempo de delay
+            isFalling = true; // Marca a plataforma como caindo
         }
-        else if (isFalling && (collision.gameObject.layer == 6 || collision.gameObject.layer == 7))
+        else if (collision.gameObject.layer == 6 || collision.gameObject.layer == 7)
         {
-            // Camada 6 e 7 são exemplo de chão/parede — ajuste conforme necessário
-            DisableCollider();
+            platformCollider.enabled = false; // Desativa o colisor se colidir com o chão ou uma parede
         }
     }
 
@@ -43,11 +38,7 @@ public class FallingPlatform : MonoBehaviour
         if (collision.collider.CompareTag("Player"))
         {
             playerOnPlatform = false; // Marca que o jogador saiu da plataforma
-
-            if (isFalling) // Se estiver caindo e o jogador sair
-            {
-                DisableCollider();
-            }
+            platformCollider.enabled = false; // Desativa o colisor quando o jogador sai
         }
     }
 
@@ -56,7 +47,7 @@ public class FallingPlatform : MonoBehaviour
         rb.isKinematic = false; // Permite que a plataforma caia
         if (!playerOnPlatform)
         {
-            DisableCollider(); // Desativa o colisor se o jogador não estiver na plataforma
+            platformCollider.enabled = false; // Desativa o colisor se o jogador não estiver na plataforma
         }
         Invoke("Respawn", respawnTime); // Agendar o reaparecimento após o tempo especificado
     }
@@ -68,10 +59,5 @@ public class FallingPlatform : MonoBehaviour
         transform.position = initialPosition; // Retorna a plataforma à posição inicial
         platformCollider.enabled = true; // Reativa o colisor da plataforma
         isFalling = false; // Define que a plataforma não está mais caindo
-    }
-
-    private void DisableCollider()
-    {
-        platformCollider.enabled = false; // Desativa o colisor
     }
 }

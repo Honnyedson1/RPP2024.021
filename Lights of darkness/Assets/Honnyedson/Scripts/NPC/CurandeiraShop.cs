@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class ShopNPC : MonoBehaviour
 {
+    public Image shopUI; // Referência ao painel da loja
     public Sprite Profile;
     public string[] Speachtext;
     public string NameN;
@@ -18,11 +19,29 @@ public class ShopNPC : MonoBehaviour
     private void Start()
     {
         Dialo = FindObjectOfType<Dialogue>();
+
+        // Encontra automaticamente o painel da loja pelo nome
+        GameObject shopUIObject = GameObject.Find("ShopUI"); // Encontre o GameObject que contém a Image
+        if (shopUIObject != null)
+        {
+            shopUI = shopUIObject.GetComponent<Image>(); // Obtém a referência ao componente Image
+            shopUIObject.SetActive(false); // Certifica-se de que a loja começa fechada
+        }
+        else
+        {
+            Debug.LogError("Painel 'ShopUI' não encontrado na cena.");
+        }
     }
 
     private void Update()
     {
         Dialo = FindObjectOfType<Dialogue>();
+
+        // Controle de abertura/fechamento da loja com a tecla TAB
+        if (OnRadius && Input.GetKeyDown(KeyCode.Tab))
+        {
+            ToggleShop(); // Alterna entre abrir e fechar a loja
+        }
 
         // Lógica para o diálogo
         if (Input.GetKeyDown(KeyCode.E) && OnRadius && !dialogueStarted)
@@ -61,5 +80,17 @@ public class ShopNPC : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.DrawWireSphere(transform.position, radius);
+    }
+
+    private void ToggleShop()
+    {
+        if (shopUI != null)
+        {
+            bool isActive = shopUI.gameObject.activeSelf;
+            shopUI.gameObject.SetActive(!isActive); // Alterna a visibilidade do painel da loja
+
+            // Pausa ou retoma o jogo dependendo do estado da loja
+            Time.timeScale = isActive ? 1 : 0;
+        }
     }
 }

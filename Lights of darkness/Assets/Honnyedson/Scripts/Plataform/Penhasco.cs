@@ -4,10 +4,9 @@ public class Penhasco : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        var playerHealth = collision.GetComponent<PlayerController>();
-        if (playerHealth != null)
+        if (collision.CompareTag("Player"))
         {
-            playerHealth.MorteInstantanea();
+            GameManager.Instance.Life = 0;
         }
     }
 }

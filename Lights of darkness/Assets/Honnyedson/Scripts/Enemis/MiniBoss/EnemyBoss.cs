@@ -70,8 +70,6 @@ public class MiniBoss2D : MonoBehaviour
     {
         if (isDead) return;
 
-        UpdateAnimatorParameters();
-
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
         // Checagem de chão
@@ -105,13 +103,6 @@ public class MiniBoss2D : MonoBehaviour
         }
     }
 
-    private void UpdateAnimatorParameters()
-    {
-        // Atualiza o estado de "isRunning" com base no movimento horizontal
-        bool isRunning = Mathf.Abs(rb.velocity.x) > 0.1f;
-        animator.SetBool("isRunning", isRunning);
-    }
-
     private void EnterSecondStage()
     {
         isInSecondStage = true;
@@ -123,6 +114,8 @@ public class MiniBoss2D : MonoBehaviour
 
     private void MoveTowardsPlayer()
     {
+        animator.SetBool("isRunning", true);
+
         Vector2 direction = (player.position - transform.position).normalized;
         rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
 
@@ -132,6 +125,7 @@ public class MiniBoss2D : MonoBehaviour
 
     private void StopMoving()
     {
+        animator.SetBool("isRunning", false);
         rb.velocity = new Vector2(0, rb.velocity.y);
     }
 
