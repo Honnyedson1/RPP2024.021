@@ -370,8 +370,9 @@ public class PlayerController : MonoBehaviour
     {
         isFrozen = true;
         TakeDmg(1);
+        anim.SetTrigger("Freeze");
         rb.velocity = new Vector2(0, 0);
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
         isFrozen = false;
     }
 
