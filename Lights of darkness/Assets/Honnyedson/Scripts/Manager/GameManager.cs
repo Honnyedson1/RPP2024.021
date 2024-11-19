@@ -28,6 +28,10 @@ public class GameManager : MonoBehaviour
     public Text LifeText;
     public Text FlechasText;
     public Text Scoretext;
+    
+    [Header("Dash Indicators")]
+    public GameObject DashIndicator1; // Indicador do primeiro dash
+    public GameObject DashIndicator2; // Indicador do segundo dash
 
     // Variáveis para salvar o estado do jogador
     private int savedLife;
@@ -59,13 +63,18 @@ public class GameManager : MonoBehaviour
         RespawnPanel.SetActive(false); // Esconder o painel de respawn
     }
 
-    private void Update()
+    void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        var playerController = Player.GetComponent<PlayerController>();
+
+        if (playerController != null)
         {
-            PauseGame();
+            // Atualização dos indicadores de dash
+            DashIndicator1.SetActive(hasDash && playerController.canDash1);
+            DashIndicator2.SetActive(hasDash && playerController.canDash2);
         }
 
+        // Atualização da interface
         LifeText.text = $"{Life}/{VidaMaxima}";
         FlechasText.text = QFlechas.ToString();
         Scoretext.text = score.ToString();
@@ -81,6 +90,7 @@ public class GameManager : MonoBehaviour
             SwordSelected.gameObject.SetActive(false);
         }
     }
+
 
     public void SetCheckpoint(Vector3 position)
     {

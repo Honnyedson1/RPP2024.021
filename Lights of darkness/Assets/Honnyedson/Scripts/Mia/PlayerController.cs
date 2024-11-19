@@ -47,6 +47,11 @@ public class PlayerController : MonoBehaviour
     private bool isDashing = false;
     private float dashCooldown = 1f;
     private float lastDashTime;// Direção do dash (definida pelo jogador)
+    
+    public bool canDash1 = true; // Controle do primeiro dash
+    public bool canDash2 = true; // Controle do segundo dash
+    private float dashCooldown1Time; // Tempo restante do cooldown do primeiro dash
+    private float dashCooldown2Time; // Tempo restante do cooldown do segundo dash
 
     
     private static bool isFrozen = false;
@@ -110,10 +115,37 @@ public class PlayerController : MonoBehaviour
 
     void Dash()
     {
-        if (GameManager.Instance.hasDash == true && Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastDashTime + GameManager.Instance.TimeToNextDesh && !isDashing)
+        if (!GameManager.Instance.hasDash) return; // Não permite dash se não estiver desbloqueado
+
+        // Primeiro Dash
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash1 && !isDashing)
         {
             StartCoroutine(PerformDash());
-            lastDashTime = Time.time;
+            canDash1 = false;
+            dashCooldown1Time = Time.time + 10f;
+        }
+        // Segundo Dash
+        else if (Input.GetKeyDown(KeyCode.LeftShift) && !canDash1 && canDash2 && !isDashing)
+        {
+            StartCoroutine(PerformDash());
+            canDash2 = false;
+            dashCooldown2Time = Time.time + 10f;
+        }
+
+        // Atualiza os indicadores no GameManager
+        GameManager.Instance.DashIndicator1.SetActive(GameManager.Instance.hasDash && canDash1);
+        GameManager.Instance.DashIndicator2.SetActive(GameManager.Instance.hasDash && canDash2);
+
+        // Lida com cooldown do Dash 1
+        if (!canDash1 && Time.time >= dashCooldown1Time)
+        {
+            canDash1 = true;
+        }
+
+        // Lida com cooldown do Dash 2
+        if (!canDash2 && Time.time >= dashCooldown2Time)
+        {
+            canDash2 = true;
         }
     }
 
@@ -370,9 +402,8 @@ public class PlayerController : MonoBehaviour
     {
         isFrozen = true;
         TakeDmg(1);
-        anim.SetTrigger("Freeze");
         rb.velocity = new Vector2(0, 0);
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(3);
         isFrozen = false;
     }
 

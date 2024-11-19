@@ -213,6 +213,156 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 
+--- !u!1 &700903757459485287
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1745239901330922215}
+  - component: {fileID: 6281271809878902566}
+  - component: {fileID: 3445425485569660614}
+  m_Layer: 5
+  m_Name: DashImage (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1745239901330922215
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700903757459485287}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4071762575892369910}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.102000006, y: 0.6225926}
+  m_AnchorMax: {x: 0.15666668, y: 0.7263704}
+  m_AnchoredPosition: {x: 0.08996576, y: 1.2339935}
+  m_SizeDelta: {x: 4.5422974, y: -2.4675007}
+  m_Pivot: {x: 0.50000006, y: 0.5}
+--- !u!222 &6281271809878902566
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700903757459485287}
+  m_CullTransparentMesh: 1
+--- !u!114 &3445425485569660614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700903757459485287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 257c2943d3ab34e4ab3bb8e57429a95a, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!1 &896129159477192655
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 561286067837492737}
+  - component: {fileID: 238632042059852458}
+  - component: {fileID: 2605400315597183770}
+  m_Layer: 5
+  m_Name: DashImage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &561286067837492737
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896129159477192655}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4071762575892369910}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.03375001, y: 0.63000005}
+  m_AnchorMax: {x: 0.093, y: 0.7263704}
+  m_AnchoredPosition: {x: -2.229004, y: -2.7660065}
+  m_SizeDelta: {x: -4.4577007, y: 5.5324993}
+  m_Pivot: {x: 0.50000006, y: 0.5}
+--- !u!222 &238632042059852458
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896129159477192655}
+  m_CullTransparentMesh: 1
+--- !u!114 &2605400315597183770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896129159477192655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 257c2943d3ab34e4ab3bb8e57429a95a, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1186616175103951744
 GameObject:
   m_ObjectHideFlags: 0
@@ -1195,7 +1345,7 @@ GameObject:
   - component: {fileID: 5819279787522036842}
   - component: {fileID: 6044398604496960849}
   m_Layer: 5
-  m_Name: "DashEst\xE1Block"
+  m_Name: "Dash Est\xE1 Bloq"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1469,7 +1619,7 @@ MonoBehaviour:
   attackInterval: 1.2
   Life: 3
   VidaMaxima: 3
-  score: 0
+  score: 27
   Player: {fileID: 0}
   ArcoSelected: {fileID: 8547990305802853845}
   SwordSelected: {fileID: 2107921394545392701}
@@ -1481,6 +1631,8 @@ MonoBehaviour:
   LifeText: {fileID: 6912463680602334168}
   FlechasText: {fileID: 5869990780932466624}
   Scoretext: {fileID: 8990566535433307261}
+  DashIndicator1: {fileID: 896129159477192655}
+  DashIndicator2: {fileID: 700903757459485287}
 --- !u!1 &3280080425848302445
 GameObject:
   m_ObjectHideFlags: 0
@@ -3804,7 +3956,7 @@ GameObject:
   - component: {fileID: 2723988718541383811}
   - component: {fileID: 5207937665780474350}
   m_Layer: 5
-  m_Name: DoubleJumpS
+  m_Name: "DoubleJump Est\xE1 Block"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4245,6 +4397,8 @@ RectTransform:
   - {fileID: 6933407110779453420}
   - {fileID: 3139109214952890450}
   - {fileID: 7342429539474769049}
+  - {fileID: 561286067837492737}
+  - {fileID: 1745239901330922215}
   m_Father: {fileID: 2021737833987640097}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
