@@ -385,7 +385,7 @@ public class PlayerController : MonoBehaviour
 
     public void MorteInstantanea()
     {
-        TakeDmg(10);
+        TakeDmg(100);
     }
 
     public IEnumerator DieAndRespawn()
