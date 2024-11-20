@@ -31,7 +31,19 @@ public class ShopSystem : MonoBehaviour
 
     private void Update()
     {
-        shopUIPanel = FindInactiveObjectByTag("ShopUI");
+        if (shopUI == null)
+        {
+            shopUIPanel = FindInactiveObjectByTag("ShopUI");
+            if (shopUIPanel != null)
+            {
+                shopUI = shopUIPanel.GetComponent<Image>();
+                shopUI.gameObject.SetActive(false); // Certifica-se de que a loja começa fechada
+            }
+            else
+            {
+                Debug.LogError("Nenhum painel de loja encontrado com a tag 'ShopUI'.");
+            }
+        }
         // Controle de abertura/fechamento da loja com a tecla configurada
         if (Input.GetKeyDown(toggleKey) && npc != null && npc.OnRadius)
         {

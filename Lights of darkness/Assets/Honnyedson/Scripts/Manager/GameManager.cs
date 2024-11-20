@@ -33,13 +33,17 @@ public class GameManager : MonoBehaviour
     public GameObject DashIndicator1; // Indicador do primeiro dash
     public GameObject DashIndicator2; // Indicador do segundo dash
 
-    // Variáveis para salvar o estado do jogador
+// Variáveis para salvar o estado do jogador
     private int savedLife;
+    private int savedVidaMaxima; // Salva a vida máxima
     private int savedScore;
     private bool savedEstouComArco;
     private int savedQFlechas;
     private bool savedHasDash;
     private bool savedHasDoubleJump;
+    private float savedAttackInterval;
+    private int savedPlayerDmage; // Corrigido o nome da variável para PlayerDmage
+
 
     private void Awake()
     {
@@ -65,6 +69,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        Player = GameObject.FindWithTag("Player");
         var playerController = Player.GetComponent<PlayerController>();
 
         if (playerController != null)
@@ -89,6 +94,19 @@ public class GameManager : MonoBehaviour
             ArcoSelected.gameObject.SetActive(true);
             SwordSelected.gameObject.SetActive(false);
         }
+
+        // Alternar pausa com a tecla Esc
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (isGamePaused)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
+            }
+        }
     }
 
 
@@ -102,22 +120,37 @@ public class GameManager : MonoBehaviour
     private void SavePlayerState()
     {
         savedLife = Life;
+        savedVidaMaxima = VidaMaxima; // Salva a vida máxima
         savedScore = score;
         savedEstouComArco = EstouComArco;
         savedQFlechas = QFlechas;
         savedHasDash = hasDash;
         savedHasDoubleJump = hasDoubleJump;
+        savedAttackInterval = attackInterval; // Salva o intervalo de ataque
+        savedPlayerDmage = PlayerDmage;       // Salva o dano do jogador
+
+        Debug.Log("Estado salvo no checkpoint!");
     }
 
-    // Restaura o estado do jogador
+// Restaura o estado do jogador
     private void RestorePlayerState()
     {
         Life = savedLife;
+        VidaMaxima = savedVidaMaxima; // Restaura a vida máxima
         score = savedScore;
         EstouComArco = savedEstouComArco;
         QFlechas = savedQFlechas;
         hasDash = savedHasDash;
         hasDoubleJump = savedHasDoubleJump;
+        attackInterval = savedAttackInterval; // Restaura o intervalo de ataque
+        PlayerDmage = savedPlayerDmage;       // Restaura o dano do jogador
+
+        // Atualiza os elementos da interface para refletir os valores restaurados
+        LifeText.text = $"{Life}/{VidaMaxima}";
+        FlechasText.text = QFlechas.ToString();
+        Scoretext.text = score.ToString();
+
+        Debug.Log("Estado restaurado no respawn!");
     }
 
     public void RespawnPlayer()
@@ -164,6 +197,9 @@ public class GameManager : MonoBehaviour
         PauseImage.gameObject.SetActive(true);
         isGamePaused = true;
         Time.timeScale = 0;
+
+        // Pausa todos os áudios
+        AudioListener.pause = true;
     }
 
     public void ResumeGame()
@@ -171,6 +207,9 @@ public class GameManager : MonoBehaviour
         PauseImage.gameObject.SetActive(false);
         isGamePaused = false;
         Time.timeScale = 1;
+
+        // Retoma todos os áudios
+        AudioListener.pause = false;
     }
 
     public void OptionsGame()

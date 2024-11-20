@@ -17,8 +17,8 @@ public class InimigoRaycastVisao : MonoBehaviour
     private float anguloAtual; 
 
     public GameObject inimigoPrefab; 
-    private bool inimigosAtivos = false; 
-    private int inimigosSpawnados = 0; 
+    private static bool inimigosAtivos = false; 
+    private static int inimigosSpawnados = 0; 
     public static bool PlayerVivo = true;
     void Update()
     {
@@ -34,10 +34,11 @@ public class InimigoRaycastVisao : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         PlayerVivo = false;
-        yield return new WaitForSeconds(1f);
-        PlayerVivo = true;
-        inimigosSpawnados = 0;
+        inimigosSpawnados = 0; 
         inimigosAtivos = false;
+
+        yield return new WaitForSeconds(2f);
+        PlayerVivo = true; // Ativa novamente o sistema de visão
     }
     void OscilarRotacao()
     {
@@ -59,40 +60,59 @@ public class InimigoRaycastVisao : MonoBehaviour
 
     void VerificarVisao()
     {
-        float anguloInicio = -anguloVisao / 2f;
-        float incrementoAngulo = anguloVisao / (quantidadeRaycasts - 1);
-
-        for (int i = 0; i < quantidadeRaycasts; i++)
+        if (!inimigosAtivos)
         {
-            float anguloRay = anguloInicio + incrementoAngulo * i;
-            Vector2 direcaoRay = DirecaoAPartirDeAngulo(transform.eulerAngles.z + anguloRay - 90);
-            
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direcaoRay, raioVisao, camadaJogador | camadaObstaculos);
-            
-            if (hit)
+            float anguloInicio = -anguloVisao / 2f;
+            float incrementoAngulo = anguloVisao / (quantidadeRaycasts - 1);
+
+            for (int i = 0; i < quantidadeRaycasts; i++)
             {
-                if (hit.collider.CompareTag("Player"))
+                float anguloRay = anguloInicio + incrementoAngulo * i;
+                Vector2 direcaoRay = DirecaoAPartirDeAngulo(transform.eulerAngles.z + anguloRay - 90);
+
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, direcaoRay, raioVisao, camadaJogador | camadaObstaculos);
+
+                if (hit)
                 {
-                    SpawnInimigos();
-                    break;
+                    if (hit.collider.CompareTag("Player"))
+                    {
+                        SpawnInimigos();
+                        break;
+                    }
                 }
             }
         }
     }
+    public static void InimigoDestruido()
+    {
+        GameManager.Instance.StartCoroutine(ResetInimigo());
+    }
+
+    private static IEnumerator ResetInimigo()
+    {
+        yield return new WaitForSeconds(3f); // Tempo para reativar o spawn
+        inimigosAtivos = false;
+        inimigosSpawnados = 0;
+    }
 
     void SpawnInimigos()
     {
-        if (!inimigosAtivos)
+        if (!inimigosAtivos && inimigosSpawnados < 2)
         {
             Vector3 jogadorPosicao = alvo.position;
             float distanciaSpawn = 3f;
-            Vector3 posicaoEsquerda = new Vector3(jogadorPosicao.x - distanciaSpawn, jogadorPosicao.y, jogadorPosicao.z);
+
+            // Gera inimigos em duas posições
+            Vector3 posicaoEsquerda = jogadorPosicao + Vector3.left * distanciaSpawn;
+            Vector3 posicaoDireita = jogadorPosicao + Vector3.right * distanciaSpawn;
+
             Instantiate(inimigoPrefab, posicaoEsquerda, Quaternion.identity);
+            Instantiate(inimigoPrefab, posicaoDireita, Quaternion.identity);
+
             inimigosAtivos = true;
-            inimigosSpawnados = 2; 
+            inimigosSpawnados += 2; // Incrementa o contador
         }
     }
-
     Vector2 DirecaoAPartirDeAngulo(float anguloGraus)
     {
         float radianos = anguloGraus * Mathf.Deg2Rad;

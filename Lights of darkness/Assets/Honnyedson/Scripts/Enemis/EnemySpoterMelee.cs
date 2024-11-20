@@ -113,6 +113,14 @@ public class Enemy : MonoBehaviour
             transform.eulerAngles = new Vector3(0, 180, 0);
         }
     }
+    private void OnDestroy()
+    {
+        if (!isdead && InimigoRaycastVisao.PlayerVivo)
+        {
+            // Notifica que um inimigo foi destruído
+            InimigoRaycastVisao.InimigoDestruido();
+        }
+    }
 
     private void OnDrawGizmosSelected()
     {
