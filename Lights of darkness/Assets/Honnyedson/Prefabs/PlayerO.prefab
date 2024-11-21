@@ -302,7 +302,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 100
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 2.5
@@ -349,7 +349,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0015676543, y: 0.16364819}
+  m_Offset: {x: 0.008373052, y: 0.16364819}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -360,7 +360,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.20190959, y: 0.3297789}
+  m_Size: {x: 0.15147278, y: 0.3297789}
   m_EdgeRadius: 0
 --- !u!114 &3354108890950539932
 MonoBehaviour:
@@ -374,12 +374,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e33cb1e94288fdc458caede74870c805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stepSound: {fileID: 8300000, guid: 1c7ce405a221e3248bde8294c10546a0, type: 3}
+  arrowSound: {fileID: 8300000, guid: 4e29aa4134fe0a14d9cd644d7ede06d9, type: 3}
+  swordSound: {fileID: 8300000, guid: 03a068cfe86514447acd65c2fc678fd5, type: 3}
+  jumpSound: {fileID: 8300000, guid: 83dfbb27da0c1fe4aa9bf293d1945a74, type: 3}
+  dashSound: {fileID: 8300000, guid: 4f83b61b4c874364bac09a71ca1f7fd1, type: 3}
+  deadSound: {fileID: 0}
   isFacingRight: 1
   moveSpeed: 5
   jumpForce: 12
   wallJumpForceX: 10
   wallJumpForceY: 10
   rb: {fileID: 0}
+  isGrounded: 0
   wallCheckPoint: {fileID: 7558463984848983437}
   wallCheckSize: {x: 0.52, y: 0.6}
   wallLayer:
@@ -402,8 +409,12 @@ MonoBehaviour:
     m_Bits: 256
   arrowPrefab: {fileID: 3172378032170160655, guid: d4269883071c2d04db4e710c499071d4, type: 3}
   arrowSpeed: 15
+  doubleJumpUnlocked: 0
+  dashUnlocked: 0
   dashSpeed: 20
   dashDuration: 0.2
+  canDash1: 1
+  canDash2: 1
   canMove: 1
   damage: 1
   anim: {fileID: 0}

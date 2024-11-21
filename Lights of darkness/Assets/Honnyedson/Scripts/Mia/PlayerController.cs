@@ -3,6 +3,16 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Audio Settings")]
+    public AudioClip stepSound;
+    public AudioClip arrowSound;
+    public AudioClip swordSound;
+    public AudioClip jumpSound;
+    public AudioClip dashSound;
+    public AudioClip deadSound;
+    private AudioSource mainAudioSource; // Para todos os sons exceto passos
+    private AudioSource stepAudioSource; // Som dos passos
+    
     public static PlayerController _instance;
     public bool isFacingRight = true;
     [Header("Wall Jump And Movement")]
@@ -64,6 +74,12 @@ public class PlayerController : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+
+        // Configurar os AudioSources
+        mainAudioSource = gameObject.AddComponent<AudioSource>();
+        stepAudioSource = gameObject.AddComponent<AudioSource>();
+        stepAudioSource.loop = false; // Passos não são contínuos por padrão
+        stepAudioSource.playOnAwake = false; // Não tocar automaticamente
     }
 
     void Update()
@@ -72,6 +88,7 @@ public class PlayerController : MonoBehaviour
         {
             if (!isFrozen)
             {
+                PlayStepSound();
                 Dash();
                 CheckGround(); 
                 WallJump(); 
@@ -100,7 +117,21 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-
+    void PlayStepSound()
+    {
+        if (isGrounded && !isJumping && Mathf.Abs(rb.velocity.x) > 0.1f) // Verifica se há movimento suficiente
+        {
+            if (!stepAudioSource.isPlaying)
+            {
+                stepAudioSource.clip = stepSound;
+                stepAudioSource.Play();
+            }
+        }
+        else
+        {
+            stepAudioSource.Stop(); // Para o som se o jogador estiver parado
+        }
+    }
     void CheckGround()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
@@ -156,7 +187,7 @@ public class PlayerController : MonoBehaviour
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0; // Desativa temporariamente a gravidade para um dash horizontal puro
 
-        // Define a velocidade do dash diretamente, em linha reta na direção em que o jogador está virado
+        mainAudioSource.PlayOneShot(dashSound);
         rb.velocity = new Vector2(isFacingRight ? dashSpeed : -dashSpeed, 0);
         anim.SetInteger("Transition", 7); // Animação de dash
 
@@ -203,6 +234,7 @@ public class PlayerController : MonoBehaviour
             if (isGrounded)
             {
                 isJumping = true;
+                mainAudioSource.PlayOneShot(jumpSound);
                 canDoubleJump = GameManager.Instance.hasDoubleJump; // Permite o pulo duplo se desbloqueado
                 anim.SetInteger("Transition", 1); 
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
@@ -255,6 +287,8 @@ public class PlayerController : MonoBehaviour
         {
             if (isGrounded == true)
             {
+                mainAudioSource.PlayOneShot(swordSound);
+
                 rb.velocity = Vector2.zero;
                 canMove = false;
                 anim.SetInteger("Transition", 5); 
@@ -263,6 +297,8 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                mainAudioSource.PlayOneShot(swordSound);
+
                 anim.SetInteger("Transition", 5); 
                 yield return new WaitForSeconds(0.4f);
                 MeleeAttack();
@@ -276,6 +312,8 @@ public class PlayerController : MonoBehaviour
                 {
                     rb.velocity = Vector2.zero;
                     canMove = false;
+                    mainAudioSource.PlayOneShot(arrowSound);
+
                     anim.SetInteger("Transition", 4); 
                     yield return new WaitForSeconds(0.2f); 
                     yield return StartCoroutine(RangedAttack());
@@ -283,6 +321,8 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
+                    mainAudioSource.PlayOneShot(arrowSound);
+
                     anim.SetInteger("Transition", 4); 
                     yield return new WaitForSeconds(0.2f); 
                     yield return StartCoroutine(RangedAttack());
