@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BossController : MonoBehaviour
 {
@@ -22,6 +23,10 @@ public class BossController : MonoBehaviour
     private bool playerInRange = false;
     public LayerMask playerLayer;
     private bool Isdead = false;
+    public PhaseManager phaseManager; // Referência ao PhaseManager para mudar de fase após a morte do boss
+    public Slider healthSlider; // Referência ao slider de vida
+    public GameObject healthSliderPrefab; // Prefab do slider de vida
+    public Transform sliderSpawnPoint; // Local onde o slider será instanciado
 
     // Para o movimento suave
     private float moveTimer;
@@ -34,17 +39,28 @@ public class BossController : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
+
         if (player == null)
         {
             Debug.LogError("Player não encontrado!");
             return;
         }
+
+        // Inicializa o slider de vida
+        if (healthSliderPrefab != null && sliderSpawnPoint != null)
+        {
+            GameObject sliderInstance = Instantiate(healthSliderPrefab, sliderSpawnPoint.position, Quaternion.identity, sliderSpawnPoint);
+            healthSlider = sliderInstance.GetComponent<Slider>();
+            healthSlider.maxValue = Lifeboss;
+            healthSlider.value = Lifeboss;
+        }
+    
+        // Outros inícios
         teleportTimer = teleportCooldown;
         attackTimer = attackCooldown;
         moveTimer = moveInterval;
         spawnTimer = spawnInterval;
 
-        // Inicializando o Animator
         bossAnimator = GetComponent<Animator>();
     }
     void Update()
@@ -119,8 +135,13 @@ public class BossController : MonoBehaviour
 
     void ResetGame()
     {
-        // Resetar a vida do boss e a lógica dele
         Lifeboss = 25;
+
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = Lifeboss;
+            healthSlider.value = Lifeboss; // Reseta o slider
+        }
         phaseTwoActivated = false;
         specialAttackChance = 0.30f;
         teleportCooldown = 5f;
@@ -152,44 +173,33 @@ public class BossController : MonoBehaviour
 
     void PerformAttack()
     {
-        // Verifica se o Boss ainda está vivo antes de atacar
         if (Lifeboss <= 0) return;
 
-        if (bossAnimator != null)
-        {
-            if (Random.value < specialAttackChance) // Se o ataque for especial
-            {
-                bossAnimator.SetTrigger("AttackSpecial");  // Trigger para animação de ataque especial
-                Debug.Log("Boss atacando com ataque especial!");
-        
-                // Executando o ataque especial
-                GameObject projectile = Instantiate(specialProjectilePrefab, transform.position, Quaternion.identity);
-                Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-                if (rb != null)
-                {
-                    Vector2 direction = (player.position - transform.position).normalized;
-                    rb.velocity = direction * 15f;
-                    Destroy(projectile, projectileLifetime);
-                }
-            }
-            else // Caso contrário, ataque comum
-            {
-                bossAnimator.SetTrigger("AttackCommon");  // Trigger para animação de ataque comum
-                Debug.Log("Boss atacando com ataque comum!");
-        
-                // Executando o ataque comum
-                GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-                Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-                if (rb != null)
-                {
-                    Vector2 direction = (player.position - transform.position).normalized;
-                    direction += new Vector2(0f, 0.2f); // Ajuste para cima (valor fixo)
-                    direction = direction.normalized;
+        Vector2 direction = (player.position - transform.position).normalized;
 
-                    rb.velocity = direction * 15f;
-                    Destroy(projectile, projectileLifetime);
-                }
+        GameObject projectile;
+        if (Random.value < specialAttackChance) // Ataque especial
+        {
+            bossAnimator.SetTrigger("AttackSpecial");
+            projectile = Instantiate(specialProjectilePrefab, transform.position, Quaternion.identity);
+        }
+        else // Ataque comum
+        {
+            bossAnimator.SetTrigger("AttackCommon");
+            projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+        }
+
+        if (projectile != null)
+        {
+            Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.velocity = direction * 15f;
             }
+
+            // Rotaciona o projétil para a direção do jogador
+            projectile.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+            Destroy(projectile, projectileLifetime);
         }
     }
 
@@ -236,19 +246,23 @@ public class BossController : MonoBehaviour
         teleportCooldown = 3f; // Boss teleporta com mais frequência
         attackCooldown = 2f; // Ataques ficam mais rápidos
         spawnInterval = 40f;  // A cada 40 segundos, spawn de inimigos
-        Debug.Log("O Boss ativou a fase 2!");
     }
 
     public void TakeDamage(int damage)
     {
         Lifeboss -= damage;
+        if (healthSlider != null)
+        {
+            healthSlider.value = Lifeboss; // Atualiza o slider
+        }
+
         if (Lifeboss <= 0)
         {
             Die();
         }
         else
         {
-            bossAnimator.SetTrigger("Hit");  // Trigger para animação de hit (dano)
+            bossAnimator.SetTrigger("Hit"); // Trigger para animação de hit
         }
     }
 
@@ -267,7 +281,7 @@ public class BossController : MonoBehaviour
     private IEnumerator EndLevelAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        // Lógica para terminar a fase (sem carregar a cena)
+        phaseManager.TriggerNextPhase();
     }
 
     private void OnDrawGizmosSelected()
