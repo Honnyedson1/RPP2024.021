@@ -325,20 +325,20 @@ public class PlayerController : MonoBehaviour
             BossBehavior Mini = enemy.GetComponent<BossBehavior>();
             if (booEnemy != null)
             {
-                booEnemy.TakeDamage(damage);
+                booEnemy.TakeDamage(GameManager.Instance.PlayerDmage);
             }
             if (enemy2 != null)
             {
-                enemy2.TakeDamage(damage);
+                enemy2.TakeDamage(GameManager.Instance.PlayerDmage);
             }
             if (boss != null)
             {
-                boss.TakeDamage(damage);
+                boss.TakeDamage(GameManager.Instance.PlayerDmage);
             }
 
             if (EnemySpawner!=null)
             {
-                EnemySpawner.takedmg(damage);
+                EnemySpawner.takedmg(GameManager.Instance.PlayerDmage);
             }
 
             if (Mini != null)

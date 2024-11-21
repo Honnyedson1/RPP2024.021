@@ -42,14 +42,14 @@ public class Arrow : MonoBehaviour
         BooEnemy booEnemy = other.GetComponent<BooEnemy>();
         if (booEnemy != null)
         {
-            booEnemy.TakeDamage(damage);
+            booEnemy.TakeDamage(GameManager.Instance.PlayerDmage);
             Destroy(gameObject); // Destruir a flecha após causar dano
         }
         // Verifica se atingiu um BooEnemy
         BossBehavior Mini = other.GetComponent<BossBehavior>();
         if (Mini != null)
         {
-            Mini.TakeDamage(damage);
+            Mini.TakeDamage(GameManager.Instance.PlayerDmage);
             Destroy(gameObject); // Destruir a flecha após causar dano
         }
 
@@ -65,7 +65,7 @@ public class Arrow : MonoBehaviour
         Enemy enemy = other.GetComponent<Enemy>();
         if (enemy != null)
         {
-            enemy.takedmg(damage);
+            enemy.takedmg(GameManager.Instance.PlayerDmage);
             Destroy(gameObject);
         }
 
@@ -73,7 +73,7 @@ public class Arrow : MonoBehaviour
         BossController boss = other.GetComponent<BossController>();
         if (boss != null)
         {
-            boss.TakeDamage(damage); // Aplica dano ao Boss
+            boss.TakeDamage(GameManager.Instance.PlayerDmage); // Aplica dano ao Boss
             Destroy(gameObject); // Destrói a flecha após causar dano
         }
     }

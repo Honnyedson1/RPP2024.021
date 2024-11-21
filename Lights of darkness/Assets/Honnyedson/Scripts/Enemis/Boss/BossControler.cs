@@ -14,7 +14,7 @@ public class BossController : MonoBehaviour
     public float detectionRadius = 5f; 
     public float projectileLifetime = 3f;
     private bool phaseTwoActivated = false; 
-
+    public Animator bossAnimator;
     public int Lifeboss = 25;
     private Transform player;
     private float teleportTimer;
@@ -43,19 +43,26 @@ public class BossController : MonoBehaviour
         attackTimer = attackCooldown;
         moveTimer = moveInterval;
         spawnTimer = spawnInterval;
-    }
 
+        // Inicializando o Animator
+        bossAnimator = GetComponent<Animator>();
+    }
     void Update()
     {
         if (player == null) return;
 
+        // Sempre vira o Boss para o jogador
+        FacePlayer();
+
         // Checa se está na metade da vida e ativa a fase 2
         if (Lifeboss <= 12 && !phaseTwoActivated)
         {
-            ActivatePhaseTwo();
+            ActivatePhaseTwo(); // Ativa a fase 2
+            Debug.Log("Aa");
         }
 
-        if (Isdead == false)
+        // Verifica se o Boss está vivo
+        if (!Isdead)
         {
             teleportTimer -= Time.deltaTime;
             attackTimer -= Time.deltaTime;
@@ -71,7 +78,8 @@ public class BossController : MonoBehaviour
                 teleportTimer = teleportCooldown; 
             }
 
-            if (playerInRange && attackTimer <= 0f)
+            // Só realiza o ataque se o Boss estiver vivo
+            if (Lifeboss > 0 && playerInRange && attackTimer <= 0f)
             {
                 PerformAttack();
                 attackTimer = attackCooldown; 
@@ -91,6 +99,15 @@ public class BossController : MonoBehaviour
                 spawnTimer = spawnInterval;  // Reseta o timer de spawn
             }
         }
+        else
+        {
+            // Se o Boss morreu, ele não faz mais ações de ataque ou movimento
+            // Aqui, o Boss pode fazer uma animação de cair no chão
+            if (bossAnimator != null && !bossAnimator.GetCurrentAnimatorStateInfo(0).IsName("Dead"))
+            {
+                bossAnimator.SetTrigger("Dead");  // Trigger para animação de morte
+            }
+        }
 
         // Verifica se a vida do jogador chegou a 0 e reseta tudo
         if (GameManager.Instance.Life <= 0)
@@ -98,6 +115,7 @@ public class BossController : MonoBehaviour
             ResetGame();
         }
     }
+
 
     void ResetGame()
     {
@@ -134,21 +152,65 @@ public class BossController : MonoBehaviour
 
     void PerformAttack()
     {
-        Debug.Log("Boss atacando!");
-        GameObject projectileToShoot = Random.value < specialAttackChance ? specialProjectilePrefab : projectilePrefab;
-        GameObject projectile = Instantiate(projectileToShoot, transform.position, Quaternion.identity);
+        // Verifica se o Boss ainda está vivo antes de atacar
+        if (Lifeboss <= 0) return;
 
-        Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-        if (rb != null)
+        if (bossAnimator != null)
         {
-            Vector2 direction = (player.position - transform.position).normalized;
-            direction += new Vector2(0f, 0.2f); // Ajuste para cima (valor fixo)
-            direction = direction.normalized;
+            if (Random.value < specialAttackChance) // Se o ataque for especial
+            {
+                bossAnimator.SetTrigger("AttackSpecial");  // Trigger para animação de ataque especial
+                Debug.Log("Boss atacando com ataque especial!");
+        
+                // Executando o ataque especial
+                GameObject projectile = Instantiate(specialProjectilePrefab, transform.position, Quaternion.identity);
+                Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    Vector2 direction = (player.position - transform.position).normalized;
+                    rb.velocity = direction * 15f;
+                    Destroy(projectile, projectileLifetime);
+                }
+            }
+            else // Caso contrário, ataque comum
+            {
+                bossAnimator.SetTrigger("AttackCommon");  // Trigger para animação de ataque comum
+                Debug.Log("Boss atacando com ataque comum!");
+        
+                // Executando o ataque comum
+                GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+                Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    Vector2 direction = (player.position - transform.position).normalized;
+                    direction += new Vector2(0f, 0.2f); // Ajuste para cima (valor fixo)
+                    direction = direction.normalized;
 
-            rb.velocity = direction * 15f;
-            Destroy(projectile, projectileLifetime);
+                    rb.velocity = direction * 15f;
+                    Destroy(projectile, projectileLifetime);
+                }
+            }
         }
     }
+
+
+    void FacePlayer()
+    {
+        // Calcula a direção do jogador em relação ao Boss
+        Vector2 direction = (player.position - transform.position).normalized;
+
+        // Se o jogador estiver à direita do Boss (direção positiva no eixo X)
+        if (direction.x > 0)
+        {
+            transform.localRotation = Quaternion.Euler(0, 180, 0); // Olhar para a direita
+        }
+        else
+        {
+            transform.localRotation = Quaternion.Euler(0, 0, 0); // Olhar para a esquerda
+        }
+    }
+
+
 
     void SmoothMovement()
     {
@@ -184,10 +246,21 @@ public class BossController : MonoBehaviour
         {
             Die();
         }
+        else
+        {
+            bossAnimator.SetTrigger("Hit");  // Trigger para animação de hit (dano)
+        }
     }
 
     private void Die()
     {
+        if (bossAnimator != null)
+        {
+            bossAnimator.SetTrigger("Dead");  // Trigger para animação de morte
+        }
+        Isdead = true; // Marca o Boss como morto
+        // O Boss para de atacar, se mover ou fazer qualquer ação depois da morte
+
         StartCoroutine(EndLevelAfterDelay(5f)); // Espera 5 segundos antes de trocar a fase
     }
 
