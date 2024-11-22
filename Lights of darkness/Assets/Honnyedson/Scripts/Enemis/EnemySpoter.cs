@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -10,6 +11,9 @@ public class InimigoRaycastVisao : MonoBehaviour
     public LayerMask camadaJogador; 
     public LayerMask camadaObstaculos; 
 
+    public AudioClip gritoSound; 
+    private AudioSource audioSource; 
+
     public float velocidadeRotacao = 10f; 
     public float anguloMin = -30f; 
     public float anguloMax = 30f;
@@ -20,6 +24,12 @@ public class InimigoRaycastVisao : MonoBehaviour
     private static bool inimigosAtivos = false; 
     private static int inimigosSpawnados = 0; 
     public static bool PlayerVivo = true;
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>(); 
+    }
+
     void Update()
     {
         if (GameManager.Instance.Life <= 0)
@@ -29,7 +39,14 @@ public class InimigoRaycastVisao : MonoBehaviour
         OscilarRotacao();
         VerificarVisao();
     }
-    
+    private void Gritar()
+    {
+        if (gritoSound != null && !audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(gritoSound); // Reproduz o som de grito
+        }
+    }
+
     IEnumerator PlayerMorreu()
     {
         yield return new WaitForSeconds(1f);
@@ -76,18 +93,25 @@ public class InimigoRaycastVisao : MonoBehaviour
                 {
                     if (hit.collider.CompareTag("Player"))
                     {
-                        SpawnInimigos();
+                        Gritar(); // Inicia o grito ao encontrar o jogador
+                        StartCoroutine(SpawnInimigosComDelay()); // Spawn inimigos com delay
                         break;
                     }
                 }
             }
         }
     }
+    private IEnumerator SpawnInimigosComDelay()
+    {
+        yield return new WaitForSeconds(1f); // Espera 1 segundo
+
+        SpawnInimigos(); // Chama o método de spawn dos inimigos
+    }
     public static void InimigoDestruido()
     {
         GameManager.Instance.StartCoroutine(ResetInimigo());
     }
-
+    
     private static IEnumerator ResetInimigo()
     {
         yield return new WaitForSeconds(3f); // Tempo para reativar o spawn

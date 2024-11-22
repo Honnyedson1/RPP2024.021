@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class BooEnemy : MonoBehaviour
 {
+    
+    public AudioClip whisperSound; // Som de sussurro
+    public AudioClip attackSound;  // Som de ataque
+    private AudioSource audioSource;
+    
     public GameObject player;
     public float speed = 2f;
     public float stopDistance = 2f;
@@ -29,6 +34,8 @@ public class BooEnemy : MonoBehaviour
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>(); // Obter o AudioSource
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         boss = FindObjectOfType<BossController>();
@@ -50,6 +57,7 @@ public class BooEnemy : MonoBehaviour
     {
         transform.position = initialPosition;
     }
+    
 
     if (IsPlayerInArea())
     {
@@ -81,11 +89,12 @@ public class BooEnemy : MonoBehaviour
             // Muda a camada do inimigo para um grupo de colisão que não recebe dano
             gameObject.layer = LayerMask.NameToLayer("Default");
 
-            // Mover o inimigo
             if (distanceToPlayer > stopDistance)
             {
                 MoveTowardsPlayer(directionToPlayer);
+                PlayWhisperSound(); // Reproduz o som de sussurro
             }
+
             else
             {
                 animator.SetInteger("Transition", 0); // Idle
@@ -119,6 +128,7 @@ public class BooEnemy : MonoBehaviour
             }
         }
     }
+    
     else
     {
         animator.SetInteger("Transition", 0); // Idle se o jogador não estiver na área
@@ -128,13 +138,33 @@ public class BooEnemy : MonoBehaviour
             StopCoroutine(attackCoroutine);
             attackCoroutine = null;
         }
+        StopWhisperSound(); // Para o som de sussurro
+
     }
 }
+    private void PlayWhisperSound()
+    {
+        if (!audioSource.isPlaying)
+        {
+            audioSource.clip = whisperSound;
+            audioSource.loop = true; // Faz o som de sussurro repetir
+            audioSource.Play();
+        }
+    }
+
+    private void StopWhisperSound()
+    {
+        if (audioSource.isPlaying && audioSource.clip == whisperSound)
+        {
+            audioSource.Stop();
+        }
+    }
 
     private IEnumerator AttackCoroutine()
     {
         isAttacking = true; 
         animator.SetTrigger("Attack");
+        audioSource.PlayOneShot(attackSound);
         yield return new WaitForSeconds(0.2f);
         if (IsPlayerInAttackRange()) 
         {

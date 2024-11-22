@@ -22,8 +22,9 @@ public class Dors : MonoBehaviour
         OpenDor();
         if (IsOpen == true)
         {
-            box.enabled = false;
             Anim.SetTrigger("OpenDors");
+            box.enabled = false;
+            IsOpen = false;
         }
     }
 

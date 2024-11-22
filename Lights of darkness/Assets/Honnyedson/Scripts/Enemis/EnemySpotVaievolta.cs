@@ -16,14 +16,19 @@ public class InimigoMovimentoLinear : MonoBehaviour
     private Vector3 pontoInicial; 
     private Vector3 pontoFinal; 
     private bool indoParaFrente = true; 
+    
+    public AudioClip gritoSound; 
+    private AudioSource audioSource; 
 
     public GameObject inimigoPrefab;
-    private bool inimigosAtivos = false; 
-    private int inimigosSpawnados = 0; 
+    private static bool inimigosAtivos = false; 
+    private static int inimigosSpawnados = 0; 
     public static bool PlayerVivo = true;
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>(); // Obter o AudioSource
+
         pontoInicial = transform.position;
         pontoFinal = pontoInicial + transform.right * distanciaMovimento;
     }
@@ -40,15 +45,23 @@ public class InimigoMovimentoLinear : MonoBehaviour
             VerificarVisao();
         }
     }
+    
+    private void Gritar()
+    {
+        if (gritoSound != null && !audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(gritoSound); // Reproduz o som de grito
+        }
+    }
 
     IEnumerator PlayerMorreu()
     {
         yield return new WaitForSeconds(1f);
         PlayerVivo = false;
-        yield return new WaitForSeconds(1f);
-        PlayerVivo = true;
         inimigosSpawnados = 0;
         inimigosAtivos = false;
+        yield return new WaitForSeconds(2f);
+        PlayerVivo = true; // Ativa novamente a possibilidade de spawnar inimigos
     }
 
     void Mover()
@@ -75,39 +88,63 @@ public class InimigoMovimentoLinear : MonoBehaviour
 
     void VerificarVisao()
     {
-        float anguloInicio = anguloBaseVisao - (campoDeVisao / 2f); 
-        float incrementoAngulo = campoDeVisao / (quantidadeRaycasts - 1); 
-
-        for (int i = 0; i < quantidadeRaycasts; i++)
+        if (!inimigosAtivos) // Verifica se ainda não foram spawnados inimigos
         {
-            float anguloRay = anguloInicio + incrementoAngulo * i;
-            Vector2 direcaoRay = DirecaoAPartirDeAngulo(anguloRay);
+            float anguloInicio = anguloBaseVisao - (campoDeVisao / 2f); 
+            float incrementoAngulo = campoDeVisao / (quantidadeRaycasts - 1); 
 
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direcaoRay, raioVisao, camadaJogador | camadaObstaculos);
-
-            if (hit)
+            for (int i = 0; i < quantidadeRaycasts; i++)
             {
-                if (hit.collider.CompareTag("Player"))
+                float anguloRay = anguloInicio + incrementoAngulo * i;
+                Vector2 direcaoRay = DirecaoAPartirDeAngulo(anguloRay);
+
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, direcaoRay, raioVisao, camadaJogador | camadaObstaculos);
+
+                if (hit)
                 {
-                    SpawnInimigos();
-                    break; 
+                    if (hit.collider.CompareTag("Player"))
+                    {
+                        Gritar(); // Grita ao encontrar o jogador
+                        StartCoroutine(SpawnInimigosComDelay()); // Spawn inimigos com delay
+                        break; 
+                    }
                 }
             }
         }
     }
+    
+    private IEnumerator SpawnInimigosComDelay()
+{
+    yield return new WaitForSeconds(1f); // Espera 1 segundo
+
+    SpawnInimigos(); // Chama o método de spawn dos inimigos
+}
+    
 
     void SpawnInimigos()
     {
-        if (!inimigosAtivos)
+        if (!inimigosAtivos && inimigosSpawnados < 2)  // Garante que não vai spawnar mais que 2 inimigos
         {
             Vector3 jogadorPosicao = alvo.position;
             float distanciaSpawn = 3f;
             Vector3 posicaoEsquerda = new Vector3(jogadorPosicao.x - distanciaSpawn, jogadorPosicao.y, jogadorPosicao.z);
             Instantiate(inimigoPrefab, posicaoEsquerda, Quaternion.identity);
             inimigosAtivos = true;
-            inimigosSpawnados = 1;
+            inimigosSpawnados = 1; // Adiciona um inimigo
         }
     }
+    public static void InimigoDestruido()
+    {
+        GameManager.Instance.StartCoroutine(ResetInimigo());
+    }
+
+    private static IEnumerator ResetInimigo()
+    {
+        yield return new WaitForSeconds(3f); // Tempo de espera após a destruição
+        inimigosAtivos = false;
+        inimigosSpawnados = 0; // Reseta a contagem de inimigos
+    }
+
 
     Vector2 DirecaoAPartirDeAngulo(float anguloGraus)
     {

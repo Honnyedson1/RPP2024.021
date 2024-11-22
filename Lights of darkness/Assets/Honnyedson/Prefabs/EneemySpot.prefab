@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3211379073934976772}
   - component: {fileID: 4135365125820157460}
   - component: {fileID: 879188529603546974}
+  - component: {fileID: 2150806743624430041}
   m_Layer: 0
   m_Name: EneemySpot
   m_TagString: Untagged
@@ -121,8 +122,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 0.0004299581, y: -1.03835, z: 0}
-    m_Extent: {x: 0.73017, y: 1.0389501, z: 0}
+    m_Center: {x: 0.0017015636, y: -1.1921803, z: 0}
+    m_Extent: {x: 0.83607817, y: 1.1923803, z: 0}
   m_PointLightInnerAngle: 49.63
   m_PointLightOuterAngle: 49.63
   m_PointLightInnerRadius: 3.61
@@ -133,8 +134,9 @@ MonoBehaviour:
   m_ShapeLightFalloffSize: 0
   m_ShapeLightFalloffOffset: {x: 0, y: 0}
   m_ShapePath:
-  - {x: -0.7297401, y: -2.0763037, z: 0.0000002453747}
-  - {x: 0.73040956, y: -2.0750492, z: -0.00000007211262}
+  - {x: -0.8343766, y: -2.3485181, z: 0.00000028664118}
+  - {x: -0.0058274646, y: -2.3845606, z: 0.00000010995008}
+  - {x: 0.83777964, y: -2.3395576, z: -0.00000006631603}
   - {x: 0.0005669951, y: -0.00026092565, z: 0.000000017394155}
   - {x: -0.0004535725, y: -0.0024426498, z: 0.000000037047666}
 --- !u!114 &4135365125820157460
@@ -159,6 +161,7 @@ MonoBehaviour:
   camadaObstaculos:
     serializedVersion: 2
     m_Bits: 192
+  gritoSound: {fileID: 8300000, guid: 26d2f102ec7be4f4e9cf230361461730, type: 3}
   velocidadeRotacao: 11
   anguloMin: -20
   anguloMax: 18.1
@@ -184,3 +187,99 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!82 &2150806743624430041
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6075872647263577373}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

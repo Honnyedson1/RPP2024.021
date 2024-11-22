@@ -5,6 +5,7 @@ public class DoorBox : MonoBehaviour
 {
     public GameObject doorObject; // Referência ao objeto da porta
     private bool isOpen = false; // Status da porta (aberta ou fechada)
+    public bool Caixaemcima;
 
     private void Start()
     {
@@ -14,19 +15,32 @@ public class DoorBox : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Verifica se a caixa entrou no colisor
-        if (other.CompareTag("Box") || other.CompareTag("Player"))
+        if (other.CompareTag("Box"))
         {
-            OpenDoor(); // Abre a porta
+            doorObject.GetComponent<Animator>().SetBool("IsOpen", true);
+            OpenDoor();
+            Caixaemcima = true;
+        }
+
+        if (other.CompareTag("Player"))
+        {
+            if (Caixaemcima == false)
+            {
+                doorObject.GetComponent<Animator>().SetBool("IsOpen", true);
+                OpenDoor();
+            }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        // Verifica se a caixa saiu do colisor
-        if (other.CompareTag("Box") || other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            CloseDoor(); // Fecha a porta
+            if (Caixaemcima == false)
+            {
+                doorObject.GetComponent<Animator>().SetBool("IsOpen", false);
+                CloseDoor(); 
+            }
         }
     }
 
@@ -43,7 +57,7 @@ public class DoorBox : MonoBehaviour
         if (!isOpen)
         {
             isOpen = true; // Marca a porta como aberta
-            doorObject.SetActive(false); // Desativa a porta (aberta)
+            doorObject.GetComponent<BoxCollider2D>().enabled = false;
             Debug.Log("A porta se abriu!");
         }
     }
@@ -53,7 +67,7 @@ public class DoorBox : MonoBehaviour
         if (isOpen)
         {
             isOpen = false; // Marca a porta como fechada
-            doorObject.SetActive(true); // Ativa a porta (fechada)
+            doorObject.GetComponent<BoxCollider2D>().enabled = true;
             Debug.Log("A porta se fechou!");
         }
     }

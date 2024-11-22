@@ -9,14 +9,12 @@ public class GameManager : MonoBehaviour
     public GameObject PauseImage;
     public GameObject Options;
     public GameObject RespawnPanel; // Novo painel de respawn
-    [Header("Player Variaveis")]
-    public int PlayerDmage = 1;
+    [Header("Player Variaveis")] public int PlayerDmage = 1;
     public float attackInterval = 1.2f;
     public int Life = 3;
     public int VidaMaxima = 3;
     public int score;
-    [Header("CheckPoints")]
-    private Vector3 lastCheckpointPosition;
+    [Header("CheckPoints")] private Vector3 lastCheckpointPosition;
     public GameObject Player;
     public Image ArcoSelected;
     public Image SwordSelected;
@@ -28,9 +26,8 @@ public class GameManager : MonoBehaviour
     public Text LifeText;
     public Text FlechasText;
     public Text Scoretext;
-    
-    [Header("Dash Indicators")]
-    public GameObject DashIndicator1; // Indicador do primeiro dash
+
+    [Header("Dash Indicators")] public GameObject DashIndicator1; // Indicador do primeiro dash
     public GameObject DashIndicator2; // Indicador do segundo dash
 
 // Variáveis para salvar o estado do jogador
@@ -63,9 +60,20 @@ public class GameManager : MonoBehaviour
         ArcoSelected.gameObject.SetActive(false);
         SwordSelected.gameObject.SetActive(true);
         Player = GameObject.FindWithTag("Player");
-        lastCheckpointPosition = Player.transform.position;
-        RespawnPanel.SetActive(false); // Esconder o painel de respawn
+
+        if (Player != null)
+            lastCheckpointPosition = Player.transform.position;
+
+        // Garante que a tela de respawn esteja desativada ao iniciar
+        if (RespawnPanel != null)
+            RespawnPanel.SetActive(false);
+
+        // Atualiza as variáveis de interface
+        LifeText.text = $"{Life}/{VidaMaxima}";
+        FlechasText.text = QFlechas.ToString();
+        Scoretext.text = score.ToString();
     }
+
 
     void Update()
     {
@@ -127,7 +135,7 @@ public class GameManager : MonoBehaviour
         savedHasDash = hasDash;
         savedHasDoubleJump = hasDoubleJump;
         savedAttackInterval = attackInterval; // Salva o intervalo de ataque
-        savedPlayerDmage = PlayerDmage;       // Salva o dano do jogador
+        savedPlayerDmage = PlayerDmage; // Salva o dano do jogador
 
         Debug.Log("Estado salvo no checkpoint!");
     }
@@ -143,7 +151,7 @@ public class GameManager : MonoBehaviour
         hasDash = savedHasDash;
         hasDoubleJump = savedHasDoubleJump;
         attackInterval = savedAttackInterval; // Restaura o intervalo de ataque
-        PlayerDmage = savedPlayerDmage;       // Restaura o dano do jogador
+        PlayerDmage = savedPlayerDmage; // Restaura o dano do jogador
 
         // Atualiza os elementos da interface para refletir os valores restaurados
         LifeText.text = $"{Life}/{VidaMaxima}";
@@ -212,6 +220,41 @@ public class GameManager : MonoBehaviour
         AudioListener.pause = false;
     }
 
+   private void ResetGameManager()
+{
+    // Reinicia as variáveis do jogador
+    PlayerDmage = 1;
+    attackInterval = 1.2f;
+    VidaMaxima = 3;
+    Life = VidaMaxima; // Garante que a vida inicial seja igual à vida máxima
+    score = 0;
+    EstouComArco = false;
+    QFlechas = 20;
+    hasDash = false;
+    hasDoubleJump = false;
+    TimeToNextDesh = 10f;
+
+    // Atualiza a interface para os valores padrão
+    LifeText.text = $"{Life}/{VidaMaxima}";
+    FlechasText.text = QFlechas.ToString();
+    Scoretext.text = score.ToString();
+
+    // Reinicia os indicadores de seleção
+    ArcoSelected.gameObject.SetActive(false);
+    SwordSelected.gameObject.SetActive(true);
+
+    // Reinicia a posição do checkpoint
+    lastCheckpointPosition = Vector3.zero;
+
+    // Garante que o painel de respawn esteja desativado
+    if (RespawnPanel != null)
+        RespawnPanel.SetActive(false);
+
+    // Reinicia o estado do jogo pausado
+    isGamePaused = false;
+
+    Debug.Log("GameManager foi restaurado para os valores iniciais.");
+}
     public void OptionsGame()
     {
         Options.gameObject.SetActive(true);
@@ -231,6 +274,8 @@ public class GameManager : MonoBehaviour
 
     public void PlayGame()
     {
+        ResetGameManager(); // Restaura o GameManager para os valores iniciais
         SceneManager.LoadScene("Vilarejo");
     }
+    
 }

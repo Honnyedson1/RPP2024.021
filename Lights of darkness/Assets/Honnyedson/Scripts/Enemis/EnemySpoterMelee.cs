@@ -120,7 +120,13 @@ public class Enemy : MonoBehaviour
             // Notifica que um inimigo foi destruído
             InimigoRaycastVisao.InimigoDestruido();
         }
+        if (!isdead && InimigoMovimentoLinear.PlayerVivo)
+        {
+            InimigoMovimentoLinear.InimigoDestruido();
+        }
+        
     }
+    
 
     private void OnDrawGizmosSelected()
     {
