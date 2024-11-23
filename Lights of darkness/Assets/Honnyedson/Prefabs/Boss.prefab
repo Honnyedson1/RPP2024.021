@@ -13,7 +13,9 @@ GameObject:
   - component: {fileID: 2539577613433407258}
   - component: {fileID: 5273469168188557524}
   - component: {fileID: 7464706733237124998}
-  m_Layer: 8
+  - component: {fileID: 6877738364892615415}
+  - component: {fileID: 5541180634441042832}
+  m_Layer: 9
   m_Name: Boss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 63.632, y: 29.9142, z: 0}
-  m_LocalScale: {x: 1.536, y: 2.7868888, z: 1}
+  m_LocalScale: {x: 4.490793, y: 4.4907928, z: 1.6114}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -76,8 +78,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: -2080167417, guid: 57ca38d9837dd494e94eb310486a44ed, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -119,18 +121,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.023922056, y: -0.22858295}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    pivot: {x: 0.54048645, y: 0.84720474}
+    oldSize: {x: 0.39, y: 0.66}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.2765256, y: 0.6359648}
   m_EdgeRadius: 0
 --- !u!50 &5273469168188557524
 Rigidbody2D:
@@ -147,7 +149,7 @@ Rigidbody2D:
   m_Mass: 1000
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 10
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -173,6 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 4968293847333053278, guid: 015dafcfc63de074c9d2c60da70a8d65, type: 3}
   specialProjectilePrefab: {fileID: 4968293847333053278, guid: b1d1024e6bd22b54daf30f28bc0e6a97, type: 3}
+  enemyPrefab: {fileID: 6873139396986652967, guid: cea90f4507d66c2498cf4260a0af0ae3, type: 3}
   teleportPoints:
   - {fileID: 0}
   - {fileID: 0}
@@ -184,7 +187,46 @@ MonoBehaviour:
   specialAttackChance: 0.15
   detectionRadius: 16.4
   projectileLifetime: 3
-  Lifeboss: 25
+  bossAnimator: {fileID: 0}
+  Lifeboss: 40
+  playerInRange: 0
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  moveInterval: 3
+  spawnInterval: 10
+  spawnPoint: {fileID: 0}
+--- !u!95 &6877738364892615415
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7776788342137734688}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 44cc3d0e332866f40b15e5fb7234d1b6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5541180634441042832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7776788342137734688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7e4fdcef0266564a9b1e462748ffcc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthSlider: {fileID: 0}

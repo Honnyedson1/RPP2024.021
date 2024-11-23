@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class BossController : MonoBehaviour
 {
+    private BossHealthSlider healthSlider;
     public GameObject projectilePrefab; 
     public GameObject specialProjectilePrefab; 
     public GameObject enemyPrefab;  // Referência ao prefab do inimigo
@@ -19,7 +20,7 @@ public class BossController : MonoBehaviour
     private Transform player;
     private float teleportTimer;
     private float attackTimer;
-    private bool playerInRange = false;
+    public bool playerInRange = false;
     public LayerMask playerLayer;
     private bool Isdead = false;
 
@@ -34,17 +35,25 @@ public class BossController : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        healthSlider = GetComponent<BossHealthSlider>();
+
         if (player == null)
         {
             Debug.LogError("Player não encontrado!");
             return;
         }
+
+        if (healthSlider == null)
+        {
+            Debug.LogError("BossHealthSlider não encontrado!");
+            return;
+        }
+
         teleportTimer = teleportCooldown;
         attackTimer = attackCooldown;
         moveTimer = moveInterval;
         spawnTimer = spawnInterval;
 
-        // Inicializando o Animator
         bossAnimator = GetComponent<Animator>();
     }
     void Update()
@@ -106,25 +115,22 @@ public class BossController : MonoBehaviour
 
     void ResetGame()
     {
-        // Resetar a vida do boss e a lógica dele
-        Lifeboss = 25;
+        Lifeboss = 40;
         phaseTwoActivated = false;
         specialAttackChance = 0.30f;
-        teleportCooldown = 5f;
+        teleportCooldown = 7f;
         attackCooldown = 3f;
-        spawnInterval = 40f;  // Resetando o intervalo de spawn para 40 segundos
+        spawnInterval = 10f;
 
-        // Destruir todos os inimigos na cena
         InimigoController.DestruirTodosInimigos();
+        transform.position = new Vector2(0, 0);
 
-        // Resetar a posição do Boss para o início (se necessário)
-        transform.position = new Vector2(0, 0); // Exemplo de resetar a posição, ajuste conforme necessário
-
-        // Resetar timers
         teleportTimer = teleportCooldown;
         attackTimer = attackCooldown;
         moveTimer = moveInterval;
         spawnTimer = spawnInterval;
+
+        healthSlider.ResetSlider(); // Reseta o slider de vida
 
         Debug.Log("O jogador morreu. O Boss e inimigos foram resetados.");
     }
@@ -141,46 +147,39 @@ public class BossController : MonoBehaviour
     {
         if (bossAnimator != null)
         {
-            if (Random.value < specialAttackChance) // Se o ataque for especial
+            GameObject projectile;
+            Rigidbody2D rb;
+
+            if (Random.value < specialAttackChance) // Ataque especial
             {
                 bossAnimator.SetTrigger("AttackSpecial");
                 Debug.Log("Boss atacando com ataque especial!");
 
-                // Executando o ataque especial
-                GameObject projectile = Instantiate(specialProjectilePrefab, transform.position, Quaternion.identity);
-                Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-                if (rb != null)
-                {
-                    Vector2 direction = (player.position - transform.position).normalized;
-                    rb.velocity = direction * 15f;
-
-                    // Ajuste a rotação do projétil
-                    AdjustProjectileRotation(projectile, direction);
-
-                    Destroy(projectile, projectileLifetime);
-                }
+                projectile = Instantiate(specialProjectilePrefab, transform.position, Quaternion.identity);
             }
-            else // Caso contrário, ataque comum
+            else // Ataque comum
             {
                 bossAnimator.SetTrigger("AttackCommon");
                 Debug.Log("Boss atacando com ataque comum!");
 
-                // Executando o ataque comum
-                GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-                Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-                if (rb != null)
-                {
-                    Vector2 direction = (player.position - transform.position).normalized;
-                    direction += new Vector2(0f, 0.2f); // Ajuste para cima
-                    direction = direction.normalized;
+                projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+            }
 
-                    rb.velocity = direction * 15f;
+            // Configuração do projétil
+            rb = projectile.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                // Calcula a direção exata para o jogador
+                Vector2 direction = (player.position - transform.position).normalized;
 
-                    // Ajuste a rotação do projétil
-                    AdjustProjectileRotation(projectile, direction);
+                // Define a velocidade do projétil
+                rb.velocity = direction * 15f;
 
-                    Destroy(projectile, projectileLifetime);
-                }
+                // Ajuste a rotação do projétil (se necessário)
+                AdjustProjectileRotation(projectile, direction);
+
+                // Destroi o projétil após um tempo
+                Destroy(projectile, projectileLifetime);
             }
         }
     }
@@ -224,12 +223,18 @@ public class BossController : MonoBehaviour
         transform.Translate(movement);  // Movimenta suavemente o boss
     }
 
+    public Transform spawnPoint; // Ponto de spawn definido no Editor
+
     void SpawnEnemies()
     {
-        Debug.Log("Spawn de inimigos!");
-        // Spawn de um inimigo em uma posição próxima do boss
-        Vector2 spawnPosition = (Vector2)transform.position + new Vector2(Random.Range(-3f, 3f), Random.Range(-3f, 3f));
-        Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        if (spawnPoint == null)
+        {
+            Debug.LogWarning("Ponto de spawn não definido! Por favor, atribua um ponto de spawn no Inspector.");
+            return;
+        }
+
+        Debug.Log("Spawn de inimigos no ponto designado!");
+        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
     }
 
     void ActivatePhaseTwo()
@@ -251,7 +256,8 @@ public class BossController : MonoBehaviour
         }
         else
         {
-            bossAnimator.SetTrigger("Hit");  // Trigger para animação de hit (dano)
+            bossAnimator.SetTrigger("Hit");
+            healthSlider.healthSlider.value = Lifeboss; // Atualiza a barra
         }
     }
 
