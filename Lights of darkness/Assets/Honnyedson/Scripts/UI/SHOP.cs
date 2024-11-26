@@ -28,8 +28,8 @@ public class Shop : MonoBehaviour
     void Start()
     {
         UpdateUI();
-        dashCostText.text = "Dash Está bloqueado";
-        DoubleJumpEstablock.text = "Double Jump Está bloqueado";
+        dashCostText.text = "bloqueado";
+        DoubleJumpEstablock.text = "bloqueado";
     }
 
     private void Update()
@@ -98,7 +98,7 @@ public class Shop : MonoBehaviour
             playerItems -= dashCost;
             GameManager.Instance.hasDash = true; // Ativa a habilidade de dash
             GameManager.Instance.score = playerItems; // Atualiza o score no GameManager
-            DashEstaBlock.text = "Dash Desbloqueado";
+            DashEstaBlock.text = "Desbloqueado";
             UpdateUI();
             
         }
@@ -115,7 +115,7 @@ public class Shop : MonoBehaviour
             playerItems -= doubleJumpCost;
             GameManager.Instance.hasDoubleJump = true; // Ativa a habilidade de double jump
             GameManager.Instance.score = playerItems; // Atualiza o score no GameManager
-            DoubleJumpEstablock.text = "Double Jump Desbloqueado";
+            DoubleJumpEstablock.text = "Desbloqueado";
             UpdateUI();
             Debug.Log("Bought Double Jump: Remaining items = " + playerItems);
         }
@@ -125,16 +125,16 @@ public class Shop : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            itemText.text = "Você Tem: " + playerItems + " Saquinhos";
-            healthCostText.text = "Comprar +1 Vida: " + healthCost + " Saquinhos";
-            damageCostText.text = "Comprar +1 Dano: " + damageCost + " Saquinho";
-            shootTimeCostText.text = "Velocidade de Ataque: " + shootTimeCost + " Saquinho";
-            dashCostText.text = "Comprar Dash: " + dashCost + " Saquinhos";
-            doubleJumpCostText.text = "Comprar Double Jump: " + doubleJumpCost + " Saquinhos";
+            itemText.text = playerItems.ToString();
+            healthCostText.text = healthCost.ToString();
+            damageCostText.text = damageCost.ToString();
+            shootTimeCostText.text =shootTimeCost.ToString();
+            dashCostText.text =dashCost.ToString();
+            doubleJumpCostText.text = doubleJumpCost.ToString();
 
-            playerHealthText.text = "Você Tem: " + GameManager.Instance.VidaMaxima + "Vida Maxima";
-            playerDamageText.text = "Você Tem: " + GameManager.Instance.PlayerDmage + "Dano";
-            shootTimeText.text = "Você Tem: " + GameManager.Instance.attackInterval.ToString("F1") + "s" + "Velocidade de Ataque";
+            playerHealthText.text = GameManager.Instance.VidaMaxima.ToString();
+            playerDamageText.text = GameManager.Instance.PlayerDmage.ToString();
+            shootTimeText.text = GameManager.Instance.attackInterval.ToString("F1") + "s" ;
         }
     }
 }

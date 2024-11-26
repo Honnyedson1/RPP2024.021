@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour
         Player.transform.position = lastCheckpointPosition; // Reposiciona o jogador
         RestorePlayerState(); // Restaura o estado salvo do jogador
         RespawnPanel.SetActive(false); // Esconde o painel de respawn
-
+        Time.timeScale = 1;
         // Libera o jogador para mover-se novamente
         var playerController = Player.GetComponent<PlayerController>();
         if (playerController != null)
@@ -180,7 +180,7 @@ public class GameManager : MonoBehaviour
         if (!RespawnPanel.activeSelf) // Só exibe se ainda não estiver ativo
         {
             RespawnPanel.SetActive(true);
-
+            Time.timeScale = 0;
             var playerController = Player.GetComponent<PlayerController>();
             if (playerController != null)
             {

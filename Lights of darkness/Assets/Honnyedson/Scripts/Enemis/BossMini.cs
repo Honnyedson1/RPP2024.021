@@ -1,8 +1,11 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BossBehavior : MonoBehaviour
 {
+    public Slider healthSlider; // Referência ao slider de vida
+
     public Transform player; // Referência ao jogador
     public GameObject lightningPrefab; // Prefab do raio
     public Transform meleeAttackPoint; // Ponto de ataque melee
@@ -18,7 +21,7 @@ public class BossBehavior : MonoBehaviour
     public float lightningRange = 10f; // Alcance do raio de ataque
     public float lightningCooldown = 2f; // Tempo entre os ataques de raio
     public int maxHealth = 100; // Vida máxima do boss
-    private int currentHealth; // Vida atual do boss
+    public int currentHealth; // Vida atual do boss
     public PhaseManager phaseManager; // Referência ao PhaseManager para mudar de fase após a morte do boss
 
     private Animator anim; // Referência ao Animator
@@ -34,12 +37,21 @@ public class BossBehavior : MonoBehaviour
     private float nextDashTime = 0f; // Tempo para o próximo dash
     private float healingCooldown = 5f; // Tempo de espera para tentar curar
 
+    public Collider2D attackAreaCollider; // Colisor invisível para a área de ataque
+    private bool isInAttackArea = false; // Flag para verificar se o jogador está na área de ataque
     private void Start()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         currentHealth = maxHealth; // Inicializa a saúde
         phaseManager = FindObjectOfType<PhaseManager>(); // Busca o PhaseManager para transição de fases
+
+        // Inicializa o slider de vida
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = currentHealth;
+        }
 
         // Garante que o colisor invisível começa desativado
         if (areaAttackCollider != null)
@@ -48,29 +60,68 @@ public class BossBehavior : MonoBehaviour
         }
     }
 
-    private void Update()
+   private void Update()
+{
+    if (isHealing || isDashing || isAttacking)
     {
-        if (player == null || isDead) return; // Se o boss estiver morto, não faz mais nada
+        return; // Impede que qualquer outra ação aconteça
+    }
+    
+    if (player == null || isDead) return; // Se o boss estiver morto, não faz mais nada
 
-        // Se o boss está curando, dando dash ou atacando, ele não deve executar outras ações
-        if (isHealing || isDashing || isAttacking)
+    // Verifica a vida do jogador e desativa o slider quando a vida for zero
+    if (GameManager.Instance.Life <= 0)
+    {
+        if (healthSlider != null && healthSlider.gameObject.activeSelf)
         {
-            return; // Impede que qualquer outra ação aconteça
+            healthSlider.gameObject.SetActive(false); // Desativa o slider
         }
 
+        // Reseta o estado do boss após 3 segundos
+        StartCoroutine(ResetBossAfterDelay(3f)); 
+        return; // Não faz mais nada se o jogador estiver morto
+    }
+
+    if (attackAreaCollider != null)
+    {
+        // Checa se o jogador está dentro da área de ataque
+        isInAttackArea = attackAreaCollider.OverlapPoint(player.position);
+
+        // Se o jogador entrou na área de ataque, o slider aparece
+        if (isInAttackArea && healthSlider != null && !healthSlider.gameObject.activeSelf)
+        {
+            healthSlider.gameObject.SetActive(true); // Ativa o slider novamente
+        }
+    }
+
+    // Se o boss está curando, dando dash ou atacando, ele não deve executar outras ações
+    if (isHealing || isDashing || isAttacking)
+    {
+        return; // Impede que qualquer outra ação aconteça
+    }
+
+    // Só permite que o Boss execute ações de ataque se a vida do jogador for maior que zero
+    if (GameManager.Instance.Life > 0)
+    {
         FollowPlayer();
 
-        // Checar distância para iniciar ataques
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
         if (distanceToPlayer <= meleeRange)
         {
+            // Se estiver perto o suficiente, realiza o ataque corpo a corpo
             StartCoroutine(PerformComboAttack());
         }
-        else if (Time.time >= nextDashTime && distanceToPlayer > meleeRange)
+        else if (distanceToPlayer > 10f && Time.time >= nextDashTime)
         {
+            // Se a distância for maior que 10, realiza o dash
             StartCoroutine(PerformDash());
             nextDashTime = Time.time + dashCooldown;
+        }
+        else
+        {
+            // Se a distância for menor que 10, anda até o jogador
+            StartCoroutine(WalkAndAttack());
         }
 
         // Ataque de raio
@@ -85,8 +136,61 @@ public class BossBehavior : MonoBehaviour
             StartCoroutine(TryHeal());
         }
     }
+}
 
-    private void FollowPlayer()
+// Coroutine para resetar o estado do boss após 3 segundos de o jogador morrer
+private IEnumerator ResetBossAfterDelay(float delay)
+{
+    yield return new WaitForSeconds(delay);
+
+    // Reseta o estado do boss
+    ResetBossState();
+}
+
+// Reseta o estado do Boss
+    private void ResetBossState()
+    {
+        // Só reseta o estado do Boss se o jogador estiver vivo
+        if (GameManager.Instance.Life > 0) // Verifica se o jogador está vivo
+        {
+            // Reseta as variáveis importantes
+            currentHealth = maxHealth; // Reseta a vida para o valor máximo
+            isDead = false; // O boss não está mais morto
+            isAttacking = false; // O boss não está mais atacando
+            isWaiting = false; // O boss não está esperando
+            isDashing = false; // O boss não está mais em dash
+            isFacingRight = true; // O boss está virado para a direita inicialmente
+            isLightningActive = false; // O boss não está mais com o raio ativo
+            isHealing = false; // O boss não está mais curando
+            isIdle = true; // O boss está em inatividade
+            nextDashTime = Time.time + dashCooldown; // Garante que o dash só poderá ocorrer após o cooldown
+            healingCooldown = Time.time + 5f; // Reseta o cooldown da cura
+
+            // Atualiza o slider de vida
+            if (healthSlider != null)
+            {
+                healthSlider.value = currentHealth;
+            }
+
+            // Coloca o boss de volta à posição inicial ou qualquer outro reset necessário (opcional)
+            transform.position = new Vector2(-442.117f, -9.927f); // Por exemplo, resetando a posição do boss
+        }
+        else
+        {
+            // Caso o jogador tenha morrido, reseta apenas as variáveis sem mover o boss
+            isDead = true; // Garantir que o Boss está em estado de morte
+            isAttacking = false;
+            isDashing = false;
+            isIdle = true;
+
+            // Evita que o Boss continue se movendo ou atacando
+            rb.velocity = Vector2.zero; // Garante que o Boss pare de se mover
+            anim.SetBool("IsMoving", false); // Para a animação de movimento
+        }
+    }
+
+
+private void FollowPlayer()
     {
         Vector2 direction = (player.position - transform.position).normalized;
         rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
@@ -119,6 +223,8 @@ public class BossBehavior : MonoBehaviour
 
     private IEnumerator PerformComboAttack()
     {
+        if (isAttacking) yield break;  // Impede que o boss comece outro ataque enquanto estiver atacando
+
         isAttacking = true;
         isIdle = false;
         rb.velocity = Vector2.zero; // Para o movimento
@@ -126,25 +232,21 @@ public class BossBehavior : MonoBehaviour
 
         // Ativa a animação do ataque melee
         anim.SetTrigger("MeleeCombo");
-        yield return new WaitForSeconds(0.2f);
-        // Executa o primeiro ataque melee
-        PerformMeleeAttack();
-        // Aguarda antes do pulo
-        yield return new WaitForSeconds(1f);
-        // Realiza o pulo
-        PerformJump();
+        yield return new WaitForSeconds(0.2f);  // Tempo de espera para o ataque corpo a corpo
+        PerformMeleeAttack();  // Executa o primeiro ataque melee
 
-        // Aguarda a aterrissagem
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);  // Espera entre os ataques
 
-        // Executa o ataque em área com o colisor invisível
-        ActivateAreaAttackCollider();
+        PerformJump();  // Realiza o pulo
 
-        // Aguarda 3 segundos após o ataque
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(0.5f);  // Espera o tempo para a aterrissagem
 
-        isAttacking = false;
-        isIdle = true; // Libera o boss para outra ação
+        ActivateAreaAttackCollider();  // Executa o ataque de área
+
+        yield return new WaitForSeconds(3f);  // Espera após o ataque
+
+        isAttacking = false;  // Permite que o boss execute outra ação
+        isIdle = true;  // O boss pode ficar em inatividade
     }
 
     private void PerformMeleeAttack()
@@ -187,7 +289,9 @@ public class BossBehavior : MonoBehaviour
 
     private IEnumerator PerformLightningAttack()
     {
-        isAttacking = true; // Marca como atacando para impedir outras ações
+        if (isAttacking) yield break;  // Impede múltiplos ataques simultâneos
+
+        isAttacking = true; // Marca como atacando
         isLightningActive = true;
 
         rb.velocity = Vector2.zero; // Para o movimento
@@ -196,18 +300,16 @@ public class BossBehavior : MonoBehaviour
         // Ativa a animação do ataque de raio
         anim.SetTrigger("BeamAttack");
 
-        // Aguarda o tempo para sincronizar a animação com o ataque
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.5f);  // Espera para sincronizar com a animação
 
         // Instancia o raio
         Vector3 lightningPosition = player.position + Vector3.up * 2f;
         Instantiate(lightningPrefab, lightningPosition, Quaternion.identity);
 
-        // Aguarda 3 segundos após o ataque
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(3f);  // Espera após o ataque de raio
 
         isLightningActive = false;
-        isAttacking = false;
+        isAttacking = false;  // Libera para outro ataque
     }
 
     private IEnumerator PerformDash()
@@ -252,10 +354,35 @@ public class BossBehavior : MonoBehaviour
         {
             currentHealth = Mathf.Min(currentHealth + 20, maxHealth); // Recupera 20 de vida
             healingCooldown = Time.time + 5f; // Define o cooldown de cura
+
+            // Atualiza o slider de vida após a cura
+            if (healthSlider != null)
+            {
+                healthSlider.value = currentHealth;
+            }
         }
 
         yield return new WaitForSeconds(1f);
         isHealing = false;
+    }
+    private IEnumerator WalkAndAttack()
+    {
+        // O boss anda em direção ao jogador por um tempo pequeno
+        float moveTime = 0.5f; // Define quanto tempo o boss vai andar
+        Vector2 initialPosition = transform.position;
+        Vector2 targetPosition = player.position;
+
+        // A direção que o boss vai se mover
+        Vector2 direction = (targetPosition - initialPosition).normalized;
+        rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
+
+        // Espera um pouco enquanto o boss anda
+        yield return new WaitForSeconds(moveTime);
+
+        // Após andar, realiza o ataque
+        rb.velocity = Vector2.zero; // Para o movimento
+        anim.SetBool("IsMoving", false); // Desativa animação de movimento
+        StartCoroutine(PerformComboAttack()); // Realiza o ataque
     }
 
     // Método para o boss receber dano
@@ -264,13 +391,26 @@ public class BossBehavior : MonoBehaviour
         if (isDead) return;
 
         currentHealth -= damage;
+        // Não interrompe animações de ataque ou cura com animação de hit
+        if (isHealing || isAttacking)
+        {
+            return; // Não faz nada se o boss estiver curando ou atacando
+        }
+
         anim.SetTrigger("Hit");
+
+        // Atualiza o slider de vida
+        if (healthSlider != null)
+        {
+            healthSlider.value = currentHealth;
+        }
 
         if (currentHealth <= 0)
         {
             StartCoroutine(Die());
         }
     }
+
 
     public IEnumerator Die()
     {
