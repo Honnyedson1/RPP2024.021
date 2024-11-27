@@ -440,11 +440,14 @@ public class PlayerController : MonoBehaviour
     }
     public IEnumerator FreezeCoroutine()
     {
-        isFrozen = true;
-        TakeDmg(1);
-        rb.velocity = new Vector2(0, 0);
-        yield return new WaitForSeconds(3);
-        isFrozen = false;
+        isFrozen = true;              // Congela o jogador
+        anim.SetTrigger("Freeze");    // Ativa a animação de freeze
+        rb.velocity = Vector2.zero;  // Garante que o jogador pare de se mover
+
+        yield return new WaitForSeconds(2f);  // O tempo de congelamento será de 2 segundos
+
+        isFrozen = false;            // Descongela o jogador
+        anim.SetInteger("Transition", 0);  // Retorna à animação padrão (ex: idle)
     }
 
     void OnDrawGizmosSelected()
@@ -464,9 +467,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.tag == "EspcialProject")
+        if (col.gameObject.tag == "Freeze")  // Verifica se o objeto tem a tag "Freeze"
         {
-            StartCoroutine(FreezeCoroutine());
+            StartCoroutine(FreezeCoroutine()); // Congela o jogador
         }
         if (col.gameObject.tag == "BossAtack")
         {

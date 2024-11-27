@@ -129,7 +129,6 @@ public class GameManager : MonoBehaviour
     {
         savedLife = Life;
         savedVidaMaxima = VidaMaxima; // Salva a vida máxima
-        savedScore = score;
         savedEstouComArco = EstouComArco;
         savedQFlechas = QFlechas;
         savedHasDash = hasDash;
@@ -145,7 +144,6 @@ public class GameManager : MonoBehaviour
     {
         Life = savedLife;
         VidaMaxima = savedVidaMaxima; // Restaura a vida máxima
-        score = savedScore;
         EstouComArco = savedEstouComArco;
         QFlechas = savedQFlechas;
         hasDash = savedHasDash;

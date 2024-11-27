@@ -8,12 +8,13 @@ TagManager:
   - Coin
   - NPC
   - EspcialProject
-  - BossAtack
   - NextLevel
   - Flecha
   - Obstacle
   - Box
   - ShopUI
+  - Freeze
+  - BossAtack
   layers:
   - Default
   - TransparentFX

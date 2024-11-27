@@ -6,6 +6,7 @@ public class BossHealthSlider : MonoBehaviour
     public Slider healthSlider; // Referência ao Slider UI
     private BossController bossController; // Referência ao script BossController
     private bool isActive = false; // Verifica se o slider está ativo
+    private bool playerInRange = false; // Se o jogador está dentro do raio de visão
 
     void Start()
     {
@@ -25,19 +26,23 @@ public class BossHealthSlider : MonoBehaviour
 
     void Update()
     {
-        // Verifica se a vida do jogador chegou a zero
-        if (GameManager.Instance.Life > 0 && !isActive)
+        // Verifica a área de detecção do boss
+        playerInRange = Physics2D.OverlapCircle(transform.position, bossController.detectionRadius, bossController.playerLayer);
+
+        // Se o jogador entrou na área de visão e está vivo, ativa o slider
+        if (playerInRange && GameManager.Instance.Life > 0 && !isActive)
         {
             healthSlider.gameObject.SetActive(true);
             isActive = true;
         }
+        // Se o jogador morreu, desativa o slider
         else if (GameManager.Instance.Life <= 0 && isActive)
         {
             healthSlider.gameObject.SetActive(false);
             isActive = false;
         }
 
-        // Atualiza a barra de vida com o valor atual da vida do boss
+        // Atualiza a barra de vida do boss
         if (isActive)
         {
             healthSlider.value = bossController.Lifeboss;
@@ -49,5 +54,11 @@ public class BossHealthSlider : MonoBehaviour
         healthSlider.value = bossController.Lifeboss;
         healthSlider.gameObject.SetActive(false);
         isActive = false;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, bossController.detectionRadius); // Mostra o raio de detecção no Editor
     }
 }
