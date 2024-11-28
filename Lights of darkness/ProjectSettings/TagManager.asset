@@ -15,6 +15,7 @@ TagManager:
   - ShopUI
   - Freeze
   - BossAtack
+  - CreditTrigger
   layers:
   - Default
   - TransparentFX

@@ -178,7 +178,6 @@ public class GameManager : MonoBehaviour
         if (!RespawnPanel.activeSelf) // Só exibe se ainda não estiver ativo
         {
             RespawnPanel.SetActive(true);
-            Time.timeScale = 0;
             var playerController = Player.GetComponent<PlayerController>();
             if (playerController != null)
             {
@@ -268,12 +267,14 @@ public class GameManager : MonoBehaviour
     public void GoToMainMenu()
     {
         SceneManager.LoadScene(1);
+        Time.timeScale = 1;
     }
 
     public void PlayGame()
     {
         ResetGameManager(); // Restaura o GameManager para os valores iniciais
         SceneManager.LoadScene("Vilarejo");
+        Time.timeScale = 1;
     }
     
 }

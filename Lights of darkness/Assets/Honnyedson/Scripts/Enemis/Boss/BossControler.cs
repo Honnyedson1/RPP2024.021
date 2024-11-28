@@ -87,7 +87,7 @@ public class BossController : MonoBehaviour
 
             if (playerInRange && attackTimer <= 0f)
             {
-                PerformAttack();
+                StartCoroutine(PerformAttack());
                 attackTimer = attackCooldown; 
             }
 
@@ -143,7 +143,7 @@ public class BossController : MonoBehaviour
         transform.position = teleportPoints[randomIndex].position;
     }
 
-    void PerformAttack()
+    IEnumerator PerformAttack()
     {
         if (bossAnimator != null)
         {
@@ -154,14 +154,14 @@ public class BossController : MonoBehaviour
             {
                 bossAnimator.SetTrigger("AttackSpecial");
                 Debug.Log("Boss atacando com ataque especial!");
-
+                yield return new WaitForSeconds(0.25f);
                 projectile = Instantiate(specialProjectilePrefab, transform.position, Quaternion.identity);
             }
             else // Ataque comum
             {
                 bossAnimator.SetTrigger("AttackCommon");
                 Debug.Log("Boss atacando com ataque comum!");
-
+                yield return new WaitForSeconds(0.25f);
                 projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
             }
 

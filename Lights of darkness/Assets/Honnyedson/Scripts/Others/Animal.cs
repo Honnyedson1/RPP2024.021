@@ -46,6 +46,7 @@ public class AnimalBehaviour : MonoBehaviour
             Anim.SetBool("IsRun", true);
             isRunning = true;
             ShowChaseMessage();       // Mostra a mensagem para seguir o animal
+            Destroy(this.gameObject, 5f);
         }
 
         // Se o animal estiver fugindo, move-o para a direita
@@ -61,6 +62,7 @@ public class AnimalBehaviour : MonoBehaviour
         if (other.CompareTag("Flecha"))  // Verifica se o objeto que colidiu tem a tag "Flecha"
         {
             KillAnimal();  // Chama o método que mata o animal
+            Destroy(this.gameObject, 5f);
         }
     }
 

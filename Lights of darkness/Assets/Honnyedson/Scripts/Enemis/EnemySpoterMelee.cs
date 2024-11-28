@@ -30,6 +30,11 @@ public class Enemy : MonoBehaviour
             Destroy(this.gameObject);
         }
 
+        if (GameManager.Instance.Life <= 0)
+        {
+            Destroy(gameObject);
+        }
+
         if (!isdead)
         {
             if (player != null)
