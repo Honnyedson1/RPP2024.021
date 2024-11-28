@@ -37,9 +37,9 @@ public class CreditTriggerManager2D : MonoBehaviour
         }
         else
         {
-            Debug.Log("Mensagens de créditos concluídas. Exibindo tela final.");
-            if (finalScreen != null)
-                finalScreen.SetActive(true);
+            Debug.Log("Todas as mensagens de créditos foram exibidas. Aguardando 5 segundos antes de exibir a tela final.");
+            // Aguarda 5 segundos após terminar de mostrar as mensagens de crédito
+            StartCoroutine(ShowFinalScreenAfterDelay(5f));
         }
 
         // Desativar o trigger após ser usado
@@ -68,5 +68,18 @@ public class CreditTriggerManager2D : MonoBehaviour
         }
 
         targetText.text = "";
+    }
+
+    private IEnumerator ShowFinalScreenAfterDelay(float delay)
+    {
+        // Aguarda o tempo especificado
+        yield return new WaitForSeconds(delay);
+
+        // Exibe a tela final
+        if (finalScreen != null)
+        {
+            finalScreen.SetActive(true);
+            Debug.Log("Tela final exibida.");
+        }
     }
 }
