@@ -6,6 +6,8 @@ public class BossBehavior : MonoBehaviour
 {
     public Slider healthSlider; // Referência ao slider de vida
 
+    public float actionCooldown = 1f; // Cooldown para esperar entre ações
+    private float lastActionTime = 0f; // Marca o tempo da última ação realizada
     public Transform player; // Referência ao jogador
     public GameObject lightningPrefab; // Prefab do raio
     public Transform meleeAttackPoint; // Ponto de ataque melee
@@ -60,83 +62,52 @@ public class BossBehavior : MonoBehaviour
         }
     }
 
-   private void Update()
-{
-    if (isHealing || isDashing || isAttacking)
+    private void Update()
     {
-        return; // Impede que qualquer outra ação aconteça
-    }
-    
-    if (player == null || isDead) return; // Se o boss estiver morto, não faz mais nada
+        if (player == null || isDead) return; // Se o boss estiver morto, não faz mais nada
 
-    // Verifica a vida do jogador e desativa o slider quando a vida for zero
-    if (GameManager.Instance.Life <= 0)
-    {
-        if (healthSlider != null && healthSlider.gameObject.activeSelf)
+        // Verifica se já passou o tempo suficiente desde a última ação
+        if (Time.time < lastActionTime + actionCooldown) return;
+
+        // Se o boss estiver executando uma ação, não faz mais nada
+        if (isHealing || isDashing || isAttacking)
         {
-            healthSlider.gameObject.SetActive(false); // Desativa o slider
+            return; // Impede que outra ação seja iniciada enquanto o boss está ocupado
         }
 
-        // Reseta o estado do boss após 3 segundos
-        StartCoroutine(ResetBossAfterDelay(3f)); 
-        return; // Não faz mais nada se o jogador estiver morto
-    }
-
-    if (attackAreaCollider != null)
-    {
-        // Checa se o jogador está dentro da área de ataque
-        isInAttackArea = attackAreaCollider.OverlapPoint(player.position);
-
-        // Se o jogador entrou na área de ataque, o slider aparece
-        if (isInAttackArea && healthSlider != null && !healthSlider.gameObject.activeSelf)
+        // Só permite que o Boss execute ações de ataque se a vida do jogador for maior que zero
+        if (GameManager.Instance.Life > 0)
         {
-            healthSlider.gameObject.SetActive(true); // Ativa o slider novamente
-        }
-    }
+            FollowPlayer();
 
-    // Se o boss está curando, dando dash ou atacando, ele não deve executar outras ações
-    if (isHealing || isDashing || isAttacking)
-    {
-        return; // Impede que qualquer outra ação aconteça
-    }
+            // Checar distância para iniciar ataques
+            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-    // Só permite que o Boss execute ações de ataque se a vida do jogador for maior que zero
-    if (GameManager.Instance.Life > 0)
-    {
-        FollowPlayer();
+            // Verifica se o boss pode atacar corpo a corpo
+            if (distanceToPlayer <= meleeRange && !isHealing && !isDashing && !isAttacking)
+            {
+                StartCoroutine(PerformComboAttack());
+            }
+            // Verifica se o boss pode realizar o dash
+            else if (Time.time >= nextDashTime && distanceToPlayer > meleeRange && !isHealing && !isAttacking)
+            {
+                StartCoroutine(PerformDash());
+                nextDashTime = Time.time + dashCooldown;
+            }
 
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+            // Verifica se o boss pode lançar raio
+            if (distanceToPlayer <= lightningRange && !isAttacking && !isHealing && !isDashing && !isLightningActive)
+            {
+                StartCoroutine(PerformLightningAttack());
+            }
 
-        if (distanceToPlayer <= meleeRange)
-        {
-            // Se estiver perto o suficiente, realiza o ataque corpo a corpo
-            StartCoroutine(PerformComboAttack());
-        }
-        else if (distanceToPlayer > 10f && Time.time >= nextDashTime)
-        {
-            // Se a distância for maior que 10, realiza o dash
-            StartCoroutine(PerformDash());
-            nextDashTime = Time.time + dashCooldown;
-        }
-        else
-        {
-            // Se a distância for menor que 10, anda até o jogador
-            StartCoroutine(WalkAndAttack());
-        }
-
-        // Ataque de raio
-        if (distanceToPlayer <= lightningRange && !isAttacking && !isLightningActive)
-        {
-            StartCoroutine(PerformLightningAttack());
-        }
-
-        // Tentar curar com 20% de chance
-        if (Random.value <= 0.2f && currentHealth < maxHealth && Time.time >= healingCooldown)
-        {
-            StartCoroutine(TryHeal());
+            // Tentar curar com 20% de chance, mas só se o boss não estiver atacando nem dashing
+            if (Random.value <= 0.2f && currentHealth < maxHealth && Time.time >= healingCooldown && !isAttacking && !isDashing)
+            {
+                StartCoroutine(TryHeal());
+            }
         }
     }
-}
 
 // Coroutine para resetar o estado do boss após 3 segundos de o jogador morrer
 private IEnumerator ResetBossAfterDelay(float delay)
@@ -223,8 +194,6 @@ private void FollowPlayer()
 
     private IEnumerator PerformComboAttack()
     {
-        if (isAttacking) yield break;  // Impede que o boss comece outro ataque enquanto estiver atacando
-
         isAttacking = true;
         isIdle = false;
         rb.velocity = Vector2.zero; // Para o movimento
@@ -232,21 +201,22 @@ private void FollowPlayer()
 
         // Ativa a animação do ataque melee
         anim.SetTrigger("MeleeCombo");
-        yield return new WaitForSeconds(0.2f);  // Tempo de espera para o ataque corpo a corpo
-        PerformMeleeAttack();  // Executa o primeiro ataque melee
+        yield return new WaitForSeconds(0.2f); // Tempo de delay para a animação
+        PerformMeleeAttack(); // Executa o ataque melee
 
-        yield return new WaitForSeconds(1f);  // Espera entre os ataques
+        yield return new WaitForSeconds(1f); // Aguarda antes do pulo
+        PerformJump(); // Realiza o pulo
 
-        PerformJump();  // Realiza o pulo
+        yield return new WaitForSeconds(0.5f); // Aguarda a aterrissagem
+        ActivateAreaAttackCollider(); // Executa o ataque de área
 
-        yield return new WaitForSeconds(0.5f);  // Espera o tempo para a aterrissagem
+        yield return new WaitForSeconds(3f); // Aguarda 3 segundos após o ataque
 
-        ActivateAreaAttackCollider();  // Executa o ataque de área
+        isAttacking = false;
+        isIdle = true;
 
-        yield return new WaitForSeconds(3f);  // Espera após o ataque
-
-        isAttacking = false;  // Permite que o boss execute outra ação
-        isIdle = true;  // O boss pode ficar em inatividade
+        // Atualiza o tempo da última ação para o cooldown
+        lastActionTime = Time.time;
     }
 
     private void PerformMeleeAttack()
@@ -289,9 +259,7 @@ private void FollowPlayer()
 
     private IEnumerator PerformLightningAttack()
     {
-        if (isAttacking) yield break;  // Impede múltiplos ataques simultâneos
-
-        isAttacking = true; // Marca como atacando
+        isAttacking = true; // Marca como atacando para impedir outras ações
         isLightningActive = true;
 
         rb.velocity = Vector2.zero; // Para o movimento
@@ -300,30 +268,32 @@ private void FollowPlayer()
         // Ativa a animação do ataque de raio
         anim.SetTrigger("BeamAttack");
 
-        yield return new WaitForSeconds(0.5f);  // Espera para sincronizar com a animação
+        // Aguarda o tempo para sincronizar a animação com o ataque
+        yield return new WaitForSeconds(0.5f);
 
         // Instancia o raio
         Vector3 lightningPosition = player.position + Vector3.up * 2f;
         Instantiate(lightningPrefab, lightningPosition, Quaternion.identity);
 
-        yield return new WaitForSeconds(3f);  // Espera após o ataque de raio
+        // Aguarda 3 segundos após o ataque
+        yield return new WaitForSeconds(3f);
 
         isLightningActive = false;
-        isAttacking = false;  // Libera para outro ataque
+        isAttacking = false;
     }
 
     private IEnumerator PerformDash()
     {
         if (isDashing)
         {
-            yield break;
+            yield break; // Se o boss já estiver dashing, evita o início de outro dash
         }
 
         isDashing = true;
         isIdle = false;
 
         float originalGravity = rb.gravityScale;
-        rb.gravityScale = 0; 
+        rb.gravityScale = 0; // Desativa a gravidade temporariamente
 
         Vector2 dashDirection = isFacingRight ? Vector2.right : Vector2.left;
         float dashTime = 0f;
@@ -335,13 +305,16 @@ private void FollowPlayer()
         while (dashTime < dashDuration)
         {
             dashTime += Time.deltaTime;
-            rb.velocity = new Vector2(dashDirection.x * dashSpeed, rb.velocity.y);
+            rb.velocity = new Vector2(dashDirection.x * dashSpeed, rb.velocity.y); // Realiza o dash
             yield return null;
         }
 
         rb.gravityScale = originalGravity;
         isDashing = false;
         isIdle = true;
+
+        // Atualiza o tempo da última ação para o cooldown
+        lastActionTime = Time.time;
     }
 
     private IEnumerator TryHeal()
@@ -364,40 +337,20 @@ private void FollowPlayer()
 
         yield return new WaitForSeconds(1f);
         isHealing = false;
+
+        // Atualiza o tempo da última ação para o cooldown
+        lastActionTime = Time.time;
     }
-    private IEnumerator WalkAndAttack()
-    {
-        // O boss anda em direção ao jogador por um tempo pequeno
-        float moveTime = 0.5f; // Define quanto tempo o boss vai andar
-        Vector2 initialPosition = transform.position;
-        Vector2 targetPosition = player.position;
-
-        // A direção que o boss vai se mover
-        Vector2 direction = (targetPosition - initialPosition).normalized;
-        rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
-
-        // Espera um pouco enquanto o boss anda
-        yield return new WaitForSeconds(moveTime);
-
-        // Após andar, realiza o ataque
-        rb.velocity = Vector2.zero; // Para o movimento
-        anim.SetBool("IsMoving", false); // Desativa animação de movimento
-        StartCoroutine(PerformComboAttack()); // Realiza o ataque
-    }
-
     // Método para o boss receber dano
     public void TakeDamage(int damage)
     {
         if (isDead) return;
 
         currentHealth -= damage;
-        // Não interrompe animações de ataque ou cura com animação de hit
-        if (isHealing || isAttacking)
+        if (isAttacking == false)
         {
-            return; // Não faz nada se o boss estiver curando ou atacando
+            anim.SetTrigger("Hit");
         }
-
-        anim.SetTrigger("Hit");
 
         // Atualiza o slider de vida
         if (healthSlider != null)
@@ -410,7 +363,6 @@ private void FollowPlayer()
             StartCoroutine(Die());
         }
     }
-
 
     public IEnumerator Die()
     {
