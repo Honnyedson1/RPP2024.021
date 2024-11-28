@@ -17,7 +17,6 @@ public class CheckPoints : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             GameManager.Instance.SetCheckpoint(transform.position);
-            cir.GetComponent<BoxCollider2D>().enabled = false;
         }
     }
 }

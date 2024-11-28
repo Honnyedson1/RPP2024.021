@@ -7,11 +7,16 @@ public class CreditTriggerManager2D : MonoBehaviour
     public Text[] textSlots; // Textos em três posições diferentes
     public string[] creditMessages; // Mensagens de créditos
     public GameObject finalScreen; // Tela final do jogo
+    public Image finalScreenBackground; // Imagem de fundo para efeito de fade-in (opcional)
 
+    private bool[] collectedMessages; // Controle de quais mensagens já foram coletadas
     private int currentCreditIndex = 0;
 
     private void Start()
     {
+        // Inicializa o controle de mensagens coletadas
+        collectedMessages = new bool[creditMessages.Length];
+
         foreach (Text text in textSlots)
         {
             text.color = new Color(text.color.r, text.color.g, text.color.b, 0);
@@ -22,6 +27,11 @@ public class CreditTriggerManager2D : MonoBehaviour
             finalScreen.SetActive(false);
             Debug.Log("Tela final inicializada como inativa.");
         }
+
+        if (finalScreenBackground != null)
+        {
+            finalScreenBackground.color = new Color(0, 0, 0, 0); // Transparente no início
+        }
     }
 
     public void TriggerActivated(GameObject trigger)
@@ -30,20 +40,29 @@ public class CreditTriggerManager2D : MonoBehaviour
 
         if (currentCreditIndex < creditMessages.Length)
         {
+            // Marca a mensagem como coletada
+            collectedMessages[currentCreditIndex] = true;
+
             int textSlotIndex = currentCreditIndex % textSlots.Length;
             Text targetText = textSlots[textSlotIndex];
+            Debug.Log($"Exibindo mensagem de crédito: {creditMessages[currentCreditIndex]}");
             StartCoroutine(ShowCredit(targetText, creditMessages[currentCreditIndex]));
             currentCreditIndex++;
         }
-        else
+
+        // Verifica se todas as mensagens foram coletadas
+        if (AllMessagesCollected())
         {
-            Debug.Log("Todas as mensagens de créditos foram exibidas. Aguardando 5 segundos antes de exibir a tela final.");
-            // Aguarda 5 segundos após terminar de mostrar as mensagens de crédito
+            Debug.Log("Todas as mensagens foram coletadas. Aguardando para exibir a tela final.");
             StartCoroutine(ShowFinalScreenAfterDelay(5f));
         }
 
         // Desativar o trigger após ser usado
-        trigger.SetActive(false);
+        if (trigger != null)
+        {
+            Debug.Log($"Desativando o trigger: {trigger.name}");
+            trigger.SetActive(false);
+        }
     }
 
     private IEnumerator ShowCredit(Text targetText, string message)
@@ -72,14 +91,37 @@ public class CreditTriggerManager2D : MonoBehaviour
 
     private IEnumerator ShowFinalScreenAfterDelay(float delay)
     {
-        // Aguarda o tempo especificado
+        Debug.Log("Iniciando contagem regressiva para exibir a tela final...");
         yield return new WaitForSeconds(delay);
 
-        // Exibe a tela final
+        // Exibe a tela final com fade-in
         if (finalScreen != null)
         {
+            Debug.Log("Exibindo a tela final...");
             finalScreen.SetActive(true);
-            Debug.Log("Tela final exibida.");
+
+            if (finalScreenBackground != null)
+            {
+                Debug.Log("Iniciando fade-in da tela final...");
+                for (float alpha = 0; alpha <= 1; alpha += Time.deltaTime)
+                {
+                    finalScreenBackground.color = new Color(0, 0, 0, alpha);
+                    yield return null;
+                }
+            }
         }
+        else
+        {
+            Debug.LogError("finalScreen não está atribuído no Inspector!");
+        }
+    }
+
+    private bool AllMessagesCollected()
+    {
+        foreach (bool collected in collectedMessages)
+        {
+            if (!collected) return false;
+        }
+        return true;
     }
 }
