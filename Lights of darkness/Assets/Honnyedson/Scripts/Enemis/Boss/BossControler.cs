@@ -23,7 +23,7 @@ public class BossController : MonoBehaviour
     public bool playerInRange = false;
     public LayerMask playerLayer;
     private bool Isdead = false;
-
+    public PhaseManager phaseManager; // Referência ao PhaseManager para mudar de fase após a morte do boss
     // Para o movimento suave
     private float moveTimer;
     public float moveInterval = 1.5f; // Intervalo entre movimentos suaves
@@ -58,6 +58,9 @@ public class BossController : MonoBehaviour
     }
     void Update()
     {
+        if (Isdead) return; // Impede qualquer ação se o Boss estiver morto
+
+        phaseManager = FindObjectOfType<PhaseManager>(); // Busca o PhaseManager para transição de fases
         if (player == null) return;
 
         // Sempre vira o Boss para o jogador
@@ -69,41 +72,39 @@ public class BossController : MonoBehaviour
             ActivatePhaseTwo(); // Ativa a fase 2
         }
 
-        if (!Isdead)
+        // Timers e lógica de comportamento
+        teleportTimer -= Time.deltaTime;
+        attackTimer -= Time.deltaTime;
+        moveTimer -= Time.deltaTime;
+        spawnTimer -= Time.deltaTime;
+
+        // Verifica manualmente se o jogador está na área de detecção
+        playerInRange = Physics2D.OverlapCircle(transform.position, detectionRadius, playerLayer);
+
+        if (teleportTimer <= 0f)
         {
-            teleportTimer -= Time.deltaTime;
-            attackTimer -= Time.deltaTime;
-            moveTimer -= Time.deltaTime;
-            spawnTimer -= Time.deltaTime;
+            Teleport();
+            teleportTimer = teleportCooldown; 
+        }
 
-            // Verifica manualmente se o jogador está na área de detecção
-            playerInRange = Physics2D.OverlapCircle(transform.position, detectionRadius, playerLayer);
+        if (playerInRange && attackTimer <= 0f)
+        {
+            StartCoroutine(PerformAttack());
+            attackTimer = attackCooldown; 
+        }
 
-            if (teleportTimer <= 0f)
-            {
-                Teleport();
-                teleportTimer = teleportCooldown; 
-            }
+        // Movimentação suave do Boss
+        if (moveTimer <= 0f)
+        {
+            SmoothMovement();
+            moveTimer = moveInterval;  // Reseta o timer de movimento
+        }
 
-            if (playerInRange && attackTimer <= 0f)
-            {
-                StartCoroutine(PerformAttack());
-                attackTimer = attackCooldown; 
-            }
-
-            // Movimentação suave do boss
-            if (moveTimer <= 0f)
-            {
-                SmoothMovement();
-                moveTimer = moveInterval;  // Reseta o timer de movimento
-            }
-
-            // Spawna inimigos no segundo estágio
-            if (phaseTwoActivated && spawnTimer <= 0f)
-            {
-                SpawnEnemies();
-                spawnTimer = spawnInterval;  // Reseta o timer de spawn
-            }
+        // Spawna inimigos no segundo estágio
+        if (phaseTwoActivated && spawnTimer <= 0f)
+        {
+            SpawnEnemies();
+            spawnTimer = spawnInterval;  // Reseta o timer de spawn
         }
 
         // Verifica se a vida do jogador chegou a 0 e reseta tudo
@@ -263,18 +264,38 @@ public class BossController : MonoBehaviour
 
     private void Die()
     {
+        if (Isdead) return; // Evita múltiplas chamadas
+        Isdead = true; // Marca o Boss como morto
+
         if (bossAnimator != null)
         {
-            bossAnimator.SetTrigger("Dead");  // Trigger para animação de morte
+            bossAnimator.SetTrigger("Dead"); // Aciona a animação de morte
         }
 
         StartCoroutine(EndLevelAfterDelay(5f)); // Espera 5 segundos antes de trocar a fase
     }
 
+    private IEnumerator StopAfterLanding(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.gravityScale = 0f; // Remove a gravidade
+            rb.velocity = Vector2.zero; // Garante que o Boss esteja parado
+            rb.constraints = RigidbodyConstraints2D.FreezeAll; // Congela o Boss no lugar
+        }
+    
+        // Certifique-se de que ele não execute mais nenhuma ação
+        this.enabled = false; // Desativa o script
+    }
+
+
     private IEnumerator EndLevelAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        // Lógica para terminar a fase (sem carregar a cena)
+        phaseManager.TriggerNextPhase();
     }
 
     private void OnDrawGizmosSelected()

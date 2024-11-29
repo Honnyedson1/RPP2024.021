@@ -437,7 +437,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(1); // Tempo para a animação de morte
 
         GameManager.Instance.ShowRespawnPanel(); // Mostra o painel de respawn
-        yield return new WaitForSeconds(0.2f); // Tempo para a animação de morte
+        yield return new WaitForSeconds(0.1f); // Tempo para a animação de morte
         Time.timeScale = 0;
     }
     public IEnumerator FreezeCoroutine()

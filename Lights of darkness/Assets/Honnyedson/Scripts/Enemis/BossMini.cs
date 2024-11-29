@@ -64,7 +64,16 @@ public class BossBehavior : MonoBehaviour
 
     private void Update()
     {
+        phaseManager = FindObjectOfType<PhaseManager>(); // Busca o PhaseManager para transição de fases
         if (player == null || isDead) return; // Se o boss estiver morto, não faz mais nada
+
+        // Verifica a distância do jogador
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+        if (healthSlider != null)
+        {
+            // Oculta o slider de vida se o jogador estiver fora do alcance
+            healthSlider.gameObject.SetActive(distanceToPlayer <= 15f);
+        }
 
         // Verifica se já passou o tempo suficiente desde a última ação
         if (Time.time < lastActionTime + actionCooldown) return;
@@ -81,27 +90,21 @@ public class BossBehavior : MonoBehaviour
             FollowPlayer();
 
             // Checar distância para iniciar ataques
-            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-
-            // Verifica se o boss pode atacar corpo a corpo
             if (distanceToPlayer <= meleeRange && !isHealing && !isDashing && !isAttacking)
             {
                 StartCoroutine(PerformComboAttack());
             }
-            // Verifica se o boss pode realizar o dash
             else if (Time.time >= nextDashTime && distanceToPlayer > meleeRange && !isHealing && !isAttacking)
             {
                 StartCoroutine(PerformDash());
                 nextDashTime = Time.time + dashCooldown;
             }
 
-            // Verifica se o boss pode lançar raio
             if (distanceToPlayer <= lightningRange && !isAttacking && !isHealing && !isDashing && !isLightningActive)
             {
                 StartCoroutine(PerformLightningAttack());
             }
 
-            // Tentar curar com 20% de chance, mas só se o boss não estiver atacando nem dashing
             if (Random.value <= 0.2f && currentHealth < maxHealth && Time.time >= healingCooldown && !isAttacking && !isDashing)
             {
                 StartCoroutine(TryHeal());

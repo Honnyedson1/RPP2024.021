@@ -13,18 +13,27 @@ public class Enemy : MonoBehaviour
     private bool isdead;
     public int Dano;
     private Animator animator;
+    private BossController bossController; // Referência ao Boss
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        animator = GetComponent<Animator>(); 
+        bossController = FindObjectOfType<BossController>(); // Encontra o BossController na cena
+        animator = GetComponent<Animator>();
 
         // Inicia o timer de auto-destruição
         StartCoroutine(AutoDestruct());
     }
 
+
     void Update()
     {
+        if (bossController != null && bossController.Lifeboss <= 0) // Se o Boss morreu
+        {
+            Destroy(gameObject); // Destrói este inimigo
+            return; // Sai do método para evitar execução desnecessária
+        }
+
         if (InimigoMovimentoLinear.PlayerVivo == false || InimigoRaycastVisao.PlayerVivo == false)
         {
             Destroy(this.gameObject);
@@ -43,15 +52,15 @@ public class Enemy : MonoBehaviour
                 if (!isAttacking && distanceToPlayer <= followDistance)
                 {
                     FollowPlayerOnXAxis();
-                    animator.SetBool("isWalking", true); 
+                    animator.SetBool("isWalking", true);
                 }
                 else
                 {
-                    animator.SetBool("isWalking", false); 
+                    animator.SetBool("isWalking", false);
                 }
 
-                FlipTowardsPlayer(); 
-            }    
+                FlipTowardsPlayer();
+            }
         }
     }
 

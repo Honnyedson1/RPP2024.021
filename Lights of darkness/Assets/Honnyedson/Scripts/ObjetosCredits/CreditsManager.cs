@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CreditTriggerManager2D : MonoBehaviour
@@ -105,15 +106,15 @@ public class CreditTriggerManager2D : MonoBehaviour
                 Debug.Log("Iniciando fade-in da tela final...");
                 for (float alpha = 0; alpha <= 1; alpha += Time.deltaTime)
                 {
-                    finalScreenBackground.color = new Color(0, 0, 0, alpha);
+                    finalScreenBackground.color = new Color(1, 1, 1, alpha);
                     yield return null;
                 }
+                
             }
         }
-        else
-        {
-            Debug.LogError("finalScreen não está atribuído no Inspector!");
-        }
+
+        yield return new WaitForSeconds(5);
+        SceneManager.LoadScene("Menu");
     }
 
     private bool AllMessagesCollected()

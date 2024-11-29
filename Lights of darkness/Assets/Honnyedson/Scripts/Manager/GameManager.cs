@@ -33,7 +33,6 @@ public class GameManager : MonoBehaviour
 // Variáveis para salvar o estado do jogador
     private int savedLife;
     private int savedVidaMaxima; // Salva a vida máxima
-    private int savedScore;
     private bool savedEstouComArco;
     private int savedQFlechas;
     private bool savedHasDash;
