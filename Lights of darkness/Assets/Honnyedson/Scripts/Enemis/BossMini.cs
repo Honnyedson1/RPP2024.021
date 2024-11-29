@@ -330,24 +330,17 @@ private void FollowPlayer()
     {
         isHealing = true;
         anim.SetTrigger("Heal");
-
-        // Verifica a chance de cura
         if (Random.value <= 0.2f && currentHealth < maxHealth)
         {
             currentHealth = Mathf.Min(currentHealth + 20, maxHealth); // Recupera 20 de vida
             healingCooldown = Time.time + 5f; // Define o cooldown de cura
-
-            // Atualiza o slider de vida após a cura
             if (healthSlider != null)
             {
                 healthSlider.value = currentHealth;
             }
         }
-
         yield return new WaitForSeconds(1f);
         isHealing = false;
-
-        // Atualiza o tempo da última ação para o cooldown
         lastActionTime = Time.time;
     }
     // Método para o boss receber dano

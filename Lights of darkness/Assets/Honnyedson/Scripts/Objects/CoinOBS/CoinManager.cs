@@ -6,8 +6,8 @@ public class CoinManager : MonoBehaviour
     public int CoinCaunt = 0;
     public void AddCoin(int i)
     {
-        CoinCaunt += i;
-        GameManager.Instance.score = CoinCaunt;
+        GameManager.Instance.score++;
+
     }
 
     private void OnEnable()
