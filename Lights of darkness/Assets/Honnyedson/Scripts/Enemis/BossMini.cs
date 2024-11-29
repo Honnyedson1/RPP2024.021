@@ -25,7 +25,7 @@ public class BossBehavior : MonoBehaviour
     public int maxHealth = 100; // Vida máxima do boss
     public int currentHealth; // Vida atual do boss
     public PhaseManager phaseManager; // Referência ao PhaseManager para mudar de fase após a morte do boss
-
+    public bool PodeSeguir;
     private Animator anim; // Referência ao Animator
     private Rigidbody2D rb; // Referência ao Rigidbody2D
     private bool isAttacking = false; // Se o boss está atacando
@@ -71,7 +71,10 @@ public class BossBehavior : MonoBehaviour
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         if (healthSlider != null)
         {
-            // Oculta o slider de vida se o jogador estiver fora do alcance
+            if (distanceToPlayer <= 15)
+            {
+                PodeSeguir = true;
+            }
             healthSlider.gameObject.SetActive(distanceToPlayer <= 15f);
         }
 
@@ -85,7 +88,7 @@ public class BossBehavior : MonoBehaviour
         }
 
         // Só permite que o Boss execute ações de ataque se a vida do jogador for maior que zero
-        if (GameManager.Instance.Life > 0)
+        if (GameManager.Instance.Life > 0 && PodeSeguir == true)
         {
             FollowPlayer();
 
@@ -166,23 +169,26 @@ private IEnumerator ResetBossAfterDelay(float delay)
 
 private void FollowPlayer()
     {
-        Vector2 direction = (player.position - transform.position).normalized;
-        rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
-
-        // Verifica se o Boss realmente está se movendo
-        bool isMoving = Mathf.Abs(rb.velocity.x) > 0.1f;
-
-        // Atualiza o Animator
-        anim.SetBool("IsMoving", isMoving);
-
-        // Atualiza a direção
-        if (direction.x > 0 && !isFacingRight)
+        if (PodeSeguir == true)
         {
-            Flip();
-        }
-        else if (direction.x < 0 && isFacingRight)
-        {
-            Flip();
+            Vector2 direction = (player.position - transform.position).normalized;
+            rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
+
+            // Verifica se o Boss realmente está se movendo
+            bool isMoving = Mathf.Abs(rb.velocity.x) > 0.1f;
+
+            // Atualiza o Animator
+            anim.SetBool("IsMoving", isMoving);
+
+            // Atualiza a direção
+            if (direction.x > 0 && !isFacingRight)
+            {
+                Flip();
+            }
+            else if (direction.x < 0 && isFacingRight)
+            {
+                Flip();
+            }
         }
     }
 
